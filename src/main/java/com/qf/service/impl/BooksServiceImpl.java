@@ -15,6 +15,7 @@ import java.util.List;
 public class BooksServiceImpl implements IBooksService {
     @Autowired
     BooksMapper booksMapper;
+
     @Override
     public Books selectBookByIsbn(String Isbn) {
         BooksExample booksExample = new BooksExample();
@@ -26,5 +27,11 @@ public class BooksServiceImpl implements IBooksService {
             return null;
         }
         return books.get(0);
+    }
+
+    @Override
+    public List<Books> selectAll() {
+
+        return null;
     }
 }
