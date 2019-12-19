@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qf.mapper.BorrowsMapper" >
+  <resultMap id="BaseResultMap" type="com.qf.entity.Borrows" >
+    <id column="borrow_id" property="borrowId" jdbcType="INTEGER" />
+    <result column="borrow_time" property="borrowTime" jdbcType="TIMESTAMP" />
+    <result column="repay_time" property="repayTime" jdbcType="TIMESTAMP" />
+    <result column="renew" property="renew" jdbcType="TINYINT" />
+    <result column="overdue" property="overdue" jdbcType="TINYINT" />
+    <result column="reader_id" property="readerId" jdbcType="INTEGER" />
+    <result column="book_state_id" property="bookStateId" jdbcType="INTEGER" />
+    <result column="fine" property="fine" jdbcType="REAL" />
+    <result column="is_delete" property="isDelete" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    borrow_id, borrow_time, repay_time, renew, overdue, reader_id, book_state_id, fine, 
+    is_delete
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.qf.entity.BorrowsExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from tbl_borrows
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_borrows
+    where borrow_id = #{borrowId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tbl_borrows
+    where borrow_id = #{borrowId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.qf.entity.BorrowsExample" >
+    delete from tbl_borrows
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.qf.entity.Borrows" >
+    insert into tbl_borrows (borrow_id, borrow_time, repay_time, 
+      renew, overdue, reader_id, 
+      book_state_id, fine, is_delete
+      )
+    values (#{borrowId,jdbcType=INTEGER}, #{borrowTime,jdbcType=TIMESTAMP}, #{repayTime,jdbcType=TIMESTAMP}, 
+      #{renew,jdbcType=TINYINT}, #{overdue,jdbcType=TINYINT}, #{readerId,jdbcType=INTEGER}, 
+      #{bookStateId,jdbcType=INTEGER}, #{fine,jdbcType=REAL}, #{isDelete,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.qf.entity.Borrows" >
+    insert into tbl_borrows
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="borrowId != null" >
+        borrow_id,
+      </if>
+      <if test="borrowTime != null" >
+        borrow_time,
+      </if>
+      <if test="repayTime != null" >
+        repay_time,
+      </if>
+      <if test="renew != null" >
+        renew,
+      </if>
+      <if test="overdue != null" >
+        overdue,
+      </if>
+      <if test="readerId != null" >
+        reader_id,
+      </if>
+      <if test="bookStateId != null" >
+        book_state_id,
+      </if>
+      <if test="fine != null" >
+        fine,
+      </if>
+      <if test="isDelete != null" >
+        is_delete,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="borrowId != null" >
+        #{borrowId,jdbcType=INTEGER},
+      </if>
+      <if test="borrowTime != null" >
+        #{borrowTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="repayTime != null" >
+        #{repayTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="renew != null" >
+        #{renew,jdbcType=TINYINT},
+      </if>
+      <if test="overdue != null" >
+        #{overdue,jdbcType=TINYINT},
+      </if>
+      <if test="readerId != null" >
+        #{readerId,jdbcType=INTEGER},
+      </if>
+      <if test="bookStateId != null" >
+        #{bookStateId,jdbcType=INTEGER},
+      </if>
+      <if test="fine != null" >
+        #{fine,jdbcType=REAL},
+      </if>
+      <if test="isDelete != null" >
+        #{isDelete,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.qf.entity.BorrowsExample" resultType="java.lang.Integer" >
+    select count(*) from tbl_borrows
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update tbl_borrows
+    <set >
+      <if test="record.borrowId != null" >
+        borrow_id = #{record.borrowId,jdbcType=INTEGER},
+      </if>
+      <if test="record.borrowTime != null" >
+        borrow_time = #{record.borrowTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.repayTime != null" >
+        repay_time = #{record.repayTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.renew != null" >
+        renew = #{record.renew,jdbcType=TINYINT},
+      </if>
+      <if test="record.overdue != null" >
+        overdue = #{record.overdue,jdbcType=TINYINT},
+      </if>
+      <if test="record.readerId != null" >
+        reader_id = #{record.readerId,jdbcType=INTEGER},
+      </if>
+      <if test="record.bookStateId != null" >
+        book_state_id = #{record.bookStateId,jdbcType=INTEGER},
+      </if>
+      <if test="record.fine != null" >
+        fine = #{record.fine,jdbcType=REAL},
+      </if>
+      <if test="record.isDelete != null" >
+        is_delete = #{record.isDelete,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update tbl_borrows
+    set borrow_id = #{record.borrowId,jdbcType=INTEGER},
+      borrow_time = #{record.borrowTime,jdbcType=TIMESTAMP},
+      repay_time = #{record.repayTime,jdbcType=TIMESTAMP},
+      renew = #{record.renew,jdbcType=TINYINT},
+      overdue = #{record.overdue,jdbcType=TINYINT},
+      reader_id = #{record.readerId,jdbcType=INTEGER},
+      book_state_id = #{record.bookStateId,jdbcType=INTEGER},
+      fine = #{record.fine,jdbcType=REAL},
+      is_delete = #{record.isDelete,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qf.entity.Borrows" >
+    update tbl_borrows
+    <set >
+      <if test="borrowTime != null" >
+        borrow_time = #{borrowTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="repayTime != null" >
+        repay_time = #{repayTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="renew != null" >
+        renew = #{renew,jdbcType=TINYINT},
+      </if>
+      <if test="overdue != null" >
+        overdue = #{overdue,jdbcType=TINYINT},
+      </if>
+      <if test="readerId != null" >
+        reader_id = #{readerId,jdbcType=INTEGER},
+      </if>
+      <if test="bookStateId != null" >
+        book_state_id = #{bookStateId,jdbcType=INTEGER},
+      </if>
+      <if test="fine != null" >
+        fine = #{fine,jdbcType=REAL},
+      </if>
+      <if test="isDelete != null" >
+        is_delete = #{isDelete,jdbcType=INTEGER},
+      </if>
+    </set>
+    where borrow_id = #{borrowId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qf.entity.Borrows" >
+    update tbl_borrows
+    set borrow_time = #{borrowTime,jdbcType=TIMESTAMP},
+      repay_time = #{repayTime,jdbcType=TIMESTAMP},
+      renew = #{renew,jdbcType=TINYINT},
+      overdue = #{overdue,jdbcType=TINYINT},
+      reader_id = #{readerId,jdbcType=INTEGER},
+      book_state_id = #{bookStateId,jdbcType=INTEGER},
+      fine = #{fine,jdbcType=REAL},
+      is_delete = #{isDelete,jdbcType=INTEGER}
+    where borrow_id = #{borrowId,jdbcType=INTEGER}
+  </update>
+</mapper>

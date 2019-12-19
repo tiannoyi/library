@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qf.mapper.BooksMapper" >
+  <resultMap id="BaseResultMap" type="com.qf.entity.Books" >
+    <id column="book_id" property="bookId" jdbcType="INTEGER" />
+    <result column="book_type_id" property="bookTypeId" jdbcType="INTEGER" />
+    <result column="book_name" property="bookName" jdbcType="VARCHAR" />
+    <result column="img_path" property="imgPath" jdbcType="VARCHAR" />
+    <result column="isbn" property="isbn" jdbcType="VARCHAR" />
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    <result column="press" property="press" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="VARCHAR" />
+    <result column="publication_time" property="publicationTime" jdbcType="VARCHAR" />
+    <result column="page_number" property="pageNumber" jdbcType="INTEGER" />
+    <result column="number" property="number" jdbcType="SMALLINT" />
+    <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+    <result column="class_number" property="classNumber" jdbcType="VARCHAR" />
+    <result column="is_delete" property="isDelete" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.qf.entity.BooksWithBLOBs" extends="BaseResultMap" >
+    <result column="introduction" property="introduction" jdbcType="LONGVARCHAR" />
+    <result column="directory" property="directory" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    book_id, book_type_id, book_name, img_path, isbn, author, press, price, publication_time, 
+    page_number, number, create_time, class_number, is_delete
+  </sql>
+  <sql id="Blob_Column_List" >
+    introduction, directory
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.qf.entity.BooksExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tbl_books
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.qf.entity.BooksExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from tbl_books
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from tbl_books
+    where book_id = #{bookId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tbl_books
+    where book_id = #{bookId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.qf.entity.BooksExample" >
+    delete from tbl_books
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.qf.entity.BooksWithBLOBs" >
+    insert into tbl_books (book_id, book_type_id, book_name, 
+      img_path, isbn, author, 
+      press, price, publication_time, 
+      page_number, number, create_time, 
+      class_number, is_delete, introduction, 
+      directory)
+    values (#{bookId,jdbcType=INTEGER}, #{bookTypeId,jdbcType=INTEGER}, #{bookName,jdbcType=VARCHAR}, 
+      #{imgPath,jdbcType=VARCHAR}, #{isbn,jdbcType=VARCHAR}, #{author,jdbcType=VARCHAR}, 
+      #{press,jdbcType=VARCHAR}, #{price,jdbcType=VARCHAR}, #{publicationTime,jdbcType=VARCHAR}, 
+      #{pageNumber,jdbcType=INTEGER}, #{number,jdbcType=SMALLINT}, #{createTime,jdbcType=VARCHAR}, 
+      #{classNumber,jdbcType=VARCHAR}, #{isDelete,jdbcType=INTEGER}, #{introduction,jdbcType=LONGVARCHAR}, 
+      #{directory,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qf.entity.BooksWithBLOBs" >
+    insert into tbl_books
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="bookId != null" >
+        book_id,
+      </if>
+      <if test="bookTypeId != null" >
+        book_type_id,
+      </if>
+      <if test="bookName != null" >
+        book_name,
+      </if>
+      <if test="imgPath != null" >
+        img_path,
+      </if>
+      <if test="isbn != null" >
+        isbn,
+      </if>
+      <if test="author != null" >
+        author,
+      </if>
+      <if test="press != null" >
+        press,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="publicationTime != null" >
+        publication_time,
+      </if>
+      <if test="pageNumber != null" >
+        page_number,
+      </if>
+      <if test="number != null" >
+        number,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="classNumber != null" >
+        class_number,
+      </if>
+      <if test="isDelete != null" >
+        is_delete,
+      </if>
+      <if test="introduction != null" >
+        introduction,
+      </if>
+      <if test="directory != null" >
+        directory,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="bookId != null" >
+        #{bookId,jdbcType=INTEGER},
+      </if>
+      <if test="bookTypeId != null" >
+        #{bookTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="bookName != null" >
+        #{bookName,jdbcType=VARCHAR},
+      </if>
+      <if test="imgPath != null" >
+        #{imgPath,jdbcType=VARCHAR},
+      </if>
+      <if test="isbn != null" >
+        #{isbn,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="press != null" >
+        #{press,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=VARCHAR},
+      </if>
+      <if test="publicationTime != null" >
+        #{publicationTime,jdbcType=VARCHAR},
+      </if>
+      <if test="pageNumber != null" >
+        #{pageNumber,jdbcType=INTEGER},
+      </if>
+      <if test="number != null" >
+        #{number,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="classNumber != null" >
+        #{classNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null" >
+        #{isDelete,jdbcType=INTEGER},
+      </if>
+      <if test="introduction != null" >
+        #{introduction,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="directory != null" >
+        #{directory,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.qf.entity.BooksExample" resultType="java.lang.Integer" >
+    select count(*) from tbl_books
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update tbl_books
+    <set >
+      <if test="record.bookId != null" >
+        book_id = #{record.bookId,jdbcType=INTEGER},
+      </if>
+      <if test="record.bookTypeId != null" >
+        book_type_id = #{record.bookTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="record.bookName != null" >
+        book_name = #{record.bookName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.imgPath != null" >
+        img_path = #{record.imgPath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isbn != null" >
+        isbn = #{record.isbn,jdbcType=VARCHAR},
+      </if>
+      <if test="record.author != null" >
+        author = #{record.author,jdbcType=VARCHAR},
+      </if>
+      <if test="record.press != null" >
+        press = #{record.press,jdbcType=VARCHAR},
+      </if>
+      <if test="record.price != null" >
+        price = #{record.price,jdbcType=VARCHAR},
+      </if>
+      <if test="record.publicationTime != null" >
+        publication_time = #{record.publicationTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pageNumber != null" >
+        page_number = #{record.pageNumber,jdbcType=INTEGER},
+      </if>
+      <if test="record.number != null" >
+        number = #{record.number,jdbcType=SMALLINT},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="record.classNumber != null" >
+        class_number = #{record.classNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDelete != null" >
+        is_delete = #{record.isDelete,jdbcType=INTEGER},
+      </if>
+      <if test="record.introduction != null" >
+        introduction = #{record.introduction,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="record.directory != null" >
+        directory = #{record.directory,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update tbl_books
+    set book_id = #{record.bookId,jdbcType=INTEGER},
+      book_type_id = #{record.bookTypeId,jdbcType=INTEGER},
+      book_name = #{record.bookName,jdbcType=VARCHAR},
+      img_path = #{record.imgPath,jdbcType=VARCHAR},
+      isbn = #{record.isbn,jdbcType=VARCHAR},
+      author = #{record.author,jdbcType=VARCHAR},
+      press = #{record.press,jdbcType=VARCHAR},
+      price = #{record.price,jdbcType=VARCHAR},
+      publication_time = #{record.publicationTime,jdbcType=VARCHAR},
+      page_number = #{record.pageNumber,jdbcType=INTEGER},
+      number = #{record.number,jdbcType=SMALLINT},
+      create_time = #{record.createTime,jdbcType=VARCHAR},
+      class_number = #{record.classNumber,jdbcType=VARCHAR},
+      is_delete = #{record.isDelete,jdbcType=INTEGER},
+      introduction = #{record.introduction,jdbcType=LONGVARCHAR},
+      directory = #{record.directory,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update tbl_books
+    set book_id = #{record.bookId,jdbcType=INTEGER},
+      book_type_id = #{record.bookTypeId,jdbcType=INTEGER},
+      book_name = #{record.bookName,jdbcType=VARCHAR},
+      img_path = #{record.imgPath,jdbcType=VARCHAR},
+      isbn = #{record.isbn,jdbcType=VARCHAR},
+      author = #{record.author,jdbcType=VARCHAR},
+      press = #{record.press,jdbcType=VARCHAR},
+      price = #{record.price,jdbcType=VARCHAR},
+      publication_time = #{record.publicationTime,jdbcType=VARCHAR},
+      page_number = #{record.pageNumber,jdbcType=INTEGER},
+      number = #{record.number,jdbcType=SMALLINT},
+      create_time = #{record.createTime,jdbcType=VARCHAR},
+      class_number = #{record.classNumber,jdbcType=VARCHAR},
+      is_delete = #{record.isDelete,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qf.entity.BooksWithBLOBs" >
+    update tbl_books
+    <set >
+      <if test="bookTypeId != null" >
+        book_type_id = #{bookTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="bookName != null" >
+        book_name = #{bookName,jdbcType=VARCHAR},
+      </if>
+      <if test="imgPath != null" >
+        img_path = #{imgPath,jdbcType=VARCHAR},
+      </if>
+      <if test="isbn != null" >
+        isbn = #{isbn,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="press != null" >
+        press = #{press,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        price = #{price,jdbcType=VARCHAR},
+      </if>
+      <if test="publicationTime != null" >
+        publication_time = #{publicationTime,jdbcType=VARCHAR},
+      </if>
+      <if test="pageNumber != null" >
+        page_number = #{pageNumber,jdbcType=INTEGER},
+      </if>
+      <if test="number != null" >
+        number = #{number,jdbcType=SMALLINT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="classNumber != null" >
+        class_number = #{classNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null" >
+        is_delete = #{isDelete,jdbcType=INTEGER},
+      </if>
+      <if test="introduction != null" >
+        introduction = #{introduction,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="directory != null" >
+        directory = #{directory,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where book_id = #{bookId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.qf.entity.BooksWithBLOBs" >
+    update tbl_books
+    set book_type_id = #{bookTypeId,jdbcType=INTEGER},
+      book_name = #{bookName,jdbcType=VARCHAR},
+      img_path = #{imgPath,jdbcType=VARCHAR},
+      isbn = #{isbn,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      press = #{press,jdbcType=VARCHAR},
+      price = #{price,jdbcType=VARCHAR},
+      publication_time = #{publicationTime,jdbcType=VARCHAR},
+      page_number = #{pageNumber,jdbcType=INTEGER},
+      number = #{number,jdbcType=SMALLINT},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      class_number = #{classNumber,jdbcType=VARCHAR},
+      is_delete = #{isDelete,jdbcType=INTEGER},
+      introduction = #{introduction,jdbcType=LONGVARCHAR},
+      directory = #{directory,jdbcType=LONGVARCHAR}
+    where book_id = #{bookId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qf.entity.Books" >
+    update tbl_books
+    set book_type_id = #{bookTypeId,jdbcType=INTEGER},
+      book_name = #{bookName,jdbcType=VARCHAR},
+      img_path = #{imgPath,jdbcType=VARCHAR},
+      isbn = #{isbn,jdbcType=VARCHAR},
+      author = #{author,jdbcType=VARCHAR},
+      press = #{press,jdbcType=VARCHAR},
+      price = #{price,jdbcType=VARCHAR},
+      publication_time = #{publicationTime,jdbcType=VARCHAR},
+      page_number = #{pageNumber,jdbcType=INTEGER},
+      number = #{number,jdbcType=SMALLINT},
+      create_time = #{createTime,jdbcType=VARCHAR},
+      class_number = #{classNumber,jdbcType=VARCHAR},
+      is_delete = #{isDelete,jdbcType=INTEGER}
+    where book_id = #{bookId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,17 @@
+方法命名
+select+操作对象
+update+操作对象
+delete+操作对象
+insert+操作对象
+查询全部：selectAll
+批量删除:deleteBatch
+批量增加：insertBatch
+
+地址命名
+如book类：
+增加:localhost:8080/book 注解：postmapping
+删除:localhost:8080/book/1   deletemapping
+修改:localhost:8080/book/1	putmapping
+查询:localhost:8080/book/1   getmapping
+
+类注解统一用 restController
