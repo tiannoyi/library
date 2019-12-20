@@ -1,5 +1,8 @@
 package com.qf.entity;
 
+import lombok.Data;
+
+@Data
 public class System {
     private Integer sysId;
 
@@ -18,6 +21,19 @@ public class System {
     private Float fine;
 
     private Integer isDelete;
+
+    public System() {
+    }
+
+    public System(String sysName, String sysImg, String pageLine, Integer appid, String appsecret, String barName, Float fine) {
+        this.sysName = sysName;
+        this.sysImg = sysImg;
+        this.pageLine = pageLine;
+        this.appid = appid;
+        this.appsecret = appsecret;
+        this.barName = barName;
+        this.fine = fine;
+    }
 
     public Integer getSysId() {
         return sysId;
