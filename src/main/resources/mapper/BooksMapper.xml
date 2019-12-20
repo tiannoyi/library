@@ -442,4 +442,10 @@
       is_delete = #{isDelete,jdbcType=INTEGER}
     where book_id = #{bookId,jdbcType=INTEGER}
   </update>
+  <select id="selectTotalNum" resultType="java.lang.Integer">
+    select count(book_id) from tbl_books where is_delete = 1;
+  </select>
+  <update id="deleteBookById" parameterType="com.qf.entity.Books">
+    update tbl_books set is_delete = 0  where  book_id = #{bookId,jdbcType=INTEGER};
+  </update>
 </mapper>

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/BookStatesController")
+@RequestMapping("/bookStates")
 public class BookStatesController {
     @Autowired
     private IBookStatesService bookStatesService;
