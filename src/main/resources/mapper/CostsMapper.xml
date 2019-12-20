@@ -69,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    cost_id, reader_id, cost_type, numeric, pay_type, create_time, is_delete
+    cost_id, reader_id, cost_type, `numeric`, pay_type, create_time, is_delete
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.qf.entity.CostsExample" >
     select
@@ -103,7 +103,7 @@
   </delete>
   <insert id="insert" parameterType="com.qf.entity.Costs" >
     insert into tbl_costs (cost_id, reader_id, cost_type, 
-      numeric, pay_type, create_time, 
+      `numeric`, pay_type, create_time,
       is_delete)
     values (#{costId,jdbcType=INTEGER}, #{readerId,jdbcType=INTEGER}, #{costType,jdbcType=TINYINT}, 
       #{numeric,jdbcType=REAL}, #{payType,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
@@ -122,7 +122,7 @@
         cost_type,
       </if>
       <if test="numeric != null" >
-        numeric,
+        `numeric`,
       </if>
       <if test="payType != null" >
         pay_type,
@@ -177,7 +177,7 @@
         cost_type = #{record.costType,jdbcType=TINYINT},
       </if>
       <if test="record.numeric != null" >
-        numeric = #{record.numeric,jdbcType=REAL},
+        `numeric` = #{record.numeric,jdbcType=REAL},
       </if>
       <if test="record.payType != null" >
         pay_type = #{record.payType,jdbcType=TINYINT},
@@ -198,7 +198,7 @@
     set cost_id = #{record.costId,jdbcType=INTEGER},
       reader_id = #{record.readerId,jdbcType=INTEGER},
       cost_type = #{record.costType,jdbcType=TINYINT},
-      numeric = #{record.numeric,jdbcType=REAL},
+      `numeric` = #{record.numeric,jdbcType=REAL},
       pay_type = #{record.payType,jdbcType=TINYINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       is_delete = #{record.isDelete,jdbcType=INTEGER}
@@ -216,7 +216,7 @@
         cost_type = #{costType,jdbcType=TINYINT},
       </if>
       <if test="numeric != null" >
-        numeric = #{numeric,jdbcType=REAL},
+        `numeric` = #{numeric,jdbcType=REAL},
       </if>
       <if test="payType != null" >
         pay_type = #{payType,jdbcType=TINYINT},
@@ -234,7 +234,7 @@
     update tbl_costs
     set reader_id = #{readerId,jdbcType=INTEGER},
       cost_type = #{costType,jdbcType=TINYINT},
-      numeric = #{numeric,jdbcType=REAL},
+      `numeric` = #{numeric,jdbcType=REAL},
       pay_type = #{payType,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       is_delete = #{isDelete,jdbcType=INTEGER}
