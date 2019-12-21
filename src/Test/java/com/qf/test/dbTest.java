@@ -1,13 +1,12 @@
-package com.xiong.test;
+package com.qf.test;
 
 import com.qf.mapper.AdminMapper;
-import com.xiong.config.TestConfig;
+import com.qf.config.TestConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.util.StringUtils;
@@ -32,4 +31,5 @@ public class dbTest {
         boolean empty = StringUtils.isEmpty(adminMapper);
         System.out.println("================================================================>"+empty);
     }
+
 }
