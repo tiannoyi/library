@@ -27,4 +27,7 @@ public interface SystemMapper {
     int updateByPrimaryKeySelective(System record);
 
     int updateByPrimaryKey(System record);
+
+    //查询每页显示行数
+    int getPageLine();
 }
