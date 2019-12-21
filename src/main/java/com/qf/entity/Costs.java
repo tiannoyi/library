@@ -1,7 +1,11 @@
 package com.qf.entity;
 
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
+@Data
 public class Costs {
     private Integer costId;
 
@@ -13,9 +17,43 @@ public class Costs {
 
     private Byte payType;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     private Integer isDelete;
+
+    public Costs() {
+    }
+
+    public Costs(Integer readerId, Byte costType, Float numeric, Byte payType) {
+        this.readerId = readerId;
+        this.costType = costType;
+        this.numeric = numeric;
+        this.payType = payType;
+    }
+
+    public Costs(Integer readerId, Byte costType, Float numeric, Byte payType, Date createTime) {
+        this.readerId = readerId;
+        this.costType = costType;
+        this.numeric = numeric;
+        this.payType = payType;
+        this.createTime = createTime;
+    }
+
+    public Costs(Integer readerId, Byte costType, Float numeric) {
+        this.readerId = readerId;
+        this.costType = costType;
+        this.numeric = numeric;
+    }
+
+    public Costs(Integer readerId, Byte costType) {
+        this.readerId = readerId;
+        this.costType = costType;
+    }
+
+    public Costs(Integer readerId) {
+        this.readerId = readerId;
+    }
 
     public Integer getCostId() {
         return costId;
