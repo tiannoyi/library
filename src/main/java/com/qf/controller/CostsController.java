@@ -4,6 +4,7 @@ import com.qf.constan.StateCode;
 import com.qf.controller.base.Base;
 import com.qf.entity.Costs;
 import com.qf.service.ICostsService;
+import com.qf.util.Page;
 import com.qf.util.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,9 +30,17 @@ public class CostsController extends Base {
     }
 
     @GetMapping("/selectCostsAll")
-    private State<Object> selectCostsAll(){
-        List<Costs> costs = costsService.selectCostsAll();
-        return packaging(StateCode.SUCCESS,"查询成功",costs);
+    private State<Object> selectCostsAll(Integer currentPage, Integer pageSize){
+        if (currentPage == null || pageSize == null) {
+            return packaging(StateCode.FAIL,"请输入页数和总数",null);
+        }
+        Page<Costs> costs = costsService.selectCostsList(currentPage, pageSize);
+        if (costs.getList().size() != 0) {
+            return packaging(StateCode.SUCCESS,"查询成功",costs);
+        }else {
+            return packaging(StateCode.FAIL,"查询失败",costs);
+        }
+
     }
 
     @GetMapping("/selectCostsByReaderId")
@@ -54,7 +63,12 @@ public class CostsController extends Base {
     @PutMapping("/deleteCostsByCostsId")
     private State<Object> deleteCostsByCostsId(Integer costsId){
         Integer i = costsService.deleteByCostsId(costsId);
-        return packaging(StateCode.SUCCESS,"删除成功",i);
+        if (i != null) {
+            return packaging(StateCode.SUCCESS,"删除成功",i);
+        }else {
+            return packaging(StateCode.FAIL,"删除成功",i);
+        }
+
     }
 
 }
