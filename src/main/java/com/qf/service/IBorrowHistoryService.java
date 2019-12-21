@@ -2,8 +2,6 @@ package com.qf.service;
 
 import com.qf.entity.BorrowHistory;
 
-import java.awt.print.Book;
-import java.io.Reader;
 import java.util.List;
 
 /**
@@ -47,12 +45,28 @@ public interface IBorrowHistoryService {
     Integer deleteBorrowHistoryByReaderId(Integer readerId);
 
     /**
-     * 更新借阅历史
+     * 通过 borrowHistoryId 更新借阅历史
      *
      * @param borrowHistory
      * @return
      */
-    Integer updateBorrow(BorrowHistory borrowHistory);
+    Integer updateBorrowHistoryByBorrowHistoryId(BorrowHistory borrowHistory);
+
+    /**
+     * 通过读者id 和书本id 更新历史借阅记录
+     *
+     * @param borrowHistory
+     * @return
+     */
+    Integer updateBorrowHistoryByReaderIdAndBookId(BorrowHistory borrowHistory);
+
+    /**
+     * 通过唯一历史id 查询信息
+     *
+     * @param historyId
+     * @return
+     */
+    BorrowHistory selectBorrowHistoryByHistoryId(Integer historyId);
 
     /**
      * 通过 readerId 查询出该读者所有的借阅记录
@@ -71,10 +85,20 @@ public interface IBorrowHistoryService {
     List<BorrowHistory> selectBorrowHistoryByBookId(Integer bookId);
 
     /**
+     * 查询全部未删除的借阅历史记录
+     *
+     * @return
+     */
+    List<BorrowHistory> selectAllBorrowHistory();
+
+
+
+    /**
      * 提取全部借阅历史的数量
      *
      * @return All
      */
     Integer selectCountAllBorrowHistory();
+
 
 }
