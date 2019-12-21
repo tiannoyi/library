@@ -1,10 +1,13 @@
 package com.qf.initializer;
 
 
+import com.qf.config.EncodingFilter;
 import com.qf.config.MybatisConfig;
 import com.qf.config.RootConfig;
 import com.qf.config.WebConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+
+import javax.servlet.Filter;
 
 
 /**
@@ -38,7 +41,13 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
         return new String[]{"/"};
     }
 
-   /* //Servlet上传文件配置.
+    @Override
+    protected Filter[] getServletFilters() {
+        //return super.getServletFilters();
+        return  new Filter[]{new EncodingFilter()};
+    }
+
+    /* //Servlet上传文件配置.
     @Override
     protected void customizeRegistration(ServletRegistration.Dynamic registration) {
         //配置上传路径

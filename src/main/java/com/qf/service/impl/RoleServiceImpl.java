@@ -51,7 +51,7 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public Integer insertRole(Roles role) {
-        return null;
+        return  rolesMapper.insertSelective(role);
     }
 
     @Override
