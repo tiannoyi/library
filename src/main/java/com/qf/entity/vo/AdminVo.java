@@ -14,5 +14,5 @@ import java.util.List;
  **/
 @Data
 public class AdminVo extends Admin {
-    private List<Roles> list;
+    private Roles role;
 }
