@@ -1,5 +1,6 @@
 package com.qf.service.impl;
 
+import com.qf.entity.BorrowHistoryExample;
 import com.qf.entity.Borrows;
 import com.qf.entity.BorrowsExample;
 import com.qf.mapper.BorrowsMapper;
@@ -47,10 +48,21 @@ public class BorrowsServiceImpl implements IBorrowsService {
         return getDeleteResult(bookStateId);
     }
 
+    /**
+     * 抽取的生成对象方法，有点多余
+     *
+     * @return
+     */
     private BorrowsExample getBorrowsExample() {
         return new BorrowsExample();
     }
 
+    /**
+     * 抽取的根据 Id 删除对应记录方法
+     *
+     * @param deleteId
+     * @return 删除结果
+     */
     private Integer getDeleteResult(Integer deleteId) {
         BorrowsExample borrowsExample = getBorrowsExample();
         BorrowsExample.Criteria borrowsExampleCriteria = borrowsExample.createCriteria();
@@ -89,6 +101,12 @@ public class BorrowsServiceImpl implements IBorrowsService {
         return getBorrows(bookStateId);
     }
 
+    /**
+     * 抽取的根据 Id 查询单个借阅记录
+     *
+     * @param selectId
+     * @return
+     */
     private Borrows getBorrows(Integer selectId) {
         BorrowsExample borrowsExample = getBorrowsExample();
         BorrowsExample.Criteria borrowsExampleCriteria = borrowsExample.createCriteria();
@@ -113,6 +131,19 @@ public class BorrowsServiceImpl implements IBorrowsService {
         BorrowsExample.Criteria borrowsExampleCriteria = borrowsExample.createCriteria();
         borrowsExampleCriteria.andIsDeleteEqualTo(1);
         return borrowsMapper.selectByExample(borrowsExample);
+    }
+
+    /**
+     * 全部未删除的借阅记录数量
+     *
+     * @return
+     */
+    @Override
+    public Integer selectCountAllBorrows() {
+        BorrowsExample borrowsExample = getBorrowsExample();
+        BorrowsExample.Criteria borrowsExampleCriteria = borrowsExample.createCriteria();
+        borrowsExampleCriteria.andIsDeleteEqualTo(1);
+        return borrowsMapper.countByExample(borrowsExample);
     }
 
 }

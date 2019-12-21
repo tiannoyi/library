@@ -70,4 +70,11 @@ public interface IBorrowHistoryService {
      */
     List<BorrowHistory> selectBorrowHistoryByBookId(Integer bookId);
 
+    /**
+     * 提取全部借阅历史的数量
+     *
+     * @return All
+     */
+    Integer selectCountAllBorrowHistory();
+
 }

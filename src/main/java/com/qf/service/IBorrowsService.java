@@ -47,13 +47,6 @@ public interface IBorrowsService {
     Integer updateBorrows(Borrows borrows);
 
     /**
-     * 查询全部借阅事件
-     *
-     * @return 全部借阅记录
-     */
-    List<Borrows> selectAll();
-
-    /**
      * 根据对应的 borrow_id 查询对应的借阅记录
      *
      * @param borrowId 借阅事件对应的记录id
@@ -68,5 +61,19 @@ public interface IBorrowsService {
      * @return 对应借阅记录
      */
     Borrows selectBorrowsByBookStateId(Integer bookStateId);
+
+    /**
+     * 查询全部借阅事件
+     *
+     * @return 全部借阅记录
+     */
+    List<Borrows> selectAll();
+
+    /**
+     * 获取全部借阅记录的数量
+     *
+     * @return All
+     */
+    Integer selectCountAllBorrows();
 
 }
