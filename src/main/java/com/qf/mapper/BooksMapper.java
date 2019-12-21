@@ -34,4 +34,9 @@ public interface BooksMapper {
     int updateByPrimaryKeyWithBLOBs(BooksWithBLOBs record);
 
     int updateByPrimaryKey(Books record);
+
+    //查询数据总条数
+    int selectTotalNum();
+    //通过Id 删除对应的书本（修改is_delete为0）
+    int deleteBookById(Integer bookId);
 }

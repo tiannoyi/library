@@ -272,4 +272,7 @@
       is_delete = #{isDelete,jdbcType=INTEGER}
     where sys_id = #{sysId,jdbcType=INTEGER}
   </update>
+  <select id="getPageLine" resultType="java.lang.Integer">
+    select tbl_system.page_line from tbl_system where sys_id = 1;
+  </select>
 </mapper>

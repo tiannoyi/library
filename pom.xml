@@ -38,9 +38,18 @@
     <jackson.version>2.10.0</jackson.version>
     <fastjson.version>1.2.58</fastjson.version>
     <lombok.version>1.18.8</lombok.version>
+    <jsqlparser.version>2.0</jsqlparser.version>
   </properties>
 
   <dependencies>
+
+    <!-- https://mvnrepository.com/artifact/com.github.jsqlparser/jsqlparser -->
+    <dependency>
+      <groupId>com.github.jsqlparser</groupId>
+      <artifactId>jsqlparser</artifactId>
+      <version>${jsqlparser.version}</version>
+    </dependency>
+
 
     <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
     <dependency>
