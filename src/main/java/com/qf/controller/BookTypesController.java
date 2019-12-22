@@ -3,10 +3,13 @@ package com.qf.controller;
 import com.qf.constan.StateCode;
 import com.qf.controller.base.Base;
 import com.qf.entity.BookTypes;
+import com.qf.entity.Books;
+import com.qf.mapper.SystemMapper;
 import com.qf.service.IBookTypesService;
 import com.qf.util.Page;
 import com.qf.util.State;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +19,8 @@ import java.util.List;
 public class BookTypesController extends Base {
     @Autowired
     private IBookTypesService bookTypesService;
+    @Autowired
+    private SystemMapper systemMapper;
 
     @PostMapping("/insertBookTypes")
     public State<Object> insertBookTypes(BookTypes bookTypes){
@@ -29,6 +34,9 @@ public class BookTypesController extends Base {
 
     @GetMapping("/selectAllBookTypes")
     public State<Object> selectAllBookTypes(Integer currentPage,Integer pageSize){
+        if (StringUtils.isEmpty(pageSize)) {
+            pageSize = systemMapper.getPageLine();
+        }
         Page<BookTypes> page = bookTypesService.selectAllBookTypes(currentPage, pageSize);
         if (page.getList().isEmpty()){
             return packaging(StateCode.FAIL,"查询失败",null);
@@ -54,6 +62,16 @@ public class BookTypesController extends Base {
             return packaging(StateCode.SUCCESS,"修改成功",i);
         }else {
             return packaging(StateCode.FAIL,"修改失败",null);
+        }
+    }
+
+    @GetMapping("/selectBooksByBookTypesId")
+    public State<Object> selectBooksByBookTypesId(Integer currentPage,Integer pageSize,Integer bookTypeId){
+        Page<Books> booksPage = bookTypesService.selectBooksByBookTypesId(currentPage, pageSize, bookTypeId);
+        if (booksPage.getList().isEmpty()){
+            return packaging(StateCode.FAIL,"查询失败",null);
+        }else {
+            return packaging(StateCode.SUCCESS,"查询成功",booksPage);
         }
     }
 }

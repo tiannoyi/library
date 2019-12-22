@@ -15,4 +15,6 @@ public interface IBookTypesService {
     int updateBookTypes(Integer bookTypeId,BookTypes bookTypes);
     //查询书本的所有类目
     Page<BookTypes> selectAllBookTypes(Integer currentPage,Integer pageSize);
+    //通过类目ID 查询对应的书本信息
+    Page<Books> selectBooksByBookTypesId(Integer currentPage,Integer pageSize,Integer bookTypeId);
 }

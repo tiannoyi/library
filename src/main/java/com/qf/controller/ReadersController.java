@@ -4,10 +4,12 @@ package com.qf.controller;
 import com.qf.constan.StateCode;
 import com.qf.controller.base.Base;
 import com.qf.entity.Readers;
+import com.qf.mapper.SystemMapper;
 import com.qf.service.IReadersService;
 import com.qf.util.Page;
 import com.qf.util.State;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 public class ReadersController extends Base {
     @Autowired
     private IReadersService readerService;
+    @Autowired
+    private SystemMapper systemMapper;
 
     @PostMapping("/insertReader")
     public State<Object> insertReader(Readers readers){
@@ -58,6 +62,9 @@ public class ReadersController extends Base {
 
     @GetMapping("/selectAllReaders")//测试可行
     public State<Object> selectAllReaders(Integer currentPage,Integer pageSize){
+        if (StringUtils.isEmpty(pageSize)) {
+            pageSize = systemMapper.getPageLine();
+        }
         Page<Readers> page = readerService.selectAllReaders(currentPage, pageSize);
         if (page.getList().isEmpty()){
             return packaging(StateCode.FAIL,"查询失败",null);
@@ -68,6 +75,9 @@ public class ReadersController extends Base {
 
     @GetMapping("/selectReaderByCondition")//已测试可行
     public State<Object> selectReaderByCondition(Integer currentPage,Integer pageSize,Readers readers){
+        if (StringUtils.isEmpty(pageSize)) {
+            pageSize = systemMapper.getPageLine();
+        }
         Page<Readers> page = readerService.selectReaderByCondition(currentPage, pageSize, readers);
         if (page.getList().isEmpty()){
             return packaging(StateCode.FAIL,"查询失败",null);
