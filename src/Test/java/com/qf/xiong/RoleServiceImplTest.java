@@ -13,6 +13,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import javax.management.relation.Role;
+
 /**
  * @program: library
  * @description:
@@ -36,4 +38,28 @@ public class RoleServiceImplTest {
        System.out.println(rolesPage);
 
     }
+
+    @Test
+    public void testSelectByPrimaryKeyVo(){
+
+    }
+
+    @Test
+    public void testUpdateByPrimaryKey(){
+        Roles role = new Roles(7,"浩","0","1,2,3");
+        roleService.updateByPrimaryKey(role);
+    }
+
+    @Test
+    public void insertRole(){
+        Roles roles = new Roles();
+    }
+
+    @Test
+    public void deleteRole(){
+        Integer integer = roleService.deleteRole(7);
+        System.out.println(integer);
+    }
+
+
 }

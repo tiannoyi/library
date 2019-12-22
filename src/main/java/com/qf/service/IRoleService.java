@@ -14,8 +14,11 @@ public interface IRoleService {
     //查询所有角色
     Page<Roles> selectAll(Integer currentPage,Integer pageSize);
 
-    //查询单个角色
+    //查询单个增强角色
     RolesVo selectByPrimaryKeyVo(Integer roleId);
+
+    //查询当个角色
+    Roles selectByPrimaryKey(Integer roleId);
 
     //更新角色信息
     Integer updateByPrimaryKey(Roles roles);
