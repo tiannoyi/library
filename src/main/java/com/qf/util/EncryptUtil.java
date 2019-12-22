@@ -1,19 +1,23 @@
 package com.qf.util;
-/*
+
 import org.apache.shiro.crypto.hash.SimpleHash;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-*//**
- * 加密工具
- *//*
+
+/**
+ * @program: library
+ * @description:加密工具
+ * @author: XiongJun
+ * @create: 2019-12-22 10:31
+ **/
 public class EncryptUtil {
-    *//**
+    /**
      * @param password 密码
      * @return 加密后的密码 和盐
-     *//*
+     */
     public static Map<String, String> encryption(String password) {
 
         String salt = UUID.randomUUID().toString().replace("-", "");
@@ -27,4 +31,4 @@ public class EncryptUtil {
         map.put("password", md.toHex());
         return map;
     }
-}*/
+}
