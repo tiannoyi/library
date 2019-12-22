@@ -11,6 +11,7 @@ import com.qf.service.IRoleService;
 import com.qf.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -28,6 +29,12 @@ public class RoleServiceImpl implements IRoleService {
     SystemMapper systemMapper;
     @Override
     public Page<Roles> selectAll(Integer currentPage, Integer pageSize) {
+        if (StringUtils.isEmpty(currentPage)){
+            currentPage = 1;
+        }
+        if (StringUtils.isEmpty(pageSize)){
+            pageSize = systemMapper.getPageLine();
+        }
         PageHelper.startPage(currentPage, pageSize);
         RolesExample example = new RolesExample();
         example.createCriteria().andIsDeleteEqualTo(1);
@@ -41,12 +48,18 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public RolesVo selectByPrimaryKeyVo(Integer roleId) {
+
         return null;
     }
 
     @Override
+    public Roles selectByPrimaryKey(Integer roleId) {
+        return rolesMapper.selectByPrimaryKey(roleId);
+    }
+
+    @Override
     public Integer updateByPrimaryKey(Roles roles) {
-        return null;
+        return rolesMapper.updateByPrimaryKeySelective(roles);
     }
 
     @Override
@@ -56,6 +69,6 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public Integer deleteRole(Integer id) {
-        return null;
+        return rolesMapper.updateByPrimaryKeySelective(new Roles(id,0));
     }
 }

@@ -23,16 +23,21 @@ public class BooksServiceImpl implements IBooksService {
 
     //通过ISBN查询对应的书,已测试
     @Override
-    public Books selectBookByIsbn(String Isbn) {
+    public Page<Books> selectBookByIsbn(String Isbn,Integer currentPage, Integer pageSize) {
+        PageHelper.startPage(currentPage,pageSize);
         BooksExample booksExample = new BooksExample();
         BooksExample.Criteria criteria = booksExample.createCriteria();
         criteria.andIsbnEqualTo(Isbn);
+        criteria.andIsDeleteEqualTo(1);
         List<Books> books = booksMapper.selectByExample(booksExample);
+        int totalNum = booksMapper.countByExample(booksExample);
+        Page<Books> page = new Page<>(currentPage,pageSize,totalNum);
+        page.setList(books);
         boolean empty = books.isEmpty();
         if (empty){
             return null;
         }
-        return books.get(0);
+        return page;
     }
 
 
@@ -40,23 +45,58 @@ public class BooksServiceImpl implements IBooksService {
     @Override
     public List<Books> selectBooksAll() {
         BooksExample booksExample = new BooksExample();
+        BooksExample.Criteria criteria = booksExample.createCriteria();
+        criteria.andIsDeleteEqualTo(1);
         List<Books> books = booksMapper.selectByExample(booksExample);
+        if (books.isEmpty()){
+            return null;
+        }
         return books;
     }
 
-    //通过部分条件查询对应的书籍信息,已测试
+    //通过部分条件查询对应的书籍信息
     @Override
-    public List<Books> selectBooksByCondition(Books books) {
+    public Page<Books> selectBooksByCondition(Books books,Integer currentPage, Integer pageSize) {
+        PageHelper.startPage(currentPage,pageSize);
         BooksExample example = new BooksExample();
         BooksExample.Criteria criteria = example.createCriteria();
+        criteria.andIsDeleteEqualTo(1);
+        //书名
         if(!StringUtils.isEmpty(books.getBookName())){
             criteria.andBookNameEqualTo(books.getBookName());
         }
+        //作者
+        if(!StringUtils.isEmpty(books.getAuthor())){
+            criteria.andAuthorEqualTo(books.getAuthor());
+        }
+        //分类号
+        if(!StringUtils.isEmpty(books.getClassNumber())){
+            criteria.andClassNumberEqualTo(books.getClassNumber());
+        }
+        //价格
+        if(!StringUtils.isEmpty(books.getPrice())){
+            criteria.andPriceEqualTo(books.getPrice());
+        }
+        /*//书的类型id,不可以加上,加上会报错,类型id必填
+        if(!StringUtils.isEmpty(books.getBookTypeId()+"")){
+            criteria.andBookTypeIdEqualTo(books.getBookTypeId());
+        }*/
+        //出版社
+        if(!StringUtils.isEmpty(books.getPress())){
+            criteria.andPressEqualTo(books.getPress());
+        }
+        //页数
+        if(!StringUtils.isEmpty(books.getIsbn())){
+            criteria.andIsbnEqualTo(books.getIsbn());
+        }
         List<Books> books1 = booksMapper.selectByExample(example);
+        int totalNum = booksMapper.countByExample(example);
+        Page<Books> page = new Page<>(currentPage,pageSize,totalNum);
+        page.setList(books1);
         if (books1.isEmpty()){
             return null;
         }
-        return books1;
+        return page;
     }
 
     //选择性插入,已测试
@@ -68,7 +108,10 @@ public class BooksServiceImpl implements IBooksService {
     //通过 bookId 修改 is_delete 为0，已测试
     @Override
     public int deleteBookByBookId(Integer bookId) {
-        return booksMapper.deleteBookById(bookId);
+        BooksWithBLOBs booksWithBLOBs = new BooksWithBLOBs();
+        booksWithBLOBs.setIsDelete(0);
+        booksWithBLOBs.setBookId(bookId);
+        return booksMapper.updateByPrimaryKeySelective(booksWithBLOBs);
     }
 
     //通过ID对对应的书本信息进行修改,已测试
@@ -80,14 +123,43 @@ public class BooksServiceImpl implements IBooksService {
         return booksMapper.updateByExampleSelective(booksWithBLOBs,booksExample);
     }
 
+    //分页查询所有书本信息
     @Override
-    public Page<Books> selectBooksList(Integer currentPage, Integer pageSize) {
+    public Page<Books> selectAllBooks(Integer currentPage, Integer pageSize) {
         PageHelper.startPage(currentPage,pageSize);
         BooksExample booksExample = new BooksExample();
+        booksExample.createCriteria().andIsDeleteEqualTo(1);
         List<Books> books = booksMapper.selectByExample(booksExample);
-        int totalNum = booksMapper.selectTotalNum();
+        int totalNum = booksMapper.countByExample(booksExample);
         Page<Books> page = new Page<>(currentPage,pageSize,totalNum);
         page.setList(books);
         return page;
+    }
+
+    @Override//先不写,有疑问
+    public int selectBookIdByBookName(String bookName) {
+        return 0;
+    }
+
+    //批量删除,测试可行
+    @Override
+    public int deleteBatch(int[] bookIds) {
+        BooksWithBLOBs booksWithBLOBs = new BooksWithBLOBs();
+        int count = 0;
+        for (int i = 0;i < bookIds.length;i++){
+            booksWithBLOBs.setIsDelete(0);
+            booksWithBLOBs.setBookId(bookIds[i]);
+            booksMapper.updateByPrimaryKeySelective(booksWithBLOBs);
+            count++;
+        }
+        if (count != bookIds.length){
+            return 0;
+        }
+        return count;
+    }
+
+    @Override
+    public int insertBatch(BooksWithBLOBs[] booksWithBLOBs) {
+        return 0;
     }
 }
