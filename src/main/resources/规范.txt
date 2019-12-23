@@ -4,7 +4,7 @@ update+操作对象
 delete+操作对象
 insert+操作对象
 查询全部：selectAll
-批量删除:deleteBatch
+批量删除: deleteBatch
 批量增加：insertBatch
 
 地址命名

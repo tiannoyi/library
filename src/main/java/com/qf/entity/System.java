@@ -25,6 +25,15 @@ public class System {
     public System() {
     }
 
+    public System(String sysName, String pageLine, Integer appid, String appsecret, String barName, Float fine) {
+        this.sysName = sysName;
+        this.pageLine = pageLine;
+        this.appid = appid;
+        this.appsecret = appsecret;
+        this.barName = barName;
+        this.fine = fine;
+    }
+
     public System(String sysName, String sysImg, String pageLine, Integer appid, String appsecret, String barName, Float fine) {
         this.sysName = sysName;
         this.sysImg = sysImg;
