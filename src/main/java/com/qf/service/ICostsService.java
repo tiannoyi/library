@@ -13,8 +13,8 @@ public interface ICostsService {
 
 //    List<Costs> selectCostsAll();
 
-    //通过读者id查询金额流水表
-    List<Costs> selectCostsByReaderId(Integer readerId);
+
+//    List<Costs> selectCostsByReaderId(Integer readerId);
 
     //修改金额流水表
     Integer updateByCostsId(Integer costsId , Costs costs);
@@ -24,5 +24,8 @@ public interface ICostsService {
 
     //查询所有账单
     Page<Costs> selectCostsList(Integer currentPage, Integer pageSize);
+
+    //通过读者id查询金额流水表
+    Page<Costs> selectCostsListByReaderId(Integer currentPage, Integer pageSize, Integer readerId);
 
 }
