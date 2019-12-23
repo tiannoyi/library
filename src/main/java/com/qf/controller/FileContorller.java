@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+
 
 /**
  * @program: library
@@ -30,8 +32,9 @@ public class FileContorller extends Base {
      * 文件上传
      */
     @PostMapping("/fileUpload")
-    public Object upload(@RequestParam("fileName") MultipartFile file){
-        String upload = FileUtils.upload(file, imagePath.getPath(), file.getOriginalFilename());
+    public Object upload(@RequestParam("fileName") MultipartFile file, HttpServletRequest request){
+        String path = request.getSession().getServletContext().getRealPath(imagePath.getPath());
+        String upload = FileUtils.upload(file, path, file.getOriginalFilename());
         if(StringUtils.isEmpty(upload)){
             return packaging(StateCode.FAIL,"上传失败",null);
         }else{
