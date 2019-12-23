@@ -47,6 +47,14 @@ public class PermissionsServiceImpl implements IPermissionsService {
     }
 
     @Override
+    public List<Permissions> selectAlls() {
+        PermissionsExample example = new PermissionsExample();
+        example.createCriteria().andIsDeleteEqualTo(1);
+        List<Permissions> permissions = permissionsMapper.selectByExample(example);
+        return permissions;
+    }
+
+    @Override
     public List<Menu> selectMenu() throws NotLoginException {
         Admin admin = (Admin)SecurityUtils.getSubject().getSession().getAttribute("admin");
         if (StringUtils.isEmpty(admin)){

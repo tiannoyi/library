@@ -28,31 +28,8 @@ public class CostsServiceImpl implements ICostsService {
         return i;
     }
 
-//    @Override
-//    public List<Costs> selectCostsAll() {
-//        CostsExample costsExample = new CostsExample();
-//        CostsExample.Criteria criteria = costsExample.createCriteria();
-//        criteria.andIsDeleteEqualTo(1);
-//        List<Costs> costs = costsMapper.selectByExample(costsExample);
-//        if (costs.isEmpty()) {
-//            return null;
-//        }
-//        return costs;
-//    }
 
-    @Override
-    public List<Costs> selectCostsByReaderId(Integer readerId) {
-        CostsExample costsExample = new CostsExample();
-        CostsExample.Criteria criteria = costsExample.createCriteria();
-        criteria.andReaderIdEqualTo(readerId);
-        criteria.andIsDeleteEqualTo(1);
-        List<Costs> costs = costsMapper.selectByExample(costsExample);
-        if (costs.isEmpty()) {
-            return null;
-        }
-        return costs;
-    }
-
+    //修改金额流水表
     @Override
     public Integer updateByCostsId(Integer costsId, Costs costs) {
         CostsExample costsExample = new CostsExample();
@@ -62,6 +39,7 @@ public class CostsServiceImpl implements ICostsService {
         return i;
     }
 
+    //删除金额流水表
     @Override
     public Integer deleteByCostsId(Integer costsId) {
         CostsExample costsExample = new CostsExample();
@@ -73,6 +51,7 @@ public class CostsServiceImpl implements ICostsService {
         return i;
     }
 
+    //分页查询所有金额流水表
     @Override
     public Page<Costs> selectCostsList(Integer currentPage, Integer pageSize) {
         if (StringUtils.isEmpty(pageSize)) {
@@ -81,11 +60,26 @@ public class CostsServiceImpl implements ICostsService {
         PageHelper.startPage(currentPage, pageSize);
         CostsExample costsExample = new CostsExample();
         costsExample.createCriteria().andIsDeleteEqualTo(1);
-//        costsExample.setOrderByClause("costId desc");
         List<Costs> allCosts = costsMapper.selectByExample(costsExample);
         int costsNum = costsMapper.countByExample(costsExample);
         Page<Costs> pageData = new Page<>(currentPage, pageSize, costsNum);
         pageData.setList(allCosts);
+        return pageData;
+    }
+
+    //根据读者id分页查询金额流水表
+    @Override
+    public Page<Costs> selectCostsListByReaderId(Integer currentPage, Integer pageSize,Integer readerId) {
+        if (StringUtils.isEmpty(pageSize)) {
+            pageSize = systemMapper.getPageLine();
+        }
+        PageHelper.startPage(currentPage,pageSize);
+        CostsExample costsExample = new CostsExample();
+        costsExample.createCriteria().andIsDeleteEqualTo(1).andReaderIdEqualTo(readerId);
+        List<Costs> costs = costsMapper.selectByExample(costsExample);
+        int costsNum = costsMapper.countByExample(costsExample);
+        Page<Costs> pageData = new Page<>(currentPage, pageSize, costsNum);
+        pageData.setList(costs);
         return pageData;
     }
 }

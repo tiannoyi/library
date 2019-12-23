@@ -64,22 +64,41 @@
 
     <script type="text/javascript">
 
+
+        $(function () {
+            $.ajax({
+                type:"GET",
+                url:"/library/permissionsAll",
+                data:{},
+                success:function (data) {
+                    $("#rolediv").empty();
+                    if (data.state == "SUCCESS"){
+                        $.each(data.data,function (index, value) {
+                            var $ck = $("<span>"+value.permissionName+":</span>"+"<input type='checkbox' value='"+value.permissionId+"' />");
+                            $("#rolediv").append($ck);
+                            $("#rolediv").append("<br>")
+                        })
+                    }
+                }
+            });
+        });
+
         function insetAdmin() {
-            var adminName = $("#iadminName").val();
+            var roleName = $("#iroleName").val();
             var password = $("#ipassword").val();
             var phone = $("#iphone").val();
             $.ajax({
                 type:"POST",
-                url:"/library/admins",
+                url:"/library/roles",
                 data:{
-                    adminName:adminName,
+                    roleName:roleName,
                     password:password,
                     phone:phone
                 },
                 success:function (data) {
                     if (data.state == "SUCCESS") {
                         alert(data.message);
-                        location.href = "user_show.html";
+                        location.href = "role_show.html";
                     }else {
                         alert(data.message);
                     }
@@ -88,15 +107,15 @@
         }
 
         function updataButten(index) {
-           var f = document.getElementById('updateAdmin');
-
+            var f = document.getElementById('updateRole');
+            f.style.display='block';
             var adminId = document.getElementById("adminId"+index).value;
             var phone = document.getElementById("phone" + index).innerText;
             document.getElementById("uadminId").value = adminId;
             document.getElementById("uphone").value = phone;
             $.ajax({
-               type:"GET",
-               url: "/library/rolesAll",
+                type:"GET",
+                url: "/library/rolesAll",
                 data:{},
                 success:function (data) {
                     $("#role").empty();
@@ -108,11 +127,11 @@
                     }
                 }
             });
-            f.style.display='block';
+
         }
 
         function updateb() {
-           var adminId = document.getElementById("uadminId").value;
+            var adminId = document.getElementById("uadminId").value;
             var phone = document.getElementById("uphone").value;
             var roleId = $("#role").val();
             var data = {
@@ -121,13 +140,13 @@
             }
             $.ajax({
                 type:"PUT",
-                url:"/library/admins/"+adminId,
+                url:"/library/roles/"+roleId,
                 data:JSON.stringify(data),
                 contentType:"application/json",
                 success:function (data) {
                     if (data.state == "SUCCESS") {
                         alert(data.message);
-                        location.href = "user_show.html";
+                        location.href = "role_show.html";
                     }else {
                         alert(data.message);
                     }
@@ -137,7 +156,7 @@
         }
 
         function removeGoods(id) {
-            var url = "/library/admins/"+id;
+            var url = "/library/roles/"+id;
             $.ajax({
                 type:"DELETE",
                 url:url,
@@ -147,7 +166,7 @@
                 success:function (data) {
                     if (data.state == "SUCCESS") {
                         alert(data.message);
-                        location.href = "user_show.html";
+                        location.href = "role_show.html";
                     }else {
                         alert(data.message);
                     }
@@ -157,17 +176,17 @@
 
         function deleteGoods() {
             var ckb = document.getElementsByName("ckb");
-            var adminIds = new Array(ckb.length);
+            var roleIds = new Array(ckb.length);
             var j = 0;
             for (var i = 0; i < ckb.length; i++) {
                 if (ckb[i].checked) {
-                    adminIds[j] = ckb[i].value;
+                    roleIds[j] = ckb[i].value;
                     j++;
                 }
             }
             $.ajax({
                 type: "DELETE",
-                url: "/library/admins/ids/"+adminIds,
+                url: "/library/roles/ids/"+roleIds,
                 data:{
 
                 },
@@ -175,7 +194,7 @@
                 success: function (data) {
                     if (data.state == "SUCCESS") {
                         alert(data.message);
-                        location.href = "user_show.html";
+                        location.href = "role_show.html";
                     } else {
                         alert(data.message);
                     }
@@ -183,7 +202,7 @@
             });
         }
 
-            function cAll() {
+        function cAll() {
             var all = document.getElementById("all");
             var ckb = document.getElementsByName("ckb");
             for (var i = 0;i< ckb.length;i++){
@@ -215,7 +234,7 @@
 
 
         function jumpPage(index) {
-            location.href = "user_show.html?currentPage="+index;
+            location.href = "role_show.html?currentPage="+index;
         }
 
         function getQueryVariable(variable)
@@ -241,7 +260,7 @@
 
             $.ajax({
                 type:"GET",
-                url:"/library/admins",
+                url:"/library/roles",
                 data:{
                     currentPage:currentPage,
                     pageSize:pageSize
@@ -253,15 +272,14 @@
 
                         $.each(data.data.list,function (index, value) {
                             var $tr = $("<tr></tr>");
-                            $tr.append("<input id='adminId"+index+"' name='adminId' type='hidden' value= '"+value.adminId+"' > ");
-                            $tr.append("<td width='70px'>"+"<input name='ckb' id='checkbox"+index+"' type='checkbox' value='"+value.adminId+"' onclick='dcAll()'>"+"</td>")
+                            $tr.append("<input id='roleId"+index+"' name='roleId' type='hidden' value= '"+value.roleId+"' > ");
+                            $tr.append("<td width='70px'>"+"<input name='ckb' id='checkbox"+index+"' type='checkbox' value='"+value.roleId+"' onclick='dcAll()'>"+"</td>")
                             $tr.append("<td>"+(index+1)+"</td>")
-                            $tr.append("<td id='adminName"+index+"'>"+value.adminName+"</td>");
-                            $tr.append("<td id='phone"+index+"'>"+value.phone+"</td>");
-                            $tr.append("<td id='roleName"+index+"'>"+value.role.roleName+"</td>");
+                            $tr.append("<td id='roleName"+index+"'>"+value.roleName+"</td>");
+                            $tr.append("<td id='permissionsStr"+index+"'>"+value.permissionsStr+"</td>");
                             $tr.append("<td width='160px'>"+
                                 "<a href='#' class='btn btn-warning' onclick='updataButten("+index+")'>修改</a> "+
-                                "<a href='#' onclick='removeGoods("+value.adminId+")' class='btn btn-danger'>删除</a> "
+                                "<a href='#' onclick='removeGoods("+value.roleId+")' class='btn btn-danger'>删除</a> "
                                 +"</td>");
                             $("#tb").append($tr);
                         });
@@ -298,108 +316,103 @@
 
                 }
             });
-        })
+        });
     </script>
 </head>
 
 <body>
-    <div class="rbody container" id="app">
-        <div class="top">
-            当前位置：后台<i class="fa fa-fw fa-angle-right"></i>用户列表
-        </div>
-        <div class="main row">
-            <div class="tabList">
-                <span class="active">用户列表</span>&nbsp;&nbsp;
-                <input type="button" value="添 加" class="btn btn-info" onclick="document.getElementById('addAdmin').style.display='block'" style="width:auto;"/>
-                &nbsp;&nbsp;
-                <input type="button" value="删除选中" class="btn btn-danger" onclick="deleteGoods()" />
-            </div>
-
-            <div class="tableLists mrb10">
-                <table class="table table-striped table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th><input id="all" type="checkbox" onclick="cAll()">&nbsp;&nbsp;选择</th>
-                            <th>序号</th>
-                            <th>管理员</th>
-                            <th>电话号码</th>
-                            <th>角色</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tb">
-                    </tbody>
-                </table>
-            </div>
-            <div>
-                <!--<span class="ios-button ios-button-blue ios-button-2x">创建用户</span>-->
-            </div>
-            <div class="footer">
-                <div id="paging" class="text-center">
-                </div>
-            </div>
-
-        </div>
+<div class="rbody container" id="app">
+    <div class="top">
+        当前位置：后台<i class="fa fa-fw fa-angle-right"></i>用户列表
     </div>
-
-
-
-
-
-    <!--弹框页面-->
-    <div id="addAdmin" class="hmodal">
-        <div id="a">
-            <form id="addform" class="modal-content animate" action="/library/admins" method="post">
-                <div class="imgcontainer">
-                    <!-- 点击×号，隐藏模态框-->
-                    <span onclick="document.getElementById('addAdmin').style.display='none'" class="close" title="Close Modal">&times;</span>
-                </div>
-                <h1 style="margin-left: 40px;margin-top: 10px;color: #66ccff">添加</h1>
-                <div class="container" style="width: 170px;margin: 0 auto;">
-                    账户名:
-                    <input id="iadminName" class="int-text" type="text" placeholder="账户名" name="adminName" required autocomplete="off">
-                    <br><br>
-                    密码:
-                    <input id="ipassword" class="int-text" type="password" placeholder="密码" name="password" required autocomplete="off">
-                    <br><br>
-                    电话号码:
-                    <input id="iphone" class="int-text" type="text" name="phone"  placeholder="电话号码" required autocomplete="off">
-                    <br>
-                    <br><br><br>
-                    <button id="addButton" type="button" onclick="insetAdmin()"  style="border-radius:8px;" class="btn btn-info" >添加</button>&nbsp&nbsp&nbsp&nbsp
-                    <button type="button" style="border-radius:8px;" onclick="document.getElementById('addAdmin').style.display='none'" class="btn btn-danger">取消</button>
-                </div>
-            </form>
+    <div class="main row">
+        <div class="tabList">
+            <span class="active">角色列表</span>&nbsp;&nbsp;
+            <input type="button" value="添 加" class="btn btn-info" onclick="document.getElementById('addRole').style.display='block'" style="width:auto;"/>
+            &nbsp;&nbsp;
+            <input type="button" value="删除选中" class="btn btn-danger" onclick="deleteGoods()" />
         </div>
-    </div>
 
-    <!--修改页面-->
-    <div id="updateAdmin" class="hmodal">
-        <div style="width: 40%;margin: 0px auto;border: 1px;position: absolute;left: 30%;">
-            <form id="updateform" class="modal-content animate" action="#" method="post">
-                <div class="imgcontainer">
-                    <!-- 点击×号，隐藏模态框-->
-                    <span onclick="document.getElementById('updateAdmin').style.display='none'" class="close" title="Close Modal">&times;</span>
-                </div>
-                <h1 style="margin-left: 40px;margin-top: 10px;color: #66ccff">修改</h1>
-                <div class="container" style="width: 170px;margin: 0 auto;">
-                    <input id="uadminId" type="hidden" name="adminId">
-                    手机号:
-                    <input id="uphone" class="int-text" type="text" name="phone"  placeholder="手机号" required autocomplete="off">
-                    <br><br>
-                    角色:
-                    <select id="role" class="int-text" >
-                    </select>
-                    <br><br>
-                    <button id="updateButton" type="button" onclick="updateb()"  style="border-radius:8px;" class="btn btn-info" >修改</button>&nbsp&nbsp&nbsp&nbsp
-                    <button type="button" style="border-radius:8px;" onclick="document.getElementById('updateAdmin').style.display='none'" class="btn btn-danger" >取消</button>
-                </div>
-            </form>
+        <div class="tableLists mrb10">
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th><input id="all" type="checkbox" onclick="cAll()">&nbsp;&nbsp;选择</th>
+                    <th>序号</th>
+                    <th>角色名</th>
+                    <th>权限id</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="tb">
+                </tbody>
+            </table>
         </div>
+        <div>
+            <!--<span class="ios-button ios-button-blue ios-button-2x">创建用户</span>-->
+        </div>
+        <div class="footer">
+            <div id="paging" class="text-center">
+            </div>
+        </div>
+
     </div>
+</div>
 
 
-    <script src="./js/common.js"></script>
+
+
+
+<!--弹框页面-->
+<div id="addRole" class="hmodal">
+    <div id="a">
+        <form id="addform" class="modal-content animate" action="/library/admins" method="post">
+            <div class="imgcontainer">
+                <!-- 点击×号，隐藏模态框-->
+                <span onclick="document.getElementById('addRole').style.display='none'" class="close" title="Close Modal">&times;</span>
+            </div>
+            <h1 style="margin-left: 40px;margin-top: 10px;color: #66ccff">添加</h1>
+            <div class="container" style="width: 170px;margin: 0 auto;">
+                角色名:
+                <input id="iroleName" class="int-text" type="text" placeholder="账户名" name="adminName" required autocomplete="off">
+                <br><br>
+                权限:
+                <div id="rolediv" style="width: 100px">
+                </div>
+                <button id="addButton" type="button" onclick="insetAdmin()"  style="border-radius:8px;" class="btn btn-info" >添加</button>&nbsp&nbsp&nbsp&nbsp
+                <button type="button" style="border-radius:8px;" onclick="document.getElementById('addRole').style.display='none'" class="btn btn-danger">取消</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!--修改页面-->
+<div id="updateRole" class="hmodal">
+    <div style="width: 40%;margin: 0px auto;border: 1px;position: absolute;left: 30%;">
+        <form id="updateform" class="modal-content animate" action="#" method="post">
+            <div class="imgcontainer">
+                <!-- 点击×号，隐藏模态框-->
+                <span onclick="document.getElementById('updateRole').style.display='none'" class="close" title="Close Modal">&times;</span>
+            </div>
+            <h1 style="margin-left: 40px;margin-top: 10px;color: #66ccff">修改</h1>
+            <div class="container" style="width: 170px;margin: 0 auto;">
+                <input id="uadminId" type="hidden" name="adminId">
+                手机号:
+                <input id="uphone" class="int-text" type="text" name="phone"  placeholder="手机号" required autocomplete="off">
+                <br><br>
+                角色:
+                <select id="role" class="int-text" >
+                </select>
+                <br><br>
+                <button id="updateButton" type="button" onclick="updateb()"  style="border-radius:8px;" class="btn btn-info" >修改</button>&nbsp&nbsp&nbsp&nbsp
+                <button type="button" style="border-radius:8px;" onclick="document.getElementById('updateRole').style.display='none'" class="btn btn-danger" >取消</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script src="./js/common.js"></script>
 </body>
 
 </html>

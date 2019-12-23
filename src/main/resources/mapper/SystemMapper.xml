@@ -272,7 +272,14 @@
       is_delete = #{isDelete,jdbcType=INTEGER}
     where sys_id = #{sysId,jdbcType=INTEGER}
   </update>
+
+<!--  查询每页显示行数-->
   <select id="getPageLine" resultType="java.lang.Integer">
     select tbl_system.page_line from tbl_system where sys_id = 1;
+  </select>
+
+<!--  查询罚款金额-->
+  <select id="getFine" resultType="java.lang.Integer">
+    select tbl_system.fine from tbl_system where sys_id = 1;
   </select>
 </mapper>

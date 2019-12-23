@@ -47,6 +47,15 @@ public class RoleServiceImpl implements IRoleService {
     }
 
     @Override
+    public List<Roles> selectAlls() {
+        RolesExample example = new RolesExample();
+        example.createCriteria().andIsDeleteEqualTo(1);
+        example.setOrderByClause("role_id");
+        List<Roles> roles = rolesMapper.selectByExample(example);
+        return roles;
+    }
+
+    @Override
     public RolesVo selectByPrimaryKeyVo(Integer roleId) {
 
         return null;
