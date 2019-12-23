@@ -19,4 +19,14 @@ public interface IPermissionsService {
 
     //通过权限id查询对应权限
     Permissions selectPrimaryKey(Integer permissionId);
+
+    //添加权限
+    Integer insertPermission(Permissions permissions);
+
+    //修改权限
+    Integer updatePermission(Permissions permissions);
+
+    //删除权限
+    Integer deletePermission(Integer permissionId);
+
 }
