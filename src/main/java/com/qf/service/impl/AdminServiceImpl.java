@@ -49,13 +49,13 @@ public class AdminServiceImpl implements IAdminService {
         if (currentPage == null)
             currentPage = 1;
         PageHelper.startPage(currentPage, pageSize);
-        //List<AdminVo> list = adminMapper.selectAllVo();\
-        AdminExample example = new AdminExample();
+        List<AdminVo> adminVos = adminMapper.selectAllVo();
+       /* AdminExample example = new AdminExample();
         example.createCriteria().andIsDeleteEqualTo(1);
-        List<Admin> admins = adminMapper.selectByExample(example);
-        Integer count = admins.size();
-        Page<Admin> pageData = new Page<>(currentPage, pageSize, count);
-        pageData.setList(admins);
+        List<Admin> admins = adminMapper.selectByExample(example);*/
+        Integer count = adminVos.size();
+        Page<AdminVo> pageData = new Page<>(currentPage, pageSize, count);
+        pageData.setList(adminVos);
         return pageData;
     }
 
