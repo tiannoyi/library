@@ -31,6 +31,11 @@ public class PermissionsController extends Base {
         return packaging(StateCode.SUCCESS,"查询成功",page);
     }
 
+    @GetMapping("/permissionsAll")
+    public Object selectpAll(){
+        return packaging(StateCode.SUCCESS,"查询成功",permissionsService.selectAlls());
+    }
+
     //根据id查询指定权限
     @GetMapping("/permissions/{permissionId}")
     public State selectByPrimaryKey(@PathVariable Integer permissionId){
@@ -82,6 +87,18 @@ public class PermissionsController extends Base {
             return packaging(StateCode.SUCCESS,"删除成功",permissionsId);
         }
         return packaging(StateCode.FAIL,"删除失败",null);
+    }
+
+    @DeleteMapping("/permissions/ids/{permissionsIds}")
+    public Object deletePermissions(@PathVariable String permissionsIds){
+        if (StringUtils.isEmpty(permissionsIds)){
+            return packaging(StateCode.FAIL,"删除失败",null);
+        }
+        String[] split = permissionsIds.split(",");
+        for (int i = 0; i < split.length; i++) {
+            permissionsService.deletePermission(Integer.parseInt(split[i]));
+        }
+        return packaging(StateCode.SUCCESS,"删除成功",permissionsIds);
     }
 
 }

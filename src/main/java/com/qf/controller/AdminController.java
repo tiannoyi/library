@@ -11,8 +11,11 @@ import com.qf.service.IAdminService;
 import com.qf.util.Page;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,9 +30,9 @@ public class AdminController extends Base {
     IAdminService as;
 
     @GetMapping("/admins")
-    public Object selectAll(Integer pageNum,  Integer pageSize) {
+    public Object selectAll(Integer currentPage,  Integer pageSize) {
         //System.out.println(SecurityUtils.getSubject().getSession().getId());
-        Page data = as.selectAllVo(pageNum, pageSize);
+        Page data = as.selectAllVo(currentPage, pageSize);
         return packaging(StateCode.SUCCESS,"查询成功", data);
     }
 
@@ -51,7 +54,7 @@ public class AdminController extends Base {
     }
 
     @PutMapping("admins/{id}")
-    public Object update(@PathVariable("id") Integer id,Admin admin) {
+    public Object update(@PathVariable("id") Integer id,@RequestBody Admin admin) {
         admin.setAdminId(id);
         return packaging(StateCode.SUCCESS,"修改成功",as.update(admin));
     }
@@ -76,8 +79,18 @@ public class AdminController extends Base {
         } else{
             return packaging(StateCode.FAIL,"删除失败",null);
         }
+    }
 
-
+    @DeleteMapping("/admins/ids/{adminIds}")
+    public Object deletes(@PathVariable String adminIds){
+        if (StringUtils.isEmpty(adminIds)){
+            return packaging(StateCode.FAIL,"删除失败",null);
+        }
+        String[] split = adminIds.split(",");
+        for (int i = 0; i < split.length; i++) {
+            as.deleteAdmin(Integer.parseInt(split[i]));
+        }
+        return packaging(StateCode.SUCCESS,"删除成功",adminIds);
     }
 
 }

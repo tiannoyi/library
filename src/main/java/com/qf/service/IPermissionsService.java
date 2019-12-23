@@ -11,6 +11,8 @@ public interface IPermissionsService {
     //根据角色id查询对应权限
     List<Permissions> selectPermissions(Integer roleId);
 
+    List<Permissions> selectAlls();
+
     //查询菜单
     List<Menu> selectMenu() throws NotLoginException;
 
