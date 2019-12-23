@@ -11,6 +11,27 @@ public class Roles {
 
     private Integer isDelete;
 
+    public Roles() {
+    }
+
+    public Roles(Integer roleId,Integer isDelete) {
+        this.roleId = roleId;
+        this.isDelete = isDelete;
+    }
+
+    public Roles(String roleName, String state, String permissionsStr) {
+        this.roleName = roleName;
+        this.state = state;
+        this.permissionsStr = permissionsStr;
+    }
+
+    public Roles(Integer roleId, String roleName, String state, String permissionsStr) {
+        this.roleId = roleId;
+        this.roleName = roleName;
+        this.state = state;
+        this.permissionsStr = permissionsStr;
+    }
+
     public Integer getRoleId() {
         return roleId;
     }

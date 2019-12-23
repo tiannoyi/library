@@ -3,6 +3,8 @@ package com.qf.mapper;
 import com.qf.entity.Roles;
 import com.qf.entity.RolesExample;
 import java.util.List;
+
+import com.qf.entity.vo.RolesVo;
 import org.apache.ibatis.annotations.Param;
 
 public interface RolesMapper {
@@ -27,4 +29,7 @@ public interface RolesMapper {
     int updateByPrimaryKeySelective(Roles record);
 
     int updateByPrimaryKey(Roles record);
+
+    //查询对应id增强角色
+    RolesVo selectByPrimaryKeyVo(Integer RoleId);
 }

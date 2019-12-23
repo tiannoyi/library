@@ -2,16 +2,17 @@ package com.qf.service;
 
 import com.qf.entity.BookTypes;
 import com.qf.entity.Books;
+import com.qf.util.Page;
 
 import java.util.List;
 
 public interface IBookTypesService {
-    //增
+    //增,已测试
     int insertBookTypes(BookTypes bookTypes);
-    //删
+    //删,已测试
     int deleteBookTypes(Integer bookTypeId);
-    //改
-    int updateBookTypes(Integer bookTypeId);
-    //查
-    List<Books> getBooksByBookTypeId(Integer bookTypeId);
+    //改,已测试
+    int updateBookTypes(Integer bookTypeId,BookTypes bookTypes);
+    //查询书本的所有类目
+    Page<BookTypes> selectAllBookTypes(Integer currentPage,Integer pageSize);
 }

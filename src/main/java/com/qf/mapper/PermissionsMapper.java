@@ -27,4 +27,9 @@ public interface PermissionsMapper {
     int updateByPrimaryKeySelective(Permissions record);
 
     int updateByPrimaryKey(Permissions record);
+    //查询父节点
+    Permissions selectByFatherNode(Integer fatherNode);
+
+    Permissions batchSelectByPrimaryKey(String permissionId);
+
 }
