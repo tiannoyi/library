@@ -93,4 +93,22 @@ public class PermissionsServiceImpl implements IPermissionsService {
         Permissions permissions = permissionsMapper.selectByPrimaryKey(permissionId);
         return permissions;
     }
+
+    @Override
+    public Integer insertPermission(Permissions permissions) {
+        return permissionsMapper.insertSelective(permissions);
+    }
+
+    @Override
+    public Integer updatePermission(Permissions permissions) {
+        return permissionsMapper.updateByPrimaryKeySelective(permissions);
+    }
+
+    @Override
+    public Integer deletePermission(Integer permissionId) {
+        Permissions permissions = new Permissions();
+        permissions.setPermissionId(permissionId);
+        permissions.setIsDelete(0);
+        return permissionsMapper.updateByPrimaryKeySelective(permissions);
+    }
 }

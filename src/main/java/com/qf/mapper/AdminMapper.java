@@ -3,6 +3,8 @@ package com.qf.mapper;
 import com.qf.entity.Admin;
 import com.qf.entity.AdminExample;
 import java.util.List;
+
+import com.qf.entity.vo.AdminVo;
 import org.apache.ibatis.annotations.Param;
 
 public interface AdminMapper {
@@ -27,4 +29,14 @@ public interface AdminMapper {
     int updateByPrimaryKeySelective(Admin record);
 
     int updateByPrimaryKey(Admin record);
+
+    /**
+     * 关联角色查询全部
+     */
+     List<AdminVo> selectAllVo();
+
+    /**
+     * 关联角色查询单个
+     */
+     AdminVo selectByPrimaryKeyVo(Integer adminId);
 }

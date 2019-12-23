@@ -3,10 +3,12 @@ package com.qf.controller;
 import com.qf.constan.StateCode;
 import com.qf.controller.base.Base;
 import com.qf.entity.BookStates;
+import com.qf.mapper.SystemMapper;
 import com.qf.service.IBookStatesService;
 import com.qf.util.Page;
 import com.qf.util.State;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class BookStatesController extends Base {
     @Autowired
     private IBookStatesService bookStatesService;
+    @Autowired
+    private SystemMapper systemMapper;
 
     @PostMapping("/insertBookStates")
     public State<Object> insertBookStates(BookStates bookStates){
@@ -47,6 +51,9 @@ public class BookStatesController extends Base {
 
     @GetMapping("/selectAllBookStates")//测试可行
     public State<Object> selectAllBookStates(Integer currentPage, Integer pageSize){
+        if (StringUtils.isEmpty(pageSize)) {
+            pageSize = systemMapper.getPageLine();
+        }
         Page<BookStates> bookStatesPage = bookStatesService.selectAllBookStates(currentPage, pageSize);
         if (!bookStatesPage.getList().isEmpty()){
             return packaging(StateCode.SUCCESS,"查询成功",bookStatesPage);

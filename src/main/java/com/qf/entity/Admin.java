@@ -15,6 +15,7 @@ public class Admin {
 
     private Integer isDelete;
 
+
     public Integer getAdminId() {
         return adminId;
     }
@@ -69,5 +70,23 @@ public class Admin {
 
     public void setIsDelete(Integer isDelete) {
         this.isDelete = isDelete;
+    }
+
+    public Admin(Integer adminId, String adminName, String phone, String password, String salt, Integer roleId, Integer isDelete) {
+        this.adminId = adminId;
+        this.adminName = adminName;
+        this.phone = phone;
+        this.password = password;
+        this.salt = salt;
+        this.roleId = roleId;
+        this.isDelete = isDelete;
+    }
+
+    public Admin() {
+    }
+
+    public Admin(Integer adminId, String password) {
+        this.adminId = adminId;
+        this.password = password;
     }
 }
