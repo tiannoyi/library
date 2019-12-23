@@ -1,8 +1,7 @@
 package com.qf.service;
 
 import com.qf.entity.Borrows;
-
-import java.util.List;
+import com.qf.util.Page;
 
 /**
  * @author: JunJie
@@ -38,6 +37,14 @@ public interface IBorrowsService {
     Integer deleteBorrowsByBookStateId(Integer bookStateId);
 
     /**
+     * 根据 borrowId 批量删除
+     *
+     * @param borrowIds
+     * @return
+     */
+    Integer deleteBatchByBorrowId(Integer[] borrowIds);
+
+    /**
      * 通过 borrowId 修改对应的借阅记录
      *
      * @param borrows 需要修改借阅记录的 borrow 对象
@@ -70,18 +77,22 @@ public interface IBorrowsService {
     Borrows selectBorrowsByBookStateId(Integer bookStateId);
 
     /**
-     * 查询全部借阅事件
+     * 查询全部借阅记录
      *
-     * @return 全部借阅记录
+     * @param currentPage
+     * @param pageSize
+     * @return
      */
-    List<Borrows> selectAll();
+    Page<Borrows> selectAllBorrows(Integer currentPage, Integer pageSize);
 
     /**
-     * 查询全部未删除记录
+     * 分页查询所有未删除借阅记录
      *
-     * @return 全部未删除记录
+     * @param currentPage
+     * @param pageSize
+     * @return
      */
-    List<Borrows> selectAllUnDelete();
+    Page<Borrows> selectAllUnDeleteBorrows(Integer currentPage, Integer pageSize);
 
     /**
      * 获取全部未删除借阅记录的数量

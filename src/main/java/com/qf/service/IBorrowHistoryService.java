@@ -1,8 +1,7 @@
 package com.qf.service;
 
 import com.qf.entity.BorrowHistory;
-
-import java.util.List;
+import com.qf.util.Page;
 
 /**
  * @author: JunJie
@@ -45,12 +44,20 @@ public interface IBorrowHistoryService {
     Integer deleteBorrowHistoryByReaderId(Integer readerId);
 
     /**
-     * 通过 borrowHistoryId 更新借阅历史
+     * 通过 HistoryId 批量删除
+     *
+     * @param borrowHistoryIds
+     * @return
+     */
+    Integer deleteBatchByHistoryId(Integer[] borrowHistoryIds);
+
+    /**
+     * 通过 HistoryId 更新借阅历史
      *
      * @param borrowHistory
      * @return
      */
-    Integer updateBorrowHistoryByBorrowHistoryId(BorrowHistory borrowHistory);
+    Integer updateBorrowHistoryByHistoryId(BorrowHistory borrowHistory);
 
     /**
      * 通过读者id 和书本id 更新历史借阅记录
@@ -69,32 +76,45 @@ public interface IBorrowHistoryService {
     BorrowHistory selectBorrowHistoryByHistoryId(Integer historyId);
 
     /**
-     * 通过 readerId 查询出该读者所有的借阅记录
+     * 分页通过 ReaderId 查询出对应所有借阅历史
      *
-     * @param readerId 带有readerId 的读者对象
-     * @return 该 readerId 对应读者所有的借阅记录
-     */
-    List<BorrowHistory> selectBorrowHistoryByReaderId(Integer readerId);
-
-    /**
-     * 查询 bookId 对应书籍所有的被借阅记录
-     *
-     * @param bookId 含 bookId 的 book 对象
-     * @return bookId 的全部借阅记录
-     */
-    List<BorrowHistory> selectBorrowHistoryByBookId(Integer bookId);
-
-    /**
-     * 查询全部未删除的借阅历史记录
-     *
+     * @param readerId
+     * @param currentPage
+     * @param pageSize
      * @return
      */
-    List<BorrowHistory> selectAllBorrowHistory();
-
-
+    Page<BorrowHistory> selectBorrowHistoryByReaderId(Integer readerId, Integer currentPage, Integer pageSize);
 
     /**
-     * 提取全部借阅历史的数量
+     * 分页通过 BookId 查询出所有借阅历史
+     *
+     * @param bookId
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    Page<BorrowHistory> selectBorrowHistoryByBookId(Integer bookId, Integer currentPage, Integer pageSize);
+
+    /**
+     * 查询所有未删除借阅历史
+     *
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    Page<BorrowHistory> selectAllUnDeleteBorrowHistory(Integer currentPage, Integer pageSize);
+
+    /**
+     * 查询所有借阅历史
+     *
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    Page<BorrowHistory> selectAllBorrowHistory(Integer currentPage, Integer pageSize);
+
+    /**
+     * 提取全部未删除借阅历史的数量
      *
      * @return All
      */

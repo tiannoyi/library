@@ -1,10 +1,12 @@
 package com.qf.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.qf.entity.BorrowHistory;
 import com.qf.entity.BorrowHistoryExample;
 import com.qf.mapper.BorrowHistoryMapper;
 import com.qf.service.IBorrowHistoryService;
 import com.qf.util.ChangliangUtil;
+import com.qf.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -19,7 +21,7 @@ import java.util.List;
  * @version: 1.0
  */
 @Service
-public class BorrowsHistoryServiceImpl implements IBorrowHistoryService {
+public class BorrowHistoryServiceImpl implements IBorrowHistoryService {
     @Autowired
     BorrowHistoryMapper borrowHistoryMapper;
 
@@ -27,15 +29,14 @@ public class BorrowsHistoryServiceImpl implements IBorrowHistoryService {
     public Integer insertBorrowHistory(BorrowHistory borrowHistory) {
         if (borrowHistory.getReaderId() != null && borrowHistory.getReaderId() > 0
                 && borrowHistory.getBookId() != null && borrowHistory.getBookId() > 0
-                && StringUtils.isEmpty(borrowHistory.getBorrowTime())
         ) {
-            return borrowHistoryMapper.insert(borrowHistory);
+            return borrowHistoryMapper.insertSelective(borrowHistory);
         }
         return ChangliangUtil.FAIL;
     }
 
     @Override
-    public Integer updateBorrowHistoryByBorrowHistoryId(BorrowHistory borrowHistory) {
+    public Integer updateBorrowHistoryByHistoryId(BorrowHistory borrowHistory) {
         if (borrowHistory.getHistoryId() != null && borrowHistory.getHistoryId() > 0
         ) {
             return borrowHistoryMapper.updateByPrimaryKeySelective(borrowHistory);
@@ -49,9 +50,7 @@ public class BorrowsHistoryServiceImpl implements IBorrowHistoryService {
                 && borrowHistory.getBookId() != null && borrowHistory.getBookId() > 0
         ) {
             BorrowHistoryExample borrowHistoryExample = new BorrowHistoryExample();
-            BorrowHistoryExample.Criteria borrowHistoryExampleCriteria = borrowHistoryExample.createCriteria();
-            borrowHistoryExampleCriteria.andReaderIdEqualTo(borrowHistory.getReaderId());
-            borrowHistoryExampleCriteria.andBookIdEqualTo(borrowHistory.getBookId());
+            borrowHistoryExample.createCriteria().andReaderIdEqualTo(borrowHistory.getReaderId()).andBookIdEqualTo(borrowHistory.getBookId());
             return borrowHistoryMapper.updateByExampleSelective(borrowHistory, borrowHistoryExample);
         }
         return ChangliangUtil.FAIL;
@@ -65,34 +64,46 @@ public class BorrowsHistoryServiceImpl implements IBorrowHistoryService {
         return null;
     }
 
-
-    @Override
-    public List<BorrowHistory> selectBorrowHistoryByReaderId(Integer readerId) {
-        if (readerId != null && readerId > 0) {
-            BorrowHistoryExample borrowHistoryExample = new BorrowHistoryExample();
-            BorrowHistoryExample.Criteria borrowHistoryExampleCriteria = borrowHistoryExample.createCriteria();
-            borrowHistoryExampleCriteria.andReaderIdEqualTo(readerId);
-            borrowHistoryExampleCriteria.andIsDeleteEqualTo(1);
-            List<BorrowHistory> borrowHistories = borrowHistoryMapper.selectByExample(borrowHistoryExample);
-            if (!borrowHistories.isEmpty()) {
-                return borrowHistories;
-            }
+    /**
+     * 抽取的重复方法
+     *
+     * @param currentPage
+     * @param pageSize
+     * @param borrowHistoryExample
+     * @return
+     */
+    private Page<BorrowHistory> getPage(Integer currentPage, Integer pageSize, BorrowHistoryExample borrowHistoryExample) {
+        List<BorrowHistory> borrowHistories = borrowHistoryMapper.selectByExample(borrowHistoryExample);
+        int totalCount = borrowHistoryMapper.countByExample(borrowHistoryExample);
+        if (!borrowHistories.isEmpty()) {
+            Page<BorrowHistory> page = new Page<>(currentPage, pageSize, totalCount);
+            page.setList(borrowHistories);
+            return page;
         }
         return null;
     }
 
 
     @Override
-    public List<BorrowHistory> selectBorrowHistoryByBookId(Integer bookId) {
-        if (bookId != null && bookId > 0) {
+    public Page<BorrowHistory> selectBorrowHistoryByReaderId(Integer readerId, Integer currentPage, Integer pageSize) {
+        if (readerId != null && readerId > 0) {
+            PageHelper.startPage(currentPage, pageSize);
+
             BorrowHistoryExample borrowHistoryExample = new BorrowHistoryExample();
-            BorrowHistoryExample.Criteria borrowHistoryExampleCriteria = borrowHistoryExample.createCriteria();
-            borrowHistoryExampleCriteria.andBookIdEqualTo(bookId);
-            borrowHistoryExampleCriteria.andIsDeleteEqualTo(1);
-            List<BorrowHistory> borrowHistories = borrowHistoryMapper.selectByExample(borrowHistoryExample);
-            if (!borrowHistories.isEmpty()) {
-                return borrowHistories;
-            }
+            borrowHistoryExample.createCriteria().andReaderIdEqualTo(readerId).andIsDeleteEqualTo(1);
+            return getPage(currentPage, pageSize, borrowHistoryExample);
+        }
+        return null;
+    }
+
+
+    @Override
+    public Page<BorrowHistory> selectBorrowHistoryByBookId(Integer bookId, Integer currentPage, Integer pageSize) {
+        if (bookId != null && bookId > 0) {
+            PageHelper.startPage(currentPage, pageSize);
+            BorrowHistoryExample borrowHistoryExample = new BorrowHistoryExample();
+            borrowHistoryExample.createCriteria().andBookIdEqualTo(bookId).andIsDeleteEqualTo(1);
+            return getPage(currentPage, pageSize, borrowHistoryExample);
         }
         return null;
     }
@@ -101,11 +112,10 @@ public class BorrowsHistoryServiceImpl implements IBorrowHistoryService {
     public Integer deleteBorrowHistoryByHistoryId(Integer historyId) {
         if (historyId != null && historyId > 0) {
             BorrowHistoryExample borrowHistoryExample = new BorrowHistoryExample();
-            BorrowHistoryExample.Criteria borrowHistoryExampleCriteria = borrowHistoryExample.createCriteria();
+            borrowHistoryExample.createCriteria().andIsDeleteEqualTo(1).andHistoryIdEqualTo(historyId);
             BorrowHistory borrowHistory = new BorrowHistory();
             borrowHistory.setIsDelete(0);
-            borrowHistory.setHistoryId(historyId);
-            return borrowHistoryMapper.updateByPrimaryKeySelective(borrowHistory);
+            return borrowHistoryMapper.updateByExampleSelective(borrowHistory, borrowHistoryExample);
         }
         return ChangliangUtil.FAIL;
     }
@@ -114,10 +124,9 @@ public class BorrowsHistoryServiceImpl implements IBorrowHistoryService {
     public Integer deleteBorrowHistoryByBookId(Integer bookId) {
         if (bookId != null && bookId > 0) {
             BorrowHistoryExample borrowHistoryExample = new BorrowHistoryExample();
-            BorrowHistoryExample.Criteria borrowHistoryExampleCriteria = borrowHistoryExample.createCriteria();
+            borrowHistoryExample.createCriteria().andIsDeleteEqualTo(1).andBookIdEqualTo(bookId);
             BorrowHistory borrowHistory = new BorrowHistory();
             borrowHistory.setIsDelete(0);
-            borrowHistoryExampleCriteria.andBookIdEqualTo(bookId);
             return borrowHistoryMapper.updateByExampleSelective(borrowHistory, borrowHistoryExample);
         }
         return ChangliangUtil.FAIL;
@@ -128,27 +137,55 @@ public class BorrowsHistoryServiceImpl implements IBorrowHistoryService {
     public Integer deleteBorrowHistoryByReaderId(Integer readerId) {
         if (readerId != null && readerId > 0) {
             BorrowHistoryExample borrowHistoryExample = new BorrowHistoryExample();
-            BorrowHistoryExample.Criteria borrowHistoryExampleCriteria = borrowHistoryExample.createCriteria();
+            borrowHistoryExample.createCriteria().andReaderIdEqualTo(readerId).andIsDeleteEqualTo(1);
             BorrowHistory borrowHistory = new BorrowHistory();
             borrowHistory.setIsDelete(0);
-            borrowHistoryExampleCriteria.andReaderIdEqualTo(readerId);
             return borrowHistoryMapper.updateByExampleSelective(borrowHistory, borrowHistoryExample);
         }
         return ChangliangUtil.FAIL;
     }
 
+    @Override
+    public Integer deleteBatchByHistoryId(Integer[] borrowHistoryIds) {
+        int deleteCount = 0;
+        if (!StringUtils.isEmpty(borrowHistoryIds) && borrowHistoryIds.length > 0) {
+            for (Integer borrowId : borrowHistoryIds) {
+                BorrowHistoryExample borrowHistoryExample = new BorrowHistoryExample();
+                borrowHistoryExample.createCriteria().andIsDeleteEqualTo(1).andBookIdEqualTo(borrowId);
+                BorrowHistory borrowHistory = new BorrowHistory();
+                borrowHistory.setIsDelete(0);
+                if (borrowHistoryMapper.updateByExampleSelective(borrowHistory, borrowHistoryExample) == 1) {
+                    deleteCount++;
+                }
+            }
+        }
+        return deleteCount;
+    }
+
 
     @Override
-    public List<BorrowHistory> selectAllBorrowHistory() {
-        return null;
+    public Page<BorrowHistory> selectAllUnDeleteBorrowHistory(Integer currentPage, Integer pageSize) {
+        PageHelper.startPage(currentPage, pageSize);
+
+        BorrowHistoryExample borrowHistoryExample = new BorrowHistoryExample();
+        borrowHistoryExample.createCriteria().andIsDeleteEqualTo(1);
+        return getPage(currentPage, pageSize, borrowHistoryExample);
+    }
+
+
+    @Override
+    public Page<BorrowHistory> selectAllBorrowHistory(Integer currentPage, Integer pageSize) {
+        PageHelper.startPage(currentPage, pageSize);
+
+        BorrowHistoryExample borrowHistoryExample = new BorrowHistoryExample();
+        return getPage(currentPage, pageSize, borrowHistoryExample);
     }
 
 
     @Override
     public Integer selectCountAllBorrowHistory() {
         BorrowHistoryExample borrowHistoryExample = new BorrowHistoryExample();
-        BorrowHistoryExample.Criteria borrowHistoryExampleCriteria = borrowHistoryExample.createCriteria();
-        borrowHistoryExampleCriteria.andIsDeleteEqualTo(1);
+        borrowHistoryExample.createCriteria().andIsDeleteEqualTo(1);
         return borrowHistoryMapper.countByExample(borrowHistoryExample);
     }
 }
