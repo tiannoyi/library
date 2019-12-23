@@ -1,7 +1,19 @@
 package com.qf.controller;
 
+import com.qf.constan.StateCode;
 import com.qf.controller.base.Base;
-import org.springframework.web.bind.annotation.RestController;
+import com.qf.entity.Admin;
+import com.qf.exception.NotLoginException;
+import com.qf.exception.PassWordErrorException;
+import com.qf.exception.SystemErrorException;
+import com.qf.exception.UserNameExistException;
+import com.qf.service.IAdminService;
+import com.qf.util.Page;
+import org.apache.shiro.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 /**
  * @program: library
@@ -11,5 +23,61 @@ import org.springframework.web.bind.annotation.RestController;
  **/
 @RestController
 public class AdminController extends Base {
+    @Autowired
+    IAdminService as;
+
+    @GetMapping("/admins")
+    public Object selectAll(Integer pageNum,  Integer pageSize) {
+        //System.out.println(SecurityUtils.getSubject().getSession().getId());
+        Page data = as.selectAllVo(pageNum, pageSize);
+        return packaging(StateCode.SUCCESS,"查询成功", data);
+    }
+
+    @GetMapping("/admins/{id}")
+    public Object selectByPrimaryKey(@PathVariable("id") Integer id) {
+        return packaging(StateCode.SUCCESS,"查询成功",as.selectByPrimaryKeyVo(id));
+    }
+
+    @PostMapping("/admins")
+    public Object insert(Admin admin) {
+        try {
+            admin = as.insertAdmin(admin);
+            return packaging(StateCode.SUCCESS,"添加",admin);
+        } catch (UserNameExistException e) {
+            return packaging(StateCode.USERNAMEEXIST,"用户名已经存在", admin);
+        } catch (SystemErrorException e) {
+            return packaging(StateCode.FAIL,"添加失败", admin);
+        }
+    }
+
+    @PutMapping("admins/{id}")
+    public Object update(@PathVariable("id") Integer id,Admin admin) {
+        admin.setAdminId(id);
+        return packaging(StateCode.SUCCESS,"修改成功",as.update(admin));
+    }
+
+    @PutMapping("/admins/update_password")
+    public Object updatePassword(@RequestBody Map<String,String> map) {
+        try {
+            return packaging(StateCode.SUCCESS,"修改密码成功",as.changePassword(map));
+        } catch (NotLoginException e) {
+            return packaging(StateCode.LOGINAGAIN,"请重新登录",null);
+        } catch (PassWordErrorException e) {
+            return packaging(StateCode.PASSWORDMISTAKE,"密码错误",map.get("oldoldPassword"));
+        }
+
+    }
+
+    @DeleteMapping("/admins/{id}")
+    public Object delete(@PathVariable("id") Integer id) {
+        int i = as.deleteAdmin(id);
+        if (i > 0){
+            return packaging(StateCode.SUCCESS,"删除成功",null);
+        } else{
+            return packaging(StateCode.FAIL,"删除失败",null);
+        }
+
+
+    }
 
 }
