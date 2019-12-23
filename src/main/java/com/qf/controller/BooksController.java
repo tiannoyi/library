@@ -1,12 +1,14 @@
 package com.qf.controller;
 
 
+import com.qf.config.ImgesConfig;
 import com.qf.constan.StateCode;
 import com.qf.controller.base.Base;
 import com.qf.entity.Books;
 import com.qf.entity.BooksWithBLOBs;
 import com.qf.mapper.SystemMapper;
 import com.qf.service.IBooksService;
+import com.qf.util.FileUtils;
 import com.qf.util.Page;
 import com.qf.util.State;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,8 @@ public class BooksController extends Base {
     IBooksService booksService;
     @Autowired
     SystemMapper systemMapper;
+    @Autowired
+    ImgesConfig imagePath;
 
     //通过 ISBN 查询对应的书种,已测试
     @GetMapping("/selectBooksByIsbn")
@@ -58,7 +62,7 @@ public class BooksController extends Base {
 
     //添加书本
     @PostMapping("/insertBooks")
-    public State<Object> insertBooks(BooksWithBLOBs booksWithBLOBs){
+    public State<Object> insertBooks(@RequestBody BooksWithBLOBs booksWithBLOBs){
         int i = booksService.insertBooks(booksWithBLOBs);
         if (i != 0){
             return packaging(StateCode.SUCCESS,"插入成功",i);
@@ -66,20 +70,23 @@ public class BooksController extends Base {
             return packaging(StateCode.SUCCESS,"插入失败",null);
         }
     }
-    /*@PostMapping("/insertBooks")
-    public State<Object> insertBooks(BooksWithBLOBs booksWithBLOBs, MultipartFile upload, HttpServletRequest request) throws IOException {
-        //获取文件路径到upload文件夹
-        String path = request.getSession().getServletContext().getRealPath("/upload");
-        File file = new File(path);
-        if (!file.exists()){
-            file.mkdir();
+    @PostMapping("/upload")//上传文件
+    public String upload(@RequestParam("imgPath") MultipartFile upload, HttpServletRequest request) throws IOException {
+        if (upload != null){
+            String path = request.getSession().getServletContext().getRealPath(imagePath.getPath());
+            String filename = FileUtils.upload(upload, path, upload.getOriginalFilename());
+            return filename;
+        }else {
+            return null;
         }
-        String filename = upload.getOriginalFilename();
-        filename = UUID.randomUUID().toString()+"_"+filename;
-        upload.transferTo(new File(filename));
-        String bookName = request.getParameter("bookName");
-        booksWithBLOBs.setBookName(bookName);
-        booksWithBLOBs.setImgPath(filename);
+    }
+   /* @PostMapping("/insertBooks")
+    public State<Object> insertBooks(BooksWithBLOBs booksWithBLOBs,@RequestParam(value="imgPath",required=false)MultipartFile upload, HttpServletRequest request) throws IOException {
+        if (upload != null){
+            String path = request.getSession().getServletContext().getRealPath(imagePath.getPath());
+            String filename = FileUtils.upload(upload, path, upload.getOriginalFilename());
+            booksWithBLOBs.setImgPath(filename);
+        }
         int i = booksService.insertBooks(booksWithBLOBs);
         if (i != 0){
             return packaging(StateCode.SUCCESS,"插入成功",i);
@@ -102,8 +109,22 @@ public class BooksController extends Base {
     }
 
     //通过 id 修改对应的书本信息
-    @GetMapping("/updateBooksById")
+    /*@GetMapping("/updateBooksById")
     public State<Object> updateBooksById(BooksWithBLOBs booksWithBLOBs,Integer bookId){
+        int i = booksService.updateBookById(booksWithBLOBs,bookId);
+        if (i != 0){
+            return packaging(StateCode.SUCCESS,"修改成功",i);
+        } else {
+            return packaging(StateCode.FAIL,"修改失败",null);
+        }
+    }*/
+    @PostMapping("/updateBooksById")
+    public State<Object> updateBooksById(String username,@RequestParam(value="image",required=false)MultipartFile upload, HttpServletRequest request,Integer bookId){
+        String realPath = request.getSession().getServletContext().getRealPath(imagePath.getPath());
+        String upload1 = FileUtils.upload(upload, realPath, upload.getOriginalFilename());
+        BooksWithBLOBs booksWithBLOBs = new BooksWithBLOBs();
+        booksWithBLOBs.setBookName(username);
+        booksWithBLOBs.setImgPath(upload1);
         int i = booksService.updateBookById(booksWithBLOBs,bookId);
         if (i != 0){
             return packaging(StateCode.SUCCESS,"修改成功",i);

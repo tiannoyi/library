@@ -10,240 +10,256 @@
     <link rel="stylesheet" href="./css/admin.css">
     <link rel="stylesheet" href="./css/font-awesome.min.css">
     <script src="./js/JQuery2.1.4.js"></script>
-    <!-- 有需要静态页面代写 或者 设计网站页面的 加 QQ：951252660 -->
     <!-- 富文本编辑器 -->
-    
     <script src="./js/wang.js"></script>
+    <link href="../../asserts/plugins/Bootstrap/css/bootstrap.css" rel="stylesheet">
+    <script src="../../asserts/plugins/Bootstrap/js/bootstrap.js"></script>
+    <link href="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/css/bootstrapValidator.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+    <script src="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.js"></script>
+    <script src="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/js/language/zh_CN.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#submit").click(function () {
+                debugger;
+                /*var books = new Object();
+                books.bookName = $("#bookName").val();
+                books.isbn = $("#isbn").val();
+                books.bookTypeId =$("#bookTypeId").val();
+                books.createTime = $("#createTime").val();
+                books.press = $("#press").val();
+                books.author = $("#author").val();
+                books.number = $("#number").val();
+                books.pageNumber = $("#pageNumber").val();
+                books.publicationTime = $("#publicationTime").val();
+                books.price = $("#price").val();*/
+                var formData = new FormData($("#form")[0]);
+                $.ajax({
+                    url: "/library/books/upload",
+                    contentType: "html/text;charset=UTF-8",
+                    cache:false,
+                    data: formData,
+                    type: "POST",
+                    contentType: false,
+                    processData: false,
+                    success: function (filename) {
+                        $(function () {
+                            msg_data={
+                                bookName : $("#bookName").val(),
+                                isbn : $("#isbn").val(),
+                                bookTypeId :$("#bookTypeId").val(),
+                                createTime : $("#createTime").val(),
+                                press : $("#press").val(),
+                                author : $("#author").val(),
+                                number : $("#number").val(),
+                                pageNumber : $("#pageNumber").val(),
+                                publicationTime : $("#publicationTime").val(),
+                                price : $("#price").val(),
+                                imgPath:filename
+                            },
+                            //books.imgPath = filename;
+                            $.ajax({
+                                url: "/library/books/insertBooks",
+                                //data: books,
+                                data:JSON.stringify(msg_data),
+                                type: "POST",
+                                contentType: "application/json;charset=UTF-8",
+                                success: function (index) {
+                                    console.log(index);
+                                    if (index.data != null || index.data != 0) {
+                                        alert("添加成功");
+                                    } else {
+                                        alert("添加失败");
+                                    }
+                                }
+                            })
+                        })
+                    }
+                });
+            })
+        })
+    </script>
 </head>
 
 <body>
     <div class="rbody" id="app">
         <div class="top">
-            当前位置：后台<i class="fa fa-fw fa-angle-right"></i>创建文档
+            当前位置：后台<i class="fa fa-fw fa-angle-right"></i>书本入馆
         </div>
         <div class="main">
             <div class="tabList">
-                <span class="active">常规内容</span>
-                <span>SEO设置</span>
-                <span>文档内容</span>
+                <span class="active">添加内容</span>
+                <!--<span>SEO设置</span>
+                <span>文档内容</span>-->
             </div>
-            <div class="tbodyList">
-
-                <div class="tabBody tactive">
-                    <!-- <p class="tip mrb10">常规设置</p> -->
-                    <div class="twoBox">
-                        <div class="leftbox">
-                            <div class="ios-form-group">
-                                <div class="ios-title">
-                                    <em class="ios-tip-must">*</em>
-                                    <span class="ios-tip-name">文档标题：</span>
-                                </div>
-                                <div class="ios-input-box">
-                                    <input type="text" class="ios-input" placeholder="请输入">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="rightbox">
-
-                            <div class="ios-form-group">
-                                <div class="ios-title">
-                                    <em class="ios-tip-must"></em>
-                                    <span class="ios-tip-name">简标题：</span>
-                                </div>
-                                <div class="ios-input-box">
-                                    <input type="text" class="ios-input" placeholder="请输入">
+            <form id="form">
+                <div class="tbodyList">
+                    <div class="tabBody tactive">
+                        <!-- <p class="tip mrb10">常规设置</p> -->
+                        <div class="twoBox">
+                            <div class="leftbox">
+                                <div class="ios-form-group">
+                                    <div class="ios-title">
+                                        <em class="ios-tip-must">*</em>
+                                        <span class="ios-tip-name">书本名称：</span>
+                                    </div>
+                                    <div class="ios-input-box">
+                                        <input type="text" class="ios-input" name="book_name" id="bookName" placeholder="请输入">
+                                    </div>
                                 </div>
                             </div>
+                            <div class="rightbox">
 
-
-
-                        </div>
-                    </div>
-
-                    <div class="twoBox">
-                        <div class="leftbox">
-                            <div class="ios-form-group">
-                                <div class="ios-title">
-                                    <em class="ios-tip-must">*</em>
-                                    <span class="ios-tip-name">所属栏目：</span>
+                                <div class="ios-form-group">
+                                    <div class="ios-title">
+                                        <em class="ios-tip-must"></em>
+                                        <span class="ios-tip-name">ISBN：</span>
+                                    </div>
+                                    <div class="ios-input-box">
+                                        <input type="text" class="ios-input" name="ISBN" id="isbn" placeholder="请输入">
+                                    </div>
                                 </div>
-                                <div class="ios-select-box">
-                                    <select class="ios-select">
-                                        <option value="">请选择</option>
-                                    </select>
-                                </div>
+
+
+
                             </div>
                         </div>
 
-                        <div class="rightbox">
-                            <div class="ios-form-group">
-                                <div class="ios-title">
-                                    <em class="ios-tip-must"></em>
-                                    <span class="ios-tip-name">发布时间：</span>
-                                </div>
-                                <div class="ios-input-box">
-                                    <input type="text" class="ios-input" placeholder="请输入">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- 结束符 -->
-                    <div class="twoBox">
-                        <div class="leftbox">
-                            <div class="ios-form-group">
-                                <div class="ios-title">
-                                    <em class="ios-tip-must"></em>
-                                    <span class="ios-tip-name">文档来源：</span>
-                                </div>
-                                <div class="ios-input-box">
-                                    <input type="text" class="ios-input" placeholder="请输入">
+                        <div class="twoBox">
+                            <div class="leftbox">
+                                <div class="ios-form-group">
+                                    <div class="ios-title">
+                                        <em class="ios-tip-must">*</em>
+                                        <span class="ios-tip-name">所属类别：</span>
+                                    </div>
+                                    <div class="ios-input-box">
+                                        <!--<select class="ios-select" name="book_type_id">
+                                            <option value="">请选择</option>
+                                        </select>-->
+                                        <input type="text" class="ios-input" name="book_type_id" id="bookTypeId" placeholder="请输入">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="rightbox">
-                            <div class="ios-form-group">
-                                <div class="ios-title">
-                                    <em class="ios-tip-must"></em>
-                                    <span class="ios-tip-name">文档作者：</span>
-                                </div>
-                                <div class="ios-input-box">
-                                    <input type="text" class="ios-input" placeholder="请输入">
+                            <div class="rightbox">
+                                <div class="ios-form-group">
+                                    <div class="ios-title">
+                                        <em class="ios-tip-must"></em>
+                                        <span class="ios-tip-name">入馆日期：</span>
+                                    </div>
+                                    <div class="ios-input-box">
+                                        <input type="text" class="ios-input" name="create_time" id="createTime" placeholder="请输入">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- 结束符 -->
-                    <div class="twoBox">
-                        <div class="leftbox">
-                            <div class="ios-form-group">
-                                <div class="ios-title">
-                                    <em class="ios-tip-must"></em>
-                                    <span class="ios-tip-name">点击次数(即阅读量)：</span>
+                        <!-- 结束符 -->
+                        <div class="twoBox">
+                            <div class="leftbox">
+                                <div class="ios-form-group">
+                                    <div class="ios-title">
+                                        <em class="ios-tip-must"></em>
+                                        <span class="ios-tip-name">出版社：</span>
+                                    </div>
+                                    <div class="ios-input-box">
+                                        <input type="text" class="ios-input" name="press" id="press" placeholder="请输入">
+                                    </div>
                                 </div>
-                                <div class="ios-input-box">
-                                    <input type="text" class="ios-input" placeholder="请输入">
+                            </div>
+
+                            <div class="rightbox">
+                                <div class="ios-form-group">
+                                    <div class="ios-title">
+                                        <em class="ios-tip-must"></em>
+                                        <span class="ios-tip-name">书本作者：</span>
+                                    </div>
+                                    <div class="ios-input-box">
+                                        <input type="text" class="ios-input" name="author" id="author" placeholder="请输入">
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="rightbox">
-                            <div class="ios-form-group">
-                                <div class="ios-title">
-                                    <em class="ios-tip-must"></em>
-                                    <span class="ios-tip-name">其他信息：</span>
-                                </div>
-                                <div class="ios-input-box">
-                                    <input type="text" class="ios-input" placeholder="请输入">
+                        <!-- 结束符 -->
+                        <div class="twoBox">
+                            <div class="leftbox">
+                                <div class="ios-form-group">
+                                    <div class="ios-title">
+                                        <em class="ios-tip-must"></em>
+                                        <span class="ios-tip-name">入馆册数：</span>
+                                    </div>
+                                    <div class="ios-input-box">
+                                        <input type="text" class="ios-input" name="number" id="number" placeholder="请输入">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- 结束符 -->
-                    <div class="twoBox">
-                        <div class="leftbox">
-                            <div class="ios-form-group">
-                                <div class="ios-title">
-                                    <em class="ios-tip-must">*</em>
-                                    <span class="ios-tip-name">审核状态：</span>
-                                </div>
-                                <div class="ios-radio-box">
-                                    <label class="ios-radio-box-label">
-                                        <input type="radio" name="radio" class="ios-radio">
-                                        <span class="ios-radio-span">直接发布</span>
-                                    </label>
-                                    <label class="ios-radio-box-label">
-                                        <input type="radio" name="radio" class="ios-radio">
-                                        <span class="ios-radio-span">待审核</span>
-                                    </label>
+                            <div class="rightbox">
+                                <div class="ios-form-group">
+                                    <div class="ios-title">
+                                        <em class="ios-tip-must"></em>
+                                        <span class="ios-tip-name">图书页数：</span>
+                                    </div>
+                                    <div class="ios-input-box">
+                                        <input type="text" class="ios-input" name="page_number" id="pageNumber" placeholder="请输入">
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="rightbox">
-                            <div class="ios-form-group">
-                                <div class="ios-title">
-                                    <em class="ios-tip-must">*</em>
-                                    <span class="ios-tip-name">展示模式：</span>
+                        <!-- 结束符 -->
+                        <div class="twoBox">
+                            <div class="leftbox">
+                                <div class="ios-form-group">
+                                    <div class="ios-title">
+                                        <em class="ios-tip-must"></em>
+                                        <span class="ios-tip-name">出版日期：</span>
+                                    </div>
+                                    <div class="ios-input-box">
+                                        <input type="text" class="ios-input" name="publication_time" id="publicationTime" placeholder="请输入">
+                                    </div>
                                 </div>
-                                <div class="ios-checkbox-box">
-                                    <label class="ios-checkbox-box-label">
-                                        <input type="checkbox" name="checkbox" class="ios-checkbox">
-                                        <span class="ios-checkbox-span">首页</span>
-                                    </label>
-                                    <label class="ios-checkbox-box-label">
-                                        <input type="checkbox" name="checkbox" class="ios-checkbox">
-                                        <span class="ios-checkbox-span">头条</span>
-                                    </label>
+                            </div>
 
-                                    <label class="ios-checkbox-box-label">
-                                        <input type="checkbox" name="checkbox" class="ios-checkbox">
-                                        <span class="ios-checkbox-span">热门</span>
-                                    </label>
+                            <div class="rightbox">
+                                <div class="ios-form-group">
+                                    <div class="ios-title">
+                                        <em class="ios-tip-must"></em>
+                                        <span class="ios-tip-name">价格:</span>
+                                    </div>
+                                    <div class="ios-input-box">
+                                        <input type="text" class="ios-input" name="introduction" id="price" placeholder="请输入">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                                    <label class="ios-checkbox-box-label">
-                                        <input type="checkbox" name="checkbox" class="ios-checkbox">
-                                        <span class="ios-checkbox-span">推荐</span>
+                        <div class="ios-form-group">
+                            <div class="ios-title">
+                                <em class="ios-tip-must">*</em>
+                                <span class="ios-tip-name">封面图片：</span>
+                            </div>
+                            <div class="ios-upload-box">
+                                <div class="ios-upload-btn">
+                                    <label class="ios-upload-label">
+                                        <input type="file" name="imgPath" id="imgPath">
+                                        <span> <i class="fa fa-fw fa-upload"></i> 上传图片</span>
                                     </label>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="ios-form-group">
-                        <div class="ios-title">
-                            <em class="ios-tip-must">*</em>
-                            <span class="ios-tip-name">封面图片：</span>
-                        </div>
-                        <div class="ios-upload-box">
-                            <div class="ios-upload-btn">
-                                <label class="ios-upload-label">
-                                    <input type="file">
-                                    <span> <i class="fa fa-fw fa-upload"></i> 上传图片</span>
-                                </label>
-                            </div>
-                            <div class="ios-upload-show">
-                                <div class="ios-upload-show-image">
-                                    <p>暂未上传图片</p>
-                                </div>
-                            </div>
+                    <div class="tabBody">
+                        <div class="textareaBox mrb10" id="createColumnBody">
                         </div>
                     </div>
                 </div>
-
-                <div class="tabBody">
-                    <div class="ios-form-group mrb10">
-                        <div class="ios-title">
-                            <em class="ios-tip-must">*</em>
-                            <span class="ios-tip-name">SEO关键词：</span>
-                        </div>
-                        <div class="ios-input-box">
-                            <input type="text" class="ios-input" placeholder="请输入">
-                        </div>
-                    </div>
-
-                    <div class="ios-form-group mrb10">
-                        <div class="ios-title">
-                            <em class="ios-tip-must">*</em>
-                            <span class="ios-tip-name">SEO摘要</span>
-                        </div>
-                        <div class="ios-textarea-box">
-                            <textarea class="ios-textarea"></textarea>
-                        </div>
-                    </div>
-
+                <div>
+                    <!--<span class="ios-button ios-button-blue ios-button-2x">保存发布</span>-->
+                    <input type="button" class="ios-button ios-button-blue ios-button-2x" id="submit" value="确认添加">
                 </div>
-
-                <div class="tabBody">
-                    <div class="textareaBox mrb10" id="createColumnBody">
-                    </div>
-                </div>
-            </div>
-            <div>
-                <span class="ios-button ios-button-blue ios-button-2x">保存发布</span>
-            </div>
+            </form>
         </div>
     </div>
     <script src="./js/common.js"></script>

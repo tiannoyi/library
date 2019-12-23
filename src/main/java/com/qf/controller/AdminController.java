@@ -76,8 +76,5 @@ public class AdminController extends Base {
         } else{
             return packaging(StateCode.FAIL,"删除失败",null);
         }
-
-
     }
-
 }
