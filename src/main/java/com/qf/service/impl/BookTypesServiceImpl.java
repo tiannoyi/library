@@ -1,12 +1,13 @@
 package com.qf.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.qf.entity.BookTypes;
-import com.qf.entity.BookTypesExample;
-import com.qf.entity.Books;
+import com.qf.entity.*;
+import com.qf.entity.vo.BookTypesVo;
 import com.qf.mapper.BookTypesMapper;
+import com.qf.mapper.BooksMapper;
 import com.qf.service.IBookTypesService;
 import com.qf.util.Page;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,8 @@ import java.util.List;
 public class BookTypesServiceImpl implements IBookTypesService {
     @Autowired
     private BookTypesMapper bookTypesMapper;
+    @Autowired
+    private BooksMapper booksMapper;
 
     //添加已测试
     @Override
@@ -53,5 +56,29 @@ public class BookTypesServiceImpl implements IBookTypesService {
         Page<BookTypes> bookTypesPage = new Page<>(currentPage, pageSize, count);
         bookTypesPage.setList(bookTypes);
         return bookTypesPage;
+    }
+
+    //一对多,通过类目ID 查询对应的书本信息
+    @Override
+    public Page<Books> selectBooksByBookTypesId(Integer currentPage, Integer pageSize, Integer bookTypeId) {
+        PageHelper.startPage(currentPage,pageSize);
+        BookTypesVo bookTypesVo = new BookTypesVo();
+        BookTypes bookTypes = bookTypesMapper.selectByPrimaryKey(bookTypeId);
+        BeanUtils.copyProperties(bookTypes,bookTypesVo);
+        BooksExample booksExample = new BooksExample();
+        BooksExample.Criteria criteria = booksExample.createCriteria();
+        criteria.andBookTypeIdEqualTo(bookTypes.getBookTypeId());
+        criteria.andIsDeleteEqualTo(1);
+        List<Books> booksList = booksMapper.selectByExample(booksExample);
+        //遍历获取到的书本信息集合
+        for (Books books: booksList){
+            //通过对应的书本ID 查到对应的对象
+            BooksWithBLOBs bs = booksMapper.selectByPrimaryKey(books.getBookId());
+            bookTypesVo.getBooks().add(bs);
+        }
+        int count = booksMapper.countByExample(booksExample);
+        Page<Books> booksPage = new Page<>(currentPage, pageSize, count);
+        booksPage.setList(bookTypesVo.getBooks());
+        return booksPage;
     }
 }
