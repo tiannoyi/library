@@ -43,6 +43,6 @@ public class BookTypesServiceImplTest {
 
     @Test
     public void select1(){
-
+        System.out.println(bookTypesService.selectBooksByBookTypesId(1,2,1));
     }
 }
