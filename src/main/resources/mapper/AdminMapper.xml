@@ -240,4 +240,29 @@
       is_delete = #{isDelete,jdbcType=INTEGER}
     where admin_id = #{adminId,jdbcType=INTEGER}
   </update>
+
+  <resultMap id="AdminVo" type="com.qf.entity.vo.AdminVo">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="admin_id" jdbcType="INTEGER" property="adminId"/>
+    <result column="admin_name" jdbcType="VARCHAR" property="adminName"/>
+    <result column="phone" jdbcType="VARCHAR" property="phone"/>
+    <result column="password" jdbcType="VARCHAR" property="password"/>
+    <result column="salt" jdbcType="VARCHAR" property="salt"/>
+    <association property="role" javaType="com.qf.entity.Roles">
+      <id column="role_id" jdbcType="INTEGER" property="roleId"/>
+      <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+      <result column="state" jdbcType="TINYINT" property="state"/>
+      <result column="permissions_str" jdbcType="VARCHAR" property="permissionsStr"/>
+    </association>
+  </resultMap>
+
+  <select id="selectAllVo" resultMap="AdminVo">
+        select admin_id,admin_name,phone,r.role_id,r.role_name,r.state from tbl_admins a inner join tbl_roles r ON a.role_id =  r.role_id where a.is_delete = 1
+    </select>
+
+  <select id="selectByPrimaryKeyVo" resultMap="AdminVo" parameterType="java.lang.Integer">
+        select admin_id,admin_name,phone,r.role_id,r.role_name,r.state from tbl_admins a inner join tbl_roles r ON a.role_id =  r.role_id where a.admin_id=#{adminId} and a.is_delete = 1
+    </select>
 </mapper>
