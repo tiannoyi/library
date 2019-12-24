@@ -4,6 +4,8 @@ import com.qf.entity.Roles;
 import com.qf.entity.vo.RolesVo;
 import com.qf.util.Page;
 
+import java.util.List;
+
 /**
  * @program: library
  * @description:
@@ -13,6 +15,8 @@ import com.qf.util.Page;
 public interface IRoleService {
     //查询所有角色
     Page<Roles> selectAll(Integer currentPage,Integer pageSize);
+
+    List<Roles> selectAlls();
 
     //查询单个增强角色
     RolesVo selectByPrimaryKeyVo(Integer roleId);

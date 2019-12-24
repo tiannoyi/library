@@ -24,8 +24,13 @@ public class RoleController extends Base {
 
     //查询所有角色
     @GetMapping("/roles")
-    public State<Object> selectAll(Integer pageNum, Integer pageSize){
-        return packaging(StateCode.SUCCESS,"查询成功",roleService.selectAll(pageNum, pageSize));
+    public State<Object> selectAll(Integer currentPage, Integer pageSize){
+        return packaging(StateCode.SUCCESS,"查询成功",roleService.selectAll(currentPage, pageSize));
+    }
+
+    @GetMapping("/rolesAll")
+    public Object selectAlls(){
+        return packaging(StateCode.SUCCESS,"查询成功",roleService.selectAlls());
     }
 
     //查询指定id的角色
@@ -68,6 +73,18 @@ public class RoleController extends Base {
             return packaging(StateCode.SUCCESS,"删除成功",roleId);
         }
         return packaging(StateCode.FAIL,"删除失败",roleId);
+    }
+
+    @DeleteMapping("/roles/ids/{roleIds}")
+    public Object deleteRoles(@PathVariable String roleIds){
+        if(StringUtils.isEmpty(roleIds)){
+            return packaging(StateCode.FAIL,"删除失败",null);
+        }
+        String[] split = roleIds.split(",");
+        for (int i = 0; i < split.length; i++) {
+            roleService.deleteRole(Integer.parseInt(split[i]));
+        }
+        return packaging(StateCode.SUCCESS,"删除成功",roleIds);
     }
 
 }

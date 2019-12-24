@@ -1,9 +1,7 @@
 package com.qf.service;
 
 import com.qf.entity.Borrows;
-
-import java.net.Inet4Address;
-import java.util.List;
+import com.qf.util.Page;
 
 /**
  * @author: JunJie
@@ -33,18 +31,34 @@ public interface IBorrowsService {
     /**
      * 传入 bookStateId 删除该在馆id的借阅情况
      *
-     * @param bookStateId
-     * @return
+     * @param bookStateId 在馆 id
+     * @return 1/0
      */
     Integer deleteBorrowsByBookStateId(Integer bookStateId);
 
     /**
-     * 通过 borrow 对象修改对应的借阅记录
+     * 根据 borrowId 批量删除
+     *
+     * @param borrowIds
+     * @return
+     */
+    Integer deleteBatchByBorrowId(Integer[] borrowIds);
+
+    /**
+     * 通过 borrowId 修改对应的借阅记录
      *
      * @param borrows 需要修改借阅记录的 borrow 对象
      * @return 修改结果 （1成功 0失败
      */
-    Integer updateBorrows(Borrows borrows);
+    Integer updateBorrowsByBorrowId(Borrows borrows);
+
+    /**
+     * 通过 bookStateId 修改对应的借阅记录
+     *
+     * @param borrows 包含数据的对象
+     * @return 修改结果
+     */
+    Integer updateBorrowsByBookStateId(Borrows borrows);
 
     /**
      * 根据对应的 borrow_id 查询对应的借阅记录
@@ -63,17 +77,29 @@ public interface IBorrowsService {
     Borrows selectBorrowsByBookStateId(Integer bookStateId);
 
     /**
-     * 查询全部借阅事件
+     * 查询全部借阅记录
      *
-     * @return 全部借阅记录
+     * @param currentPage
+     * @param pageSize
+     * @return
      */
-    List<Borrows> selectAll();
+    Page<Borrows> selectAllBorrows(Integer currentPage, Integer pageSize);
 
     /**
-     * 获取全部借阅记录的数量
+     * 分页查询所有未删除借阅记录
+     *
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    Page<Borrows> selectAllUnDeleteBorrows(Integer currentPage, Integer pageSize);
+
+    /**
+     * 获取全部未删除借阅记录的数量
      *
      * @return All
      */
-    Integer selectCountAllBorrows();
+    Integer selectCountAllUnDeleteBorrows();
+
 
 }

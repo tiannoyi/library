@@ -65,26 +65,19 @@ public class Borrows {
     }
 
     /**
-     * 无 borrowId 构造
-     *
-     * @param borrowTime
-     * @param repayTime
+     * 无 borrowId, isDelete, Time 类构造
      * @param renew
      * @param overdue
      * @param readerId
      * @param bookStateId
      * @param fine
-     * @param isDelete
      */
-    public Borrows(Date borrowTime, Date repayTime, Byte renew, Byte overdue, Integer readerId, Integer bookStateId, Float fine, Integer isDelete) {
-        this.borrowTime = borrowTime;
-        this.repayTime = repayTime;
+    public Borrows(Byte renew, Byte overdue, Integer readerId, Integer bookStateId, Float fine) {
         this.renew = renew;
         this.overdue = overdue;
         this.readerId = readerId;
         this.bookStateId = bookStateId;
         this.fine = fine;
-        this.isDelete = isDelete;
     }
 
     /**
