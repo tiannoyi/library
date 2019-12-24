@@ -30,4 +30,7 @@ public interface SystemMapper {
 
     //查询每页显示行数
     int getPageLine();
+
+    //查询罚款金额
+    int getFine();
 }

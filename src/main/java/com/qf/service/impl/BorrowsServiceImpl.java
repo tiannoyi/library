@@ -1,13 +1,15 @@
 package com.qf.service.impl;
 
-import com.qf.entity.BorrowHistoryExample;
+import com.github.pagehelper.PageHelper;
 import com.qf.entity.Borrows;
 import com.qf.entity.BorrowsExample;
 import com.qf.mapper.BorrowsMapper;
 import com.qf.service.IBorrowsService;
 import com.qf.util.ChangliangUtil;
+import com.qf.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -25,14 +27,15 @@ public class BorrowsServiceImpl implements IBorrowsService {
 
 
     /**
-     * 插入新的查询记录
+     * 插入新的借阅记录
      *
      * @param borrows 带有数据的 borrows 对象
      * @return 影响行数
      */
     @Override
     public Integer insertBorrows(Borrows borrows) {
-        if (borrows.getReaderId() != null && borrows.getReaderId() > 0 && borrows.getBookStateId() != null && borrows.getBookStateId() > 0) {
+        if (borrows.getReaderId() != null && borrows.getReaderId() > 0
+                && borrows.getBookStateId() != null && borrows.getBookStateId() > 0) {
             return borrowsMapper.insertSelective(borrows);
         }
         return ChangliangUtil.FAIL;
@@ -40,46 +43,62 @@ public class BorrowsServiceImpl implements IBorrowsService {
 
     @Override
     public Integer deleteBorrowsByBorrowId(Integer borrowsId) {
-        return getDeleteResult(borrowsId);
-    }
-
-    @Override
-    public Integer deleteBorrowsByBookStateId(Integer bookStateId) {
-        return getDeleteResult(bookStateId);
-    }
-
-    /**
-     * 抽取的生成对象方法，有点多余
-     *
-     * @return
-     */
-    private BorrowsExample getBorrowsExample() {
-        return new BorrowsExample();
-    }
-
-    /**
-     * 抽取的根据 Id 删除对应记录方法
-     *
-     * @param deleteId
-     * @return 删除结果
-     */
-    private Integer getDeleteResult(Integer deleteId) {
-        BorrowsExample borrowsExample = getBorrowsExample();
-        BorrowsExample.Criteria borrowsExampleCriteria = borrowsExample.createCriteria();
-        if (deleteId != null && deleteId > 0) {
+        if (borrowsId != null && borrowsId > 0) {
+            BorrowsExample borrowsExample = new BorrowsExample();
+            borrowsExample.createCriteria().andBorrowIdEqualTo(borrowsId).andIsDeleteEqualTo(1);
             Borrows borrows = new Borrows();
-            borrowsExampleCriteria.andBorrowIdEqualTo(deleteId);
             borrows.setIsDelete(0);
-            return borrowsMapper.updateByExample(borrows, borrowsExample);
+            return borrowsMapper.updateByExampleSelective(borrows, borrowsExample);
         }
         return ChangliangUtil.FAIL;
     }
 
+    @Override
+    public Integer deleteBorrowsByBookStateId(Integer bookStateId) {
+        if (bookStateId != null && bookStateId > 0) {
+            BorrowsExample borrowsExample = new BorrowsExample();
+            borrowsExample.createCriteria().andBookStateIdEqualTo(bookStateId).andIsDeleteEqualTo(1);
+            Borrows borrows = new Borrows();
+            borrows.setIsDelete(0);
+            return borrowsMapper.updateByExampleSelective(borrows, borrowsExample);
+        }
+        return ChangliangUtil.FAIL;
+    }
 
     @Override
-    public Integer updateBorrows(Borrows borrows) {
+    public Integer deleteBatchByBorrowId(Integer[] borrowIds) {
+        int deleteCount = 0;
+        if (!StringUtils.isEmpty(borrowIds) && borrowIds.length>0) {
+            for (Integer borrowId : borrowIds) {
+                BorrowsExample borrowsExample = new BorrowsExample();
+                borrowsExample.createCriteria().andIsDeleteEqualTo(1).andBorrowIdEqualTo(borrowId);
+                Borrows borrows = new Borrows();
+                borrows.setIsDelete(0);
+                if (borrowsMapper.updateByExampleSelective(borrows, borrowsExample) == 1) {
+                    deleteCount++;
+                }
+            }
+        }
+        return deleteCount;
+    }
+
+
+    @Override
+    public Integer updateBorrowsByBorrowId(Borrows borrows) {
         if (borrows.getBorrowId() != null && borrows.getBorrowId() > 0) {
-            return borrowsMapper.updateByPrimaryKey(borrows);
+            BorrowsExample borrowsExample = new BorrowsExample();
+            borrowsExample.createCriteria().andBorrowIdEqualTo(borrows.getBorrowId());
+            return borrowsMapper.updateByExampleSelective(borrows, borrowsExample);
+        }
+        return ChangliangUtil.FAIL;
+    }
+
+    @Override
+    public Integer updateBorrowsByBookStateId(Borrows borrows) {
+        if (borrows.getBookStateId() != null && borrows.getBookStateId() > 0) {
+            BorrowsExample borrowsExample = new BorrowsExample();
+            borrowsExample.createCriteria().andBookStateIdEqualTo(borrows.getBookStateId());
+            return borrowsMapper.updateByExampleSelective(borrows, borrowsExample);
         }
         return ChangliangUtil.FAIL;
     }
@@ -93,28 +112,22 @@ public class BorrowsServiceImpl implements IBorrowsService {
      */
     @Override
     public Borrows selectBorrowsByBorrowId(Integer borrowId) {
-        return getBorrows(borrowId);
+        if (borrowId != null && borrowId > 0) {
+            Borrows borrows = borrowsMapper.selectByPrimaryKey(borrowId);
+            return borrows;
+        }
+        return null;
     }
 
     @Override
     public Borrows selectBorrowsByBookStateId(Integer bookStateId) {
-        return getBorrows(bookStateId);
-    }
-
-    /**
-     * 抽取的根据 Id 查询单个借阅记录
-     *
-     * @param selectId
-     * @return
-     */
-    private Borrows getBorrows(Integer selectId) {
-        BorrowsExample borrowsExample = getBorrowsExample();
-        BorrowsExample.Criteria borrowsExampleCriteria = borrowsExample.createCriteria();
-        if (selectId != null && selectId > 0) {
-            borrowsExampleCriteria.andBorrowIdEqualTo(selectId);
-            borrowsExampleCriteria.andIsDeleteEqualTo(1);
+        if (bookStateId != null && bookStateId > 0) {
+            BorrowsExample borrowsExample = new BorrowsExample();
+            borrowsExample.createCriteria().andBookStateIdEqualTo(bookStateId).andIsDeleteEqualTo(1);
             List<Borrows> borrowsList = borrowsMapper.selectByExample(borrowsExample);
-            return borrowsList.get(0);
+            if (!borrowsList.isEmpty()) {
+                return borrowsList.get(0);
+            }
         }
         return null;
     }
@@ -126,23 +139,43 @@ public class BorrowsServiceImpl implements IBorrowsService {
      * @return 全部记录的list
      */
     @Override
-    public List<Borrows> selectAll() {
-        BorrowsExample borrowsExample = getBorrowsExample();
-        BorrowsExample.Criteria borrowsExampleCriteria = borrowsExample.createCriteria();
-        borrowsExampleCriteria.andIsDeleteEqualTo(1);
-        return borrowsMapper.selectByExample(borrowsExample);
+    public Page<Borrows> selectAllBorrows(Integer currentPage, Integer pageSize) {
+        PageHelper.startPage(currentPage, pageSize);
+
+        BorrowsExample borrowsExample = new BorrowsExample();
+        List<Borrows> borrowsList = borrowsMapper.selectByExample(borrowsExample);
+        int totalCount = borrowsMapper.countByExample(borrowsExample);
+
+        Page<Borrows> page = new Page<>(currentPage, pageSize, totalCount);
+        page.setList(borrowsList);
+        return page;
+    }
+
+    @Override
+    public Page<Borrows> selectAllUnDeleteBorrows(Integer currentPage, Integer pageSize) {
+        PageHelper.startPage(currentPage, pageSize);
+
+        BorrowsExample borrowsExample = new BorrowsExample();
+        borrowsExample.createCriteria().andIsDeleteEqualTo(1);
+        List<Borrows> borrowsList = borrowsMapper.selectByExample(borrowsExample);
+
+        int totalCount = borrowsMapper.countByExample(borrowsExample);
+
+        Page<Borrows> page = new Page<>(currentPage, pageSize, totalCount);
+        page.setList(borrowsList);
+
+        return page;
     }
 
     /**
      * 全部未删除的借阅记录数量
      *
-     * @return
+     * @return 数量
      */
     @Override
-    public Integer selectCountAllBorrows() {
-        BorrowsExample borrowsExample = getBorrowsExample();
-        BorrowsExample.Criteria borrowsExampleCriteria = borrowsExample.createCriteria();
-        borrowsExampleCriteria.andIsDeleteEqualTo(1);
+    public Integer selectCountAllUnDeleteBorrows() {
+        BorrowsExample borrowsExample = new BorrowsExample();
+        borrowsExample.createCriteria().andIsDeleteEqualTo(1);
         return borrowsMapper.countByExample(borrowsExample);
     }
 
