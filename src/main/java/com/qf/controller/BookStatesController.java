@@ -51,9 +51,6 @@ public class BookStatesController extends Base {
 
     @GetMapping("/selectAllBookStates")//测试可行
     public State<Object> selectAllBookStates(Integer currentPage, Integer pageSize){
-        if (StringUtils.isEmpty(pageSize)) {
-            pageSize = systemMapper.getPageLine();
-        }
         Page<BookStates> bookStatesPage = bookStatesService.selectAllBookStates(currentPage, pageSize);
         if (!bookStatesPage.getList().isEmpty()){
             return packaging(StateCode.SUCCESS,"查询成功",bookStatesPage);

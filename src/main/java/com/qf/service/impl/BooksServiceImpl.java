@@ -7,7 +7,9 @@ import com.github.pagehelper.PageInfo;
 import com.qf.entity.Books;
 import com.qf.entity.BooksExample;
 import com.qf.entity.BooksWithBLOBs;
+import com.qf.entity.vo.BooksVo;
 import com.qf.mapper.BooksMapper;
+import com.qf.mapper.SystemMapper;
 import com.qf.service.IBooksService;
 import com.qf.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +22,19 @@ import java.util.List;
 public class BooksServiceImpl implements IBooksService {
     @Autowired
     BooksMapper booksMapper;
+    @Autowired
+    SystemMapper systemMapper;
+
 
     //通过ISBN查询对应的书,已测试
     @Override
     public Page<Books> selectBookByIsbn(String Isbn,Integer currentPage, Integer pageSize) {
+        if(pageSize == null){
+            pageSize = systemMapper.getPageLine();
+        }
+        if (currentPage == null){
+            currentPage = 1;
+        }
         PageHelper.startPage(currentPage,pageSize);
         BooksExample booksExample = new BooksExample();
         BooksExample.Criteria criteria = booksExample.createCriteria();
@@ -57,6 +68,12 @@ public class BooksServiceImpl implements IBooksService {
     //通过部分条件查询对应的书籍信息
     @Override
     public Page<Books> selectBooksByCondition(Books books,Integer currentPage, Integer pageSize) {
+        if(pageSize == null){
+            pageSize = systemMapper.getPageLine();
+        }
+        if (currentPage == null){
+            currentPage = 1;
+        }
         PageHelper.startPage(currentPage,pageSize);
         BooksExample example = new BooksExample();
         BooksExample.Criteria criteria = example.createCriteria();
@@ -126,6 +143,12 @@ public class BooksServiceImpl implements IBooksService {
     //分页查询所有书本信息
     @Override
     public Page<Books> selectAllBooks(Integer currentPage, Integer pageSize) {
+        if(pageSize == null){
+            pageSize = systemMapper.getPageLine();
+        }
+        if (currentPage == null){
+            currentPage = 1;
+        }
         PageHelper.startPage(currentPage,pageSize);
         BooksExample booksExample = new BooksExample();
         booksExample.createCriteria().andIsDeleteEqualTo(1);
@@ -133,6 +156,20 @@ public class BooksServiceImpl implements IBooksService {
         int totalNum = booksMapper.countByExample(booksExample);
         Page<Books> page = new Page<>(currentPage,pageSize,totalNum);
         page.setList(books);
+        return page;
+    }
+
+    @Override
+    public Page<BooksVo> selectAllVo(Integer currentPage, Integer pageSize) {
+        if(pageSize == null)
+            pageSize = systemMapper.getPageLine();
+        if (currentPage == null)
+            currentPage = 1;
+        PageHelper.startPage(currentPage,pageSize);
+        List<BooksVo> booksVos = booksMapper.selectAllVo();
+        Integer count = booksVos.size();
+        Page<BooksVo> page = new Page<>(currentPage, pageSize, count);
+        page.setList(booksVos);
         return page;
     }
 

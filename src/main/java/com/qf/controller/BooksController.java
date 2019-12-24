@@ -6,6 +6,7 @@ import com.qf.constan.StateCode;
 import com.qf.controller.base.Base;
 import com.qf.entity.Books;
 import com.qf.entity.BooksWithBLOBs;
+import com.qf.entity.vo.BooksVo;
 import com.qf.mapper.SystemMapper;
 import com.qf.service.IBooksService;
 import com.qf.util.FileUtils;
@@ -28,16 +29,11 @@ public class BooksController extends Base {
     @Autowired
     IBooksService booksService;
     @Autowired
-    SystemMapper systemMapper;
-    @Autowired
     ImgesConfig imagePath;
 
     //通过 ISBN 查询对应的书种,已测试
     @GetMapping("/selectBooksByIsbn")
     public State<Object> selectBooksByIsbn(String Isbn,Integer currentPage, Integer pageSize){
-        if (StringUtils.isEmpty(pageSize)) {
-            pageSize = systemMapper.getPageLine();
-        }
         Page<Books> booksPage = booksService.selectBookByIsbn(Isbn, currentPage,pageSize);
         if (booksPage.getList() == null){
             return packaging(StateCode.FAIL,"查询失败",null);
@@ -49,15 +45,18 @@ public class BooksController extends Base {
     //多条件查询,已测试
     @GetMapping("/selectBooksByCondition")
     public State<Object> selectBooksByCondition(Books books,Integer currentPage, Integer pageSize){
-        if (StringUtils.isEmpty(pageSize)) {
-            pageSize = systemMapper.getPageLine();
-        }
         Page<Books> page = booksService.selectBooksByCondition(books, currentPage, pageSize);
         if (page.getList() == null){
             return packaging(StateCode.FAIL,"查询失败",null);
         }else {
             return packaging(StateCode.SUCCESS,"查询成功",page);
         }
+    }
+
+    @GetMapping("/selectAllVo")
+    public State<Object> selectAllVo(Integer currentPage,Integer pageSize){
+        Page<BooksVo> booksVoPage = booksService.selectAllVo(currentPage, pageSize);
+        return packaging(StateCode.SUCCESS,"查询成功",booksVoPage);
     }
 
     //添加书本
@@ -70,6 +69,7 @@ public class BooksController extends Base {
             return packaging(StateCode.SUCCESS,"插入失败",null);
         }
     }
+
     @PostMapping("/upload")//上传文件
     public String upload(@RequestParam("imgPath") MultipartFile upload, HttpServletRequest request) throws IOException {
         if (upload != null){
@@ -97,9 +97,6 @@ public class BooksController extends Base {
 
     @GetMapping("/selectAllBooks")
     public State<Object> selectAllBooks(Integer currentPage,Integer pageSize){
-        if (StringUtils.isEmpty(pageSize)) {
-            pageSize = systemMapper.getPageLine();
-        }
         Page<Books> page = booksService.selectAllBooks(1, 2);
         if (page.getList() == null){
             return packaging(StateCode.FAIL,"查询失败",null);
@@ -109,7 +106,7 @@ public class BooksController extends Base {
     }
 
     //通过 id 修改对应的书本信息
-    /*@GetMapping("/updateBooksById")
+    @GetMapping("/updateBooksById")
     public State<Object> updateBooksById(BooksWithBLOBs booksWithBLOBs,Integer bookId){
         int i = booksService.updateBookById(booksWithBLOBs,bookId);
         if (i != 0){
@@ -117,8 +114,8 @@ public class BooksController extends Base {
         } else {
             return packaging(StateCode.FAIL,"修改失败",null);
         }
-    }*/
-    @PostMapping("/updateBooksById")
+    }
+    /*@PostMapping("/updateBooksById")
     public State<Object> updateBooksById(String username,@RequestParam(value="image",required=false)MultipartFile upload, HttpServletRequest request,Integer bookId){
         String realPath = request.getSession().getServletContext().getRealPath(imagePath.getPath());
         String upload1 = FileUtils.upload(upload, realPath, upload.getOriginalFilename());
@@ -131,7 +128,7 @@ public class BooksController extends Base {
         } else {
             return packaging(StateCode.FAIL,"修改失败",null);
         }
-    }
+    }*/
 
     //通过修改 is_delete 为0进行删除,已测试
     @PutMapping("/deleteBook")

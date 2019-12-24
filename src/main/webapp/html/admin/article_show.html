@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>APP</title>
+    <title>图书信息</title>
     <link rel="stylesheet" href="./css/component.css">
     <link rel="stylesheet" href="./css/admin.css">
     <link rel="stylesheet" href="./css/font-awesome.min.css">
@@ -19,7 +19,30 @@
     <script src="./js/wang.js"></script>
     <script type="text/javascript">
         $(function () {
+            var currentPage = 1;
+            var pageCount = 0;
+            $.ajax({
+                url:"/library/books/selectAllVo",
+                data:currentPage,
+                success:function (oj) {
+                    var list = oj.booksVoPage.list;
+                    for (var i = 0; i < list.length; i++) {
+                        str += "<tbody>\n"+
+                            "<tr>\n"+"<td><input type='checkbox' class='checkOne'></td>\n"+
+                            "<td>"+list[i].g_id+"</td>\n"+
+                            "<td>"+list[i].g_id+"</td>\n"+
+                            "<td>"+list[i].g_goods_name+"</td>\n"+
+                            "<td>"+list[i].g_goods_name+"\n"+
+                            "<td>"+list[i].g_goods_price+"</td>\n"+
+                            "<td>"+list[i].g_goods_description+"</td>\n"+
+                            "<td>"+list[i].g_goods_stock+"</td>\n"+
+                            "<td>"+list[i].g_goods_stock+"</td>\n"+
+                            "<td>"+"<a href=\"#\" id='update'>修改</a>/<a href=\"#\" id='delete'>删除</a> "+"</td>\n"+
+                            "</tr>\n";
+                    }
 
+                }
+            })
         })
     </script>
 </head>
@@ -35,191 +58,56 @@
 
                 <div class="search_form">
                    <div class="search_box">
-                       <select name="" id="">
-                           <option value="">书名</option>
+                       <select name="find" id="find">
+                           <option name="bookName" value="">书名</option>
+                           <option name="ISBN" value="">ISBN</option>
+                           <option name="author" value="">作者</option>
                        </select>
                        <!--<select name="" id="">
                             <option value="">状态</option>
                         </select>-->
                         <input type="text" placeholder="请输入">
-                    <button>搜索</button>
+                    <button type="button" id="search">搜索</button>
                    </div>
                 </div>
             </div>
 
             <div class="tableLists">
                 <table>
-                    <colgroup>
-                        <col width="50">
-                        <col>
-                        <col width="90">
-                        <col width="90">
-                        <col width="90">
-                        <col width="150">
-                        <col width="90">
-                        <col width="125">
-                    </colgroup>
+                    <thead>
+                        <colgroup>
+                            <col width="40">
+                            <col width="70">
+                            <col width="120">
+                            <col width="90">
+                            <col width="120">
+                            <col width="60">
+                            <col width="40">
+                            <col width="80">
+                            <col width="50">
+                            <col width="125">
+                        </colgroup>
 
-                   <!-- <tr>
-                        <th>选择</th>
-                        <th>书本编号</th>
-                        <th>书本名称</th>
-                        <th>类别名称</th>
-                        <th>ISBN</th>
-                        <th>审核状态</th>
-                        <th>入库时间</th>
-                        <th>入馆册数</th>
-                        <th>操作</th>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label class="ios-checkbox-box-single height30px">
-                                <input type="checkbox" name="checkbox" class="ios-checkbox-single">
-                                <span class="ios-checkbox-span-single"></span>
-                            </label>
-                        </td>
-                        <td>1</td>
-                        <td>
-                            <a class="ios-article-title" href="">
-                                <span><i class="fa fa-fw fa-image"></i></span>
-                                <p>论第二次世界大战意大利的作用</p>
-                            </a>
-                        </td>
-                        <td>列表类型</td>
-                        <td>直接跳转</td>
-                        <td>显示</td>
-                        <td>2018-07-08 15:07:13</td>
-                        <td>2121</td>
-                        <td>
+                        <tr>
+                            <th>选择<input type="checkbox" class="all"></th>
+                            <th>书本编号</th>
+                            <th>书本名称</th>
+                            <th>类别名称</th>
+                            <th>ISBN</th>
+                            <th>作者</th>
+                            <th>在馆编号</th>
+                            <th>是否在馆(0在,1不在)</th>
+                            <th>入馆册数</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                   <!-- <tbody>
+                    &lt;!&ndash;
                             <a href="" class="ios-edit-btn">编辑</a>
                             <a href="" class="ios-del-btn">删除</a>
                         </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <label class="ios-checkbox-box-single height30px">
-                                <input type="checkbox" name="checkbox" class="ios-checkbox-single">
-                                <span class="ios-checkbox-span-single"></span>
-                            </label>
-                        </td>
-                        <td>1</td>
-                        <td>
-                            <a class="ios-article-title" href="">
-                                <span><i class="fa fa-fw fa-image"></i></span>
-                                <p>论第二次世界大战意大利的作用</p>
-                            </a>
-                        </td>
-                        <td>列表类型</td>
-                        <td>直接跳转</td>
-                        <td>显示</td>
-                        <td>2018-07-08 15:07:13</td>
-                        <td>2121</td>
-                        <td>
-                            <a href="" class="ios-edit-btn">编辑</a>
-                            <a href="" class="ios-del-btn">删除</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <label class="ios-checkbox-box-single height30px">
-                                <input type="checkbox" name="checkbox" class="ios-checkbox-single">
-                                <span class="ios-checkbox-span-single"></span>
-                            </label>
-                        </td>
-                        <td>1</td>
-                        <td>
-                            <a class="ios-article-title" href="">
-                                <span><i class="fa fa-fw fa-image"></i></span>
-                                <p>论第二次世界大战意大利的作用论第二次世界大战意大利的作用论第二次世界大战意大利的作用论第二次世界大战意大利的作用</p>
-                            </a>
-                        </td>
-                        <td>列表类型</td>
-                        <td>直接跳转</td>
-                        <td>显示</td>
-                        <td>2018-07-08 15:07:13</td>
-                        <td>2121</td>
-                        <td>
-                            <a href="" class="ios-edit-btn">编辑</a>
-                            <a href="" class="ios-del-btn">删除</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <label class="ios-checkbox-box-single height30px">
-                                <input type="checkbox" name="checkbox" class="ios-checkbox-single">
-                                <span class="ios-checkbox-span-single"></span>
-                            </label>
-                        </td>
-                        <td>1</td>
-                        <td>
-                            <a class="ios-article-title" href="">
-                                <span><i class="fa fa-fw fa-image"></i></span>
-                                <p>论第二次世界大战意大利的作用论第二次世界大战意大利的作用论第二次世界大战意大利的作用论第二次世界大战意大利的作用</p>
-                            </a>
-                        </td>
-                        <td>列表类型</td>
-                        <td>直接跳转</td>
-                        <td>显示</td>
-                        <td>2018-07-08 15:07:13</td>
-                        <td>2121</td>
-                        <td>
-                            <a href="" class="ios-edit-btn">编辑</a>
-                            <a href="" class="ios-del-btn">删除</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <label class="ios-checkbox-box-single height30px">
-                                <input type="checkbox" name="checkbox" class="ios-checkbox-single">
-                                <span class="ios-checkbox-span-single"></span>
-                            </label>
-                        </td>
-                        <td>1</td>
-                        <td>
-                            <a class="ios-article-title" href="">
-                                <span><i class="fa fa-fw fa-image"></i></span>
-                                <p>论第二次世界大战意大利的作用论第二次世界大战意大利的作用论第二次世界大战意大利的作用论第二次世界大战意大利的作用</p>
-                            </a>
-                        </td>
-                        <td>列表类型</td>
-                        <td>直接跳转</td>
-                        <td>显示</td>
-                        <td>2018-07-08 15:07:13</td>
-                        <td>2121</td>
-                        <td>
-                            <a href="" class="ios-edit-btn">编辑</a>
-                            <a href="" class="ios-del-btn">删除</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>
-                            <label class="ios-checkbox-box-single height30px">
-                                <input type="checkbox" name="checkbox" class="ios-checkbox-single">
-                                <span class="ios-checkbox-span-single"></span>
-                            </label>
-                        </td>
-                        <td>1</td>
-                        <td>
-                            <a class="ios-article-title" href="">
-                                <span><i class="fa fa-fw fa-image"></i></span>
-                                <p>论第二次世界大战意大利的作用论第二次世界大战意大利的作用论第二次世界大战意大利的作用论第二次世界大战意大利的作用</p>
-                            </a>
-                        </td>
-                        <td>列表类型</td>
-                        <td>直接跳转</td>
-                        <td>显示</td>
-                        <td>2018-07-08 15:07:13</td>
-                        <td>2121</td>
-                        <td>
-                            <a href="" class="ios-edit-btn">编辑</a>
-                            <a href="" class="ios-del-btn">删除</a>
-                        </td>
-                    </tr>-->
+                    </tr>&ndash;&gt;
+                    </tbody>-->
                 </table>
                 <div style="text-align: center">
                     <a href="#" id="shou">首页</a>

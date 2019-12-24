@@ -22,14 +22,13 @@ public class BooksServiceImplTest {
     @Autowired
     IBooksService booksService;
 
- /*   @Test
+    @Test
     public void add(){
-        BookTypes bookTypes = new BookTypes();
-        bookTypes.setBookTypeName("php");
-        bookTypes.setClassNumber("003");
-        bookTypes.setFatherNode("22");
-        bookTypesService.insertBookTypes(bookTypes);
-    }*/
+        BooksWithBLOBs booksWithBLOBs = new BooksWithBLOBs();
+        booksWithBLOBs.setBookName("asdff");
+        int i = booksService.insertBooks(booksWithBLOBs);
+        System.out.println(booksWithBLOBs.getBookId());
+    }
 
     @Test
     public void delete(){
