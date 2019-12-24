@@ -64,17 +64,19 @@
 
     <script type="text/javascript">
 
-        function insetAdmin() {
-            var adminName = $("#iadminName").val();
-            var password = $("#ipassword").val();
-            var phone = $("#iphone").val();
+        function insetPermissions() {
+            var permissionName = $("#ipermissionName").val();
+            var permissionStr = $("#ipermissionStr").val();
+            var permissionType = $("#ipermissionType").val();
+            var fatherNode = $("#ifatherNode").val();
             $.ajax({
                 type:"POST",
                 url:"/library/permissions",
                 data:{
-                    adminName:adminName,
-                    password:password,
-                    phone:phone
+                    permissionName:permissionName,
+                    permissionStr:permissionStr,
+                    permissionType:permissionType,
+                    fatherNode:fatherNode
                 },
                 success:function (data) {
                     if (data.state == "SUCCESS") {
@@ -88,40 +90,36 @@
         }
 
         function updataButten(index) {
-            var f = document.getElementById('updateAdmin');
-
-            var adminId = document.getElementById("adminId"+index).value;
-            var phone = document.getElementById("phone" + index).innerText;
-            document.getElementById("uadminId").value = adminId;
-            document.getElementById("uphone").value = phone;
-            $.ajax({
-                type:"GET",
-                url: "/library/permissions",
-                data:{},
-                success:function (data) {
-                    $("#role").empty();
-                    if (data.state == "SUCCESS"){
-                        $.each(data.data,function (index,value) {
-                            var $option = $("<option value="+value.roleId+">"+value.roleName+"</option>");
-                            $("#role").append($option);
-                        });
-                    }
-                }
-            });
+            debugger;
+            var f = document.getElementById('updatePermissions');
+            var permissionId = document.getElementById("permissionId"+index).value;
+            var permissionName = document.getElementById("permissionName" + index).innerText;
+            var permissionStr = document.getElementById("permissionStr" + index).innerText;
+            var permissionType = document.getElementById("permissionType" + index).innerText;
+            var fatherNode = document.getElementById("fatherNode" + index).innerText;
+            document.getElementById("upermissionId").value = permissionId;
+            document.getElementById("upermissionName").value = permissionName;
+            document.getElementById("upermissionStr").value = permissionStr;
+            document.getElementById("upermissionType").value = permissionType;
+            document.getElementById("ufatherNode").value = fatherNode;
             f.style.display='block';
         }
 
         function updateb() {
-            var adminId = document.getElementById("uadminId").value;
-            var phone = document.getElementById("uphone").value;
-            var roleId = $("#role").val();
+            var permissionId = document.getElementById("upermissionId").value;
+            var permissionName = document.getElementById("upermissionName").value;
+            var permissionStr = document.getElementById("upermissionStr").value;
+            var permissionType = document.getElementById("upermissionType").value;
+            var fatherNode = document.getElementById("ufatherNode").value;
             var data = {
-                phone:phone,
-                roleId:roleId
+                permissionName:permissionName,
+                permissionStr:permissionStr,
+                permissionType:permissionType,
+                fatherNode:fatherNode
             }
             $.ajax({
                 type:"PUT",
-                url:"/library/permissions/"+permissionsId,
+                url:"/library/permissions/"+permissionId,
                 data:JSON.stringify(data),
                 contentType:"application/json",
                 success:function (data) {
@@ -250,7 +248,6 @@
                     $("#tb").empty();
                     $("#paging").empty();
                     if (data.state == "SUCCESS") {
-
                         $.each(data.data.list,function (index, value) {
                             var $tr = $("<tr></tr>");
                             $tr.append("<input id='permissionId"+index+"' name='permissionId' type='hidden' value= '"+value.permissionId+"' > ");
@@ -311,7 +308,7 @@
     <div class="main row">
         <div class="tabList">
             <span class="active">用户列表</span>&nbsp;&nbsp;
-            <input type="button" value="添 加" class="btn btn-info" onclick="document.getElementById('addAdmin').style.display='block'" style="width:auto;"/>
+            <input type="button" value="添 加" class="btn btn-info" onclick="document.getElementById('addPermissions').style.display='block'" style="width:auto;"/>
             &nbsp;&nbsp;
             <input type="button" value="删除选中" class="btn btn-danger" onclick="deleteGoods()" />
         </div>
@@ -349,52 +346,59 @@
 
 
 <!--弹框页面-->
-<div id="addAdmin" class="hmodal">
+<div id="addPermissions" class="hmodal">
     <div id="a">
         <form id="addform" class="modal-content animate" action="/library/admins" method="post">
             <div class="imgcontainer">
                 <!-- 点击×号，隐藏模态框-->
-                <span onclick="document.getElementById('addAdmin').style.display='none'" class="close" title="Close Modal">&times;</span>
+                <span onclick="document.getElementById('addPermissions').style.display='none'" class="close" title="Close Modal">&times;</span>
             </div>
             <h1 style="margin-left: 40px;margin-top: 10px;color: #66ccff">添加</h1>
             <div class="container" style="width: 170px;margin: 0 auto;">
-                账户名:
-                <input id="iadminName" class="int-text" type="text" placeholder="账户名" name="adminName" required autocomplete="off">
+                权限名:
+                <input id="ipermissionName" class="int-text" type="text" placeholder="权限名" name="permissionName" required autocomplete="off">
                 <br><br>
-                密码:
-                <input id="ipassword" class="int-text" type="password" placeholder="密码" name="password" required autocomplete="off">
+                权限字符串:
+                <input id="ipermissionStr" class="int-text" type="text" placeholder="权限字符串" name="permissionStr" required autocomplete="off">
                 <br><br>
-                电话号码:
-                <input id="iphone" class="int-text" type="text" name="phone"  placeholder="电话号码" required autocomplete="off">
-                <br>
+                权限类型:
+                <input id="ipermissionType" class="int-text" type="text" name="permissionType"  placeholder="权限类型" required autocomplete="off">
+                <br><br>
+                父节点id:
+                <input id="ifatherNode" class="int-text" type="text" name="fatherNode"  placeholder="父节点id" required autocomplete="off">
                 <br><br><br>
-                <button id="addButton" type="button" onclick="insetAdmin()"  style="border-radius:8px;" class="btn btn-info" >添加</button>&nbsp&nbsp&nbsp&nbsp
-                <button type="button" style="border-radius:8px;" onclick="document.getElementById('addAdmin').style.display='none'" class="btn btn-danger">取消</button>
+                <button id="addButton" type="button" onclick="insetPermissions()"  style="border-radius:8px;" class="btn btn-info" >添加</button>&nbsp&nbsp&nbsp&nbsp
+                <button type="button" style="border-radius:8px;" onclick="document.getElementById('addPermissions').style.display='none'" class="btn btn-danger">取消</button>
             </div>
         </form>
     </div>
 </div>
 
 <!--修改页面-->
-<div id="updateAdmin" class="hmodal">
+<div id="updatePermissions" class="hmodal">
     <div style="width: 40%;margin: 0px auto;border: 1px;position: absolute;left: 30%;">
         <form id="updateform" class="modal-content animate" action="#" method="post">
             <div class="imgcontainer">
                 <!-- 点击×号，隐藏模态框-->
-                <span onclick="document.getElementById('updateAdmin').style.display='none'" class="close" title="Close Modal">&times;</span>
+                <span onclick="document.getElementById('updatePermissions').style.display='none'" class="close" title="Close Modal">&times;</span>
             </div>
             <h1 style="margin-left: 40px;margin-top: 10px;color: #66ccff">修改</h1>
             <div class="container" style="width: 170px;margin: 0 auto;">
-                <input id="uadminId" type="hidden" name="adminId">
-                手机号:
-                <input id="uphone" class="int-text" type="text" name="phone"  placeholder="手机号" required autocomplete="off">
+                <input id="upermissionId" value="" type="hidden" name="permissionId">
+                权限名:
+                <input id="upermissionName" value="" class="int-text" type="text" placeholder="权限名" name="permissionName" required autocomplete="off">
                 <br><br>
-                角色:
-                <select id="role" class="int-text" >
-                </select>
+                权限字符串:
+                <input id="upermissionStr" value="" class="int-text" type="text" placeholder="权限字符串" name="permissionStr" required autocomplete="off">
+                <br><br>
+                权限类型:
+                <input id="upermissionType" value="" class="int-text" type="text" name="permissionType"  placeholder="权限类型" required autocomplete="off">
+                <br><br>
+                父节点id:
+                <input id="ufatherNode" value="" class="int-text" type="text" name="fatherNode"  placeholder="父节点id" required autocomplete="off">
                 <br><br>
                 <button id="updateButton" type="button" onclick="updateb()"  style="border-radius:8px;" class="btn btn-info" >修改</button>&nbsp&nbsp&nbsp&nbsp
-                <button type="button" style="border-radius:8px;" onclick="document.getElementById('updateAdmin').style.display='none'" class="btn btn-danger" >取消</button>
+                <button type="button" style="border-radius:8px;" onclick="document.getElementById('updatePermissions').style.display='none'" class="btn btn-danger" >取消</button>
             </div>
         </form>
     </div>
