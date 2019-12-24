@@ -148,7 +148,8 @@
       #{classNumber,jdbcType=VARCHAR}, #{isDelete,jdbcType=INTEGER}, #{introduction,jdbcType=LONGVARCHAR}, 
       #{directory,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.qf.entity.BooksWithBLOBs" >
+<!--  <insert id="insertSelective" parameterType="com.qf.entity.BooksWithBLOBs">-->
+  <insert id="insertSelective" parameterType="com.qf.entity.BooksWithBLOBs" keyProperty="bookId" useGeneratedKeys="true">
     insert into tbl_books
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="bookId != null" >
@@ -443,30 +444,53 @@
     where book_id = #{bookId,jdbcType=INTEGER}
   </update>
 
-  <resultMap id="BooksVo" type="com.qf.entity.vo.BooksVo" extends="BaseResultMap">
-  <association property="bookTypes" javaType="com.qf.entity.BookTypes">
+  <resultMap id="BooksVo" type="com.qf.entity.vo.BooksVo">
+    <id column="book_id" property="bookId" jdbcType="INTEGER" />
+    <result column="book_type_id" property="bookTypeId" jdbcType="INTEGER" />
+    <result column="book_name" property="bookName" jdbcType="VARCHAR" />
+    <result column="img_path" property="imgPath" jdbcType="VARCHAR" />
+    <result column="isbn" property="isbn" jdbcType="VARCHAR" />
+    <result column="author" property="author" jdbcType="VARCHAR" />
+    <result column="press" property="press" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="VARCHAR" />
+    <result column="publication_time" property="publicationTime" jdbcType="VARCHAR" />
+    <result column="page_number" property="pageNumber" jdbcType="INTEGER" />
+    <result column="number" property="number" jdbcType="SMALLINT" />
+    <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+    <result column="class_number" property="classNumber" jdbcType="VARCHAR" />
+    <result column="is_delete" property="isDelete" jdbcType="INTEGER" />
+  <collection property="bookTypes" javaType="com.qf.entity.BookTypes">
     <id column="book_type_id" property="bookTypeId" jdbcType="INTEGER" />
     <result column="book_type_name" property="bookTypeName" jdbcType="VARCHAR" />
     <result column="father_node" property="fatherNode" jdbcType="VARCHAR" />
     <result column="class_number" property="classNumber" jdbcType="VARCHAR" />
     <result column="is_delete" property="isDelete" jdbcType="INTEGER" />
-  </association>
-    <association property="bookStates" javaType="com.qf.entity.BookStates">
+  </collection>
+   <!-- <collection property="bookStates" javaType="com.qf.entity.BookStates">
       <id column="book_state_id" property="bookStateId" jdbcType="INTEGER" />
       <result column="book_id" property="bookId" jdbcType="INTEGER" />
       <result column="bar_code" property="barCode" jdbcType="VARCHAR" />
       <result column="state" property="state" jdbcType="TINYINT" />
       <result column="borrow_number" property="borrowNumber" jdbcType="SMALLINT" />
       <result column="is_delete" property="isDelete" jdbcType="INTEGER" />
-    </association>
+    </collection>-->
   </resultMap>
 
+<!--  书本在馆信息查询-->
   <select id="selectAllVo" resultMap="BooksVo">
-    select  b.book_id,b.book_name,b.isbn,b.author,b.number,
-    bs.state,bs.book_state_id,
-    bt.book_type_name
-    from tbl_books b inner join tbl_book_states bs on bs.book_id = b.book_id
-    inner join tbl_book_types bt on b.book_type_id = bt.book_type_id
+    select  book_id ,book_name,isbn,author,number,press,price,
+            bt.book_type_name
+    from  tbl_book_types bt
+        INNER JOIN tbl_books b on b.book_type_id = bt.book_type_id
     where b.is_delete = 1
   </select>
+
+<!--  书本类别信息查询-->
+  <!--<select id="selectTypesVo" resultMap="BooksVo">
+    select  b.book_id,b.book_name,b.isbn,b.author,b.number,
+    bt.book_type_name,bt.book_type_id
+    from tbl_books b
+    inner join tbl_book_types bt on b.book_type_id = bt.book_type_id
+    where b.is_delete = 1
+  </select>-->
 </mapper>

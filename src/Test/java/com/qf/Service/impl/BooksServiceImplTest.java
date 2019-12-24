@@ -4,7 +4,9 @@ import com.qf.config.TestConfig;
 import com.qf.entity.BookTypes;
 import com.qf.entity.Books;
 import com.qf.entity.BooksWithBLOBs;
+import com.qf.mapper.AdminMapper;
 import com.qf.service.IBooksService;
+import com.qf.service.impl.AdminServiceImpl;
 import com.qf.util.Page;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +50,7 @@ public class BooksServiceImplTest {
 
     @Test
     public void select1(){
-        booksService.selectBooksAll();
+        booksService.selectAllVo(1,4);
     }
 
     @Test
@@ -67,5 +69,14 @@ public class BooksServiceImplTest {
         for (Books b : page.getList()){
             System.out.println(b);
         }
+    }
+
+    @Autowired
+    AdminMapper adminMapper;
+    @Autowired
+    AdminServiceImpl adminService;
+    @Test
+    public void select123(){
+        adminService.selectAllVo(1,2);
     }
 }

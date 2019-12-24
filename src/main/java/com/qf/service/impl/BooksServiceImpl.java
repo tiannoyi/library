@@ -27,6 +27,18 @@ public class BooksServiceImpl implements IBooksService {
 
 
     //通过ISBN查询对应的书,已测试
+    @Override//返回的是一个对象,正常来说,一个ISBN是对应一种书
+    public Books selectBookByIsbn(String Isbn) {
+        BooksExample booksExample = new BooksExample();
+        BooksExample.Criteria criteria = booksExample.createCriteria();
+        criteria.andIsbnEqualTo(Isbn);
+        criteria.andIsDeleteEqualTo(1);
+        List<Books> books = booksMapper.selectByExample(booksExample);
+        if (books.isEmpty()){
+            return null;
+        }
+        return books.get(0);
+    }
     @Override
     public Page<Books> selectBookByIsbn(String Isbn,Integer currentPage, Integer pageSize) {
         if(pageSize == null){
@@ -50,6 +62,8 @@ public class BooksServiceImpl implements IBooksService {
         }
         return page;
     }
+
+
 
 
     //查找全部书籍信息,已测试
