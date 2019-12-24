@@ -21,6 +21,102 @@ public class BorrowHistory {
 
     private Integer isDelete;
 
+    /**
+     * 无 historyId,isDelete,time 类型构造
+     * @param readerId
+     * @param renew
+     * @param overdue
+     * @param fine
+     * @param bookId
+     */
+    public BorrowHistory(Integer readerId, Byte renew, Byte overdue, Float fine, Integer bookId) {
+        this.readerId = readerId;
+        this.renew = renew;
+        this.overdue = overdue;
+        this.fine = fine;
+        this.bookId = bookId;
+    }
+
+    /**
+     * 无 borrowId,isDelete 构造
+     * @param readerId
+     * @param borrowTime
+     * @param repayTime
+     * @param renew
+     * @param overdue
+     * @param fine
+     * @param bookId
+     */
+    public BorrowHistory(Integer readerId, Date borrowTime, Date repayTime, Byte renew, Byte overdue, Float fine, Integer bookId) {
+        this.readerId = readerId;
+        this.borrowTime = borrowTime;
+        this.repayTime = repayTime;
+        this.renew = renew;
+        this.overdue = overdue;
+        this.fine = fine;
+        this.bookId = bookId;
+    }
+
+    /**
+     * 无 isDelete,Time 类型构造
+     * @param historyId
+     * @param readerId
+     * @param renew
+     * @param overdue
+     * @param fine
+     * @param bookId
+     */
+    public BorrowHistory(Integer historyId, Integer readerId, Byte renew, Byte overdue, Float fine, Integer bookId) {
+        this.historyId = historyId;
+        this.readerId = readerId;
+        this.renew = renew;
+        this.overdue = overdue;
+        this.fine = fine;
+        this.bookId = bookId;
+    }
+
+    public BorrowHistory() {
+    }
+
+    /**
+     * 全参构造
+     * @param historyId
+     * @param readerId
+     * @param borrowTime
+     * @param repayTime
+     * @param renew
+     * @param overdue
+     * @param fine
+     * @param bookId
+     * @param isDelete
+     */
+    public BorrowHistory(Integer historyId, Integer readerId, Date borrowTime, Date repayTime, Byte renew, Byte overdue, Float fine, Integer bookId, Integer isDelete) {
+        this.historyId = historyId;
+        this.readerId = readerId;
+        this.borrowTime = borrowTime;
+        this.repayTime = repayTime;
+        this.renew = renew;
+        this.overdue = overdue;
+        this.fine = fine;
+        this.bookId = bookId;
+        this.isDelete = isDelete;
+    }
+
+    @Override
+    public String toString() {
+        return "BorrowHistory{" +
+                "historyId=" + historyId +
+                ", readerId=" + readerId +
+                ", borrowTime=" + borrowTime +
+                ", repayTime=" + repayTime +
+                ", renew=" + renew +
+                ", overdue=" + overdue +
+                ", fine=" + fine +
+                ", bookId=" + bookId +
+                ", isDelete=" + isDelete +
+                '}';
+    }
+
     public Integer getHistoryId() {
         return historyId;
     }

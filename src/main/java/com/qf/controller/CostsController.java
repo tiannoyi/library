@@ -44,13 +44,22 @@ public class CostsController extends Base {
     }
 
     @GetMapping("/selectCostsByReaderId")
-    private State<Object> selectCostsByReaderId(Integer readerid){
-        List<Costs> costs = costsService.selectCostsByReaderId(readerid);
-        return packaging(StateCode.SUCCESS,"查询成功",costs);
+    private State<Object> selectCostsByReaderId(Integer readerid, Integer currentPage, Integer pageSize){
+        if (currentPage == null || pageSize == null) {
+            return packaging(StateCode.FAIL,"请输入页数总数",null);
+        }
+        Page<Costs> costs = costsService.selectCostsListByReaderId(readerid, currentPage, pageSize);
+        if (costs.getList().size() != 0) {
+            return packaging(StateCode.SUCCESS,"查询成功",costs);
+        }else {
+            return packaging(StateCode.FAIL,"查询失败",costs);
+        }
+
     }
 
     @PutMapping("/updateByCostsId")
     private  State<Object> updateByCostsId(Integer costsId, Costs costs){
+        costs.setCostId(costsId);
         Integer i = costsService.updateByCostsId(costsId, costs);
         if (i != null) {
             return packaging(StateCode.SUCCESS,"修改成功", i);
