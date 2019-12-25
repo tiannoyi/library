@@ -1,10 +1,7 @@
 package com.qf.config;
 
 import com.qf.interceptor.LoginInterceptor;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.*;
 import org.springframework.format.Formatter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
@@ -39,6 +36,7 @@ import java.util.Locale;
         @ComponentScan.Filter(type = FilterType.ANNOTATION,classes = {Controller.class})
 },useDefaultFilters = false)
 @EnableWebMvc
+@EnableAspectJAutoProxy
 public class WebConfig implements WebMvcConfigurer  {
 //WebMvcConfigurationSupport
 

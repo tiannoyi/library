@@ -58,7 +58,7 @@ public class RoleServiceImpl implements IRoleService {
     @Override
     public RolesVo selectByPrimaryKeyVo(Integer roleId) {
 
-        return null;
+        return rolesMapper.selectByPrimaryKeyVo(roleId);
     }
 
     @Override

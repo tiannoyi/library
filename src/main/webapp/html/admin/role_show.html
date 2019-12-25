@@ -64,7 +64,7 @@
 
     <script type="text/javascript">
 
-
+/*
         $(function () {
             $.ajax({
                 type:"GET",
@@ -81,19 +81,17 @@
                     }
                 }
             });
-        });
+        });*/
 
         function insetAdmin() {
             var roleName = $("#iroleName").val();
-            var password = $("#ipassword").val();
-            var phone = $("#iphone").val();
+            var permissionsStr = $("#irole").val();
             $.ajax({
                 type:"POST",
                 url:"/library/roles",
                 data:{
                     roleName:roleName,
-                    password:password,
-                    phone:phone
+                    permissionsStr:permissionsStr
                 },
                 success:function (data) {
                     if (data.state == "SUCCESS") {
@@ -109,34 +107,21 @@
         function updataButten(index) {
             var f = document.getElementById('updateRole');
             f.style.display='block';
-            var adminId = document.getElementById("adminId"+index).value;
-            var phone = document.getElementById("phone" + index).innerText;
-            document.getElementById("uadminId").value = adminId;
-            document.getElementById("uphone").value = phone;
-            $.ajax({
-                type:"GET",
-                url: "/library/rolesAll",
-                data:{},
-                success:function (data) {
-                    $("#role").empty();
-                    if (data.state == "SUCCESS"){
-                        $.each(data.data,function (index,value) {
-                            var $option = $("<option value="+value.roleId+">"+value.roleName+"</option>");
-                            $("#role").append($option);
-                        });
-                    }
-                }
-            });
-
+            var roleId = document.getElementById("roleId"+index).value;
+            var roleName = document.getElementById("roleName" + index).innerText;
+            var permissionsStr = document.getElementById("permissionsStr"+index).innerText;
+            document.getElementById("uRoleId").value = roleId;
+            document.getElementById("uRoleName").value = roleName;
+            document.getElementById("uRole").value = permissionsStr;
         }
 
         function updateb() {
-            var adminId = document.getElementById("uadminId").value;
-            var phone = document.getElementById("uphone").value;
-            var roleId = $("#role").val();
+            var roleId = document.getElementById("uRoleId").value;
+            var roleName = document.getElementById("uRoleName").value;
+            var permissionsStr = document.getElementById("uRole").value;
             var data = {
-                phone:phone,
-                roleId:roleId
+                roleName:roleName,
+                permissionsStr:permissionsStr
             }
             $.ajax({
                 type:"PUT",
@@ -377,8 +362,10 @@
                 <input id="iroleName" class="int-text" type="text" placeholder="账户名" name="adminName" required autocomplete="off">
                 <br><br>
                 权限:
-                <div id="rolediv" style="width: 100px">
-                </div>
+                <!--<div id="rolediv" style="width: 100px">
+                </div>-->
+                <input id="irole" class="int-text" type="text" placeholder="权限字符串" name="permissionsStr" required autocomplete="off">
+                <br><br>
                 <button id="addButton" type="button" onclick="insetAdmin()"  style="border-radius:8px;" class="btn btn-info" >添加</button>&nbsp&nbsp&nbsp&nbsp
                 <button type="button" style="border-radius:8px;" onclick="document.getElementById('addRole').style.display='none'" class="btn btn-danger">取消</button>
             </div>
@@ -396,13 +383,11 @@
             </div>
             <h1 style="margin-left: 40px;margin-top: 10px;color: #66ccff">修改</h1>
             <div class="container" style="width: 170px;margin: 0 auto;">
-                <input id="uadminId" type="hidden" name="adminId">
-                手机号:
-                <input id="uphone" class="int-text" type="text" name="phone"  placeholder="手机号" required autocomplete="off">
-                <br><br>
-                角色:
-                <select id="role" class="int-text" >
-                </select>
+                <input id="uRoleId" type="hidden" name="roleId">
+                角色名:
+                <input id="uRoleName" class="int-text" type="text" name="roleName"  placeholder="角色名" required autocomplete="off">
+                权限:
+                <input id="uRole" class="int-text" type="text" name="permissionsStr"  placeholder="权限" required autocomplete="off">
                 <br><br>
                 <button id="updateButton" type="button" onclick="updateb()"  style="border-radius:8px;" class="btn btn-info" >修改</button>&nbsp&nbsp&nbsp&nbsp
                 <button type="button" style="border-radius:8px;" onclick="document.getElementById('updateRole').style.display='none'" class="btn btn-danger" >取消</button>
