@@ -1,10 +1,7 @@
 package com.qf.service;
 
 import com.qf.entity.Costs;
-import com.qf.entity.vo.CostsVo;
 import com.qf.util.Page;
-
-import java.util.List;
 
 public interface ICostsService {
 
