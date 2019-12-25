@@ -4,7 +4,9 @@ import com.qf.config.TestConfig;
 import com.qf.entity.BookTypes;
 import com.qf.entity.Books;
 import com.qf.entity.BooksWithBLOBs;
+import com.qf.entity.vo.BooksVo;
 import com.qf.mapper.AdminMapper;
+import com.qf.mapper.BooksMapper;
 import com.qf.service.IBooksService;
 import com.qf.service.impl.AdminServiceImpl;
 import com.qf.util.Page;
@@ -69,6 +71,25 @@ public class BooksServiceImplTest {
         for (Books b : page.getList()){
             System.out.println(b);
         }
+    }
+
+    @Autowired
+    BooksMapper booksMapper;
+    @Test
+    public void sdf(){
+        Books books = booksService.selectBookById(9);
+    }
+    @Test
+    public void select1231(){
+        Books books = new Books();
+        books.setBookName("厚黑学");
+        booksService.selectBookVo(books);
+        //booksMapper.selectBookVo(books);
+    }
+    @Test
+    public void select12334(){
+        //booksMapper.selectAllVo();
+        booksService.selectAllVo(1,5);
     }
 
     @Autowired

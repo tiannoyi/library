@@ -12,6 +12,9 @@ public interface IBooksService {
     //通过 ISBN 查询对应的 books
     Page<Books> selectBookByIsbn(String Isbn,Integer currentPage, Integer pageSize);
     Books selectBookByIsbn(String Isbn);
+    Books selectBookById(Integer bookId);
+    //二表单条件连查
+    BooksVo selectBookVo(Books books);
 
     //查询所有的书本数据
     List<Books> selectBooksAll();

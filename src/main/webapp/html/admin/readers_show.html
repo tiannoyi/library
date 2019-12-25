@@ -45,7 +45,7 @@
         }
         //精确查找（二表联查）:书名、isbn、作者
         function search() {
-            /*//下拉框值(属性名)
+            /*!//下拉框值(属性名)
             $("#find option:selected").val();
             //文本框值
             $("#searchText").val();*/
@@ -70,7 +70,6 @@
                         $("#paging").empty();
                             str += "<tr>\n" + "<td><input type='checkbox' name='ckb' id='checkbox' onclick='dcAll()' value='"+data.data.bookId+"'></td>\n" +
                                 "<td id='bookId'>" + data.data.bookId + "</td>\n" +
-                                "<td id='imgPath'><img src='../../images/"+data.data.imgPath+"' width='100' height='100'></td>\n"+
                                 "<td id='bookName'>"  + data.data.bookName + "</td>\n" +
                                 "<td id='bookTypeName'>" + data.data.bookTypes.bookTypeName + "</td>\n" +
                                 "<td id='Isbn'>" + data.data.isbn + "\n" +
@@ -101,7 +100,6 @@
                         $("#paging").empty();
                         str += "<tr>\n" + "<td><input type='checkbox' name='ckb' id='checkbox' onclick='dcAll()' value='"+data.data.bookId+"'></td>\n" +
                             "<td id='bookId'>" + data.data.bookId + "</td>\n" +
-                            "<td id='imgPath'><img src='../../images/"+data.data.imgPath+"' width='100' height='100'></td>\n"+
                             "<td id='bookName'>"  + data.data.bookName + "</td>\n" +
                             "<td id='bookTypeName'>" + data.data.bookTypes.bookTypeName + "</td>\n" +
                             "<td id='Isbn'>" + data.data.isbn + "\n" +
@@ -132,7 +130,6 @@
                         $("#paging").empty();
                         str += "<tr>\n" + "<td><input type='checkbox' name='ckb' id='checkbox' onclick='dcAll()' value='"+data.data.bookId+"'></td>\n" +
                             "<td id='bookId'>" + data.data.bookId + "</td>\n" +
-                            "<td id='imgPath'><img src='../../images/"+data.data.imgPath+"' width='100' height='100'></td>\n"+
                             "<td id='bookName'>"  + data.data.bookName + "</td>\n" +
                             "<td id='bookTypeName'>" + data.data.bookTypes.bookTypeName + "</td>\n" +
                             "<td id='Isbn'>" + data.data.isbn + "\n" +
@@ -253,7 +250,7 @@
                 currentPage = 1;
             }
             if (pageSize == false){
-                pageSize = 4;
+                pageSize = 5;
             }
             $.ajax({
                 type:"GET",
@@ -266,11 +263,9 @@
                     var str = "";
                     $("#tb").empty();
                     $("#paging").empty();
-                    debugger;
                     $.each(data.data.list,function (index, value) {
                         str += "<tr>\n" + "<td><input type='checkbox' name='ckb' id='checkbox"+index+"' onclick='dcAll()' value='"+value.bookId+"'></td>\n" +
                             "<td id='bookId"+index+"'>" + value.bookId + "</td>\n" +
-                            "<td id='imgPath"+index+"'><img src='../../images/"+value.imgPath+"' width='100' height='100'></td>\n"+
                             "<td id='bookName"+index+"'>"  + value.bookName + "</td>\n" +
                             "<td id='bookTypeName"+index+"'>" + value.bookTypes.bookTypeName + "</td>\n" +
                             "<td id='Isbn"+index+"'>" + value.isbn + "\n" +
@@ -281,7 +276,6 @@
                             "<td>" + "<a href='#' class='btn btn-warning' onclick='update(" + value.bookId + ")'>修改</a> " +
                             "<a href='#' onclick='removeBooks(" + value.bookId + ")' class='btn btn-danger'>删除</a> " +
                             "</tr>\n";
-                        console.log(data.data.list.imgPath);
                     });
                     $("#tb").append(str);
                     //分页
@@ -319,15 +313,15 @@
 <body>
     <div class="rbody" id="app">
         <div class="top">
-            当前位置：后台<i class="fa fa-fw fa-angle-right"></i>书本信息列表
+            当前位置：后台<i class="fa fa-fw fa-angle-right"></i>读者基本信息
         </div>
         <div class="main">
             <div class="tabList">
-                <span class="active">书本信息列表</span>
+                <span class="active">读者信息列表</span>
                 &nbsp;&nbsp;&nbsp;&nbsp;
                     <input type="button" value="添 加" class="btn btn-info" onclick="insertBook()"/>
                     &nbsp;&nbsp;
-                    <input type="button" value="删除选中" class="btn btn-danger" onclick="deleteBooks()" />
+<!--                    <input type="button" value="删除选中" class="btn btn-danger" onclick="deleteBooks()" />-->
 
                 <div class="search_form">
                    <div class="search_box">
@@ -347,26 +341,24 @@
                     <thead >
                         <colgroup>
                             <col width="30">
-                            <col width="30">
-                            <col width="50">
-                            <col width="100">
-                            <col width="50">
+                            <col width="70">
                             <col width="100">
                             <col width="60">
+                            <col width="100">
                             <col width="60">
+                            <col width="100">
                             <col width="50">
                             <col width="50">
-                            <col width="60">
+                            <col width="125">
                         </colgroup>
 
                         <tr>
                             <th>选择&nbsp;<input type="checkbox" id="all" onclick="cAll()"></th>
-                            <th>书本编号</th>
-                            <th>书本图片</th>
-                            <th>书本名称</th>
-                            <th>类别名称</th>
-                            <th>ISBN</th>
-                            <th>作者</th>
+                            <th>读者编号</th>
+                            <th>读者姓名</th>
+                            <th>联系电话</th>
+                            <th>地址</th>
+                            <th>性别</th>
                             <th>出版社</th>
                             <th>价格</th>
                             <th>入馆册数</th>

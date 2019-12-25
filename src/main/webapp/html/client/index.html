@@ -9,6 +9,22 @@
 	<title>BootStrap HTML5 CSS3 Theme</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+	<link href="../../asserts/plugins/Bootstrap/css/bootstrap.css" rel="stylesheet">
+
+	<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+	<script src="../../asserts/plugins/Bootstrap/js/bootstrap.js"></script>
+
+	<script src="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.js"></script>
+	<link href="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/css/bootstrapValidator.css" rel="stylesheet">
+
+	<script src="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/js/language/zh_CN.js"></script>
+	<link rel="stylesheet" href="../admin/css/component.css">
+	<link rel="stylesheet" href="../admin/css/admin.css">
+	<link rel="stylesheet" href="../admin/css/font-awesome.min.css">
+	<script src="../admin/js/JQuery2.1.4.js"></script>
+	<link href="../admin/css/style.css" rel="stylesheet" type="text/css">
+	<link href="../admin/css/addcss.css" rel="stylesheet" type="text/css">
 	<link rel="apple-touch-icon" href="apple-touch-icon.png">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/normalize.css">
@@ -21,6 +37,63 @@
 	<link rel="stylesheet" href="css/color-purple.css">
 	<link rel="stylesheet" href="css/responsive.css">
 	<script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+
+
+	<script type="text/javascript">
+		$(function () {
+			$.ajax({
+				type: "GET",
+				url: "/library/books/selectAllVo",
+				data: {
+					currentPage: 1,
+					pageSize: 6
+				},
+				success: function (data) {
+					debugger;
+					var imgPath = document.getElementsByClassName("imgPath");
+					var bookTypes = document.getElementsByClassName("bookTypes");
+					var author = document.getElementsByClassName("author");
+					var price = document.getElementsByClassName("price");
+					var bookName = document.getElementsByClassName("bookName");
+					console.log(data.data.list)
+					$.each(data.data.list, function (index, value) {
+						/*str += "<tr>\n" + "<td><input type='checkbox' name='ckb' id='checkbox" + index + "' onclick='dcAll()' value='" + value.bookId + "'></td>\n" +
+								"<td id='bookId" + index + "'>" + value.bookId + "</td>\n" +
+								"<td id='imgPath" + index + "'><img src='../../images/" + value.imgPath + "' width='100' height='100'></td>\n" +
+								"<td id='bookName" + index + "'>" + value.bookName + "</td>\n" +
+								"<td id='bookTypeName" + index + "'>" + value.bookTypes.bookTypeName + "</td>\n" +
+								"<td id='Isbn" + index + "'>" + value.isbn + "\n" +
+								"<td id='author" + index + "'>" + value.author + "</td>\n" +
+								"<td id='press" + index + "'>" + value.press + "</td>\n" +
+								"<td id='price" + index + "'>" + value.price + "</td>\n" +
+								"<td id='number" + index + "'>" + value.number + "</td>\n" +
+								"<td>" + "<a href='#' class='btn btn-warning' onclick='update(" + value.bookId + ")'>修改</a> " +
+								"<a href='#' onclick='removeBooks(" + value.bookId + ")' class='btn btn-danger'>删除</a> " +
+								"</tr>\n";*/
+						/*$(".imgPath:eq("+index+")").attr("src","../../images/" + value.imgPath);
+						$(".bookTypes:eq("+index+")").val(value.bookTypes.bookTypeName);
+						$(".author:eq("+index+")").val(value.author);
+						$(".price:eq("+index+")").val(value.price);
+						$(".bookName:eq("+index+")").val(value.bookName)*/
+						// debugger;
+						/*$(".imgPath:eq(0)").attr("src","../../images/"+value.imgPath);
+						$(".bookTypes:eq(0)").html(value.bookTypes.bookTypeName);
+						$(".author:eq(0)").html(value.author);
+						$(".price:eq(0)").html(value.price);
+						$(".bookName:eq(0)").html(value.bookName)*/
+						// console.log($(".imgPath:eq("+index+")").attr("src"))
+						// $(".imgPath:eq("+index+")").attr("src","images/books/img-03.jpg")
+						console.log($(".imgPath:eq("+index+")").attr("src"))
+						/*imgPath[index].innerHTML = "";
+						bookName[index].innerHTML = value.bookName;
+						bookTypes[index].innerHTML = value.bookTypes.bookTypeName;
+						author[index].innerHTML = value.author;
+						price[index].innerHTML = value.price;*/
+					});
+				}
+			})
+		})
+	</script>
 </head>
 <body class="tg-home tg-homevtwo">
 
@@ -895,7 +968,7 @@
 									<div class="tg-postbook">
 										<figure class="tg-featureimg">
 											<div class="tg-bookimg">
-												<div class="tg-frontcover"><img src="images/books/img-01.jpg" alt="image description"></div>
+												<div class="tg-frontcover"><img class="imgPath" src="images/books/img-01.jpg" alt="image description"></div>
 												<div class="tg-backcover"><img src="images/books/img-01.jpg" alt="image description"></div>
 											</div>
 											<a class="tg-btnaddtowishlist" href="javascript:void(0);">
@@ -905,17 +978,17 @@
 										</figure>
 										<div class="tg-postbookcontent">
 											<ul class="tg-bookscategories">
-												<li><a href="javascript:void(0);">Adventure</a></li>
-												<li><a href="javascript:void(0);">Fun</a></li>
+												<li class="bookTypes"><a href="javascript:void(0);">Adventure</a></li>
+												<!--<li><a href="javascript:void(0);">Fun</a></li>-->
 											</ul>
 											<div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
 											<div class="tg-booktitle">
-												<h3><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
+												<h3 class="bookName"><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
 											</div>
-											<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
+											<span class="tg-bookwriter">By: <a href="javascript:void(0);"><span class="author">Angela Gunning</span></a></span>
 											<span class="tg-stars"><span></span></span>
 											<span class="tg-bookprice">
-												<ins>$25.18</ins>
+												<ins class="price">$25.18</ins>
 												<del>$27.20</del>
 											</span>
 											<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
@@ -929,7 +1002,7 @@
 									<div class="tg-postbook">
 										<figure class="tg-featureimg">
 											<div class="tg-bookimg">
-												<div class="tg-frontcover"><img src="images/books/img-02.jpg" alt="image description"></div>
+												<div class="tg-frontcover"><img class="imgPath" src="images/books/img-02.jpg" alt="image description"></div>
 												<div class="tg-backcover"><img src="images/books/img-02.jpg" alt="image description"></div>
 											</div>
 											<a class="tg-btnaddtowishlist" href="javascript:void(0);">
@@ -939,18 +1012,18 @@
 										</figure>
 										<div class="tg-postbookcontent">
 											<ul class="tg-bookscategories">
-												<li><a href="javascript:void(0);">Adventure</a></li>
-												<li><a href="javascript:void(0);">Fun</a></li>
+												<li class="bookTypes"><a href="javascript:void(0);">文学类</a></li>
+												<!--<li><a href="javascript:void(0);">Fun</a></li>-->
 											</ul>
 											<div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
 											<div class="tg-booktitle">
-												<h3><a href="javascript:void(0);">Drive Safely, No Bumping</a></h3>
+												<h3 class="bookName"><a href="javascript:void(0);">天才在左 疯子在右</a></h3>
 											</div>
-											<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
+											<span class="tg-bookwriter">By: <a href="javascript:void(0);"><span class="author">Angela Gunning</span></a></span>
 											<span class="tg-stars"><span></span></span>
 											<span class="tg-bookprice">
-												<ins>$25.18</ins>
-												<del>$27.20</del>
+												<ins class="price">29.80元</ins>
+												<del>32.50元</del>
 											</span>
 											<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
 												<i class="fa fa-shopping-basket"></i>
@@ -963,7 +1036,7 @@
 									<div class="tg-postbook">
 										<figure class="tg-featureimg">
 											<div class="tg-bookimg">
-												<div class="tg-frontcover"><img src="images/books/img-03.jpg" alt="image description"></div>
+												<div class="tg-frontcover"><img class="imgPath" src="images/books/img-03.jpg" alt="image description"></div>
 												<div class="tg-backcover"><img src="images/books/img-03.jpg" alt="image description"></div>
 											</div>
 											<a class="tg-btnaddtowishlist" href="javascript:void(0);">
@@ -973,17 +1046,17 @@
 										</figure>
 										<div class="tg-postbookcontent">
 											<ul class="tg-bookscategories">
-												<li><a href="javascript:void(0);">Adventure</a></li>
-												<li><a href="javascript:void(0);">Fun</a></li>
+												<li class="bookTypes"><a href="javascript:void(0);">Adventure</a></li>
+<!--												<li><a href="javascript:void(0);">Fun</a></li>-->
 											</ul>
 											<div class="tg-themetagbox"></div>
 											<div class="tg-booktitle">
-												<h3><a href="javascript:void(0);">Let The Good Times Roll Up</a></h3>
+												<h3 class="bookName"><a href="javascript:void(0);">Let The Good Times Roll Up</a></h3>
 											</div>
-											<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
+											<span class="tg-bookwriter">By: <a href="javascript:void(0);"><span class="author">Angela Gunning</span></a></span>
 											<span class="tg-stars"><span></span></span>
 											<span class="tg-bookprice">
-												<ins>$25.18</ins>
+												<ins class="price">$25.18</ins>
 												<del>$27.20</del>
 											</span>
 											<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
@@ -997,7 +1070,7 @@
 									<div class="tg-postbook">
 										<figure class="tg-featureimg">
 											<div class="tg-bookimg">
-												<div class="tg-frontcover"><img src="images/books/img-04.jpg" alt="image description"></div>
+												<div class="tg-frontcover"><img class="imgPath" src="images/books/img-04.jpg" alt="image description"></div>
 												<div class="tg-backcover"><img src="images/books/img-04.jpg" alt="image description"></div>
 											</div>
 											<a class="tg-btnaddtowishlist" href="javascript:void(0);">
@@ -1007,17 +1080,17 @@
 										</figure>
 										<div class="tg-postbookcontent">
 											<ul class="tg-bookscategories">
-												<li><a href="javascript:void(0);">Adventure</a></li>
-												<li><a href="javascript:void(0);">Fun</a></li>
+												<li class="bookTypes"><a href="javascript:void(0);">Adventure</a></li>
+<!--												<li><a href="javascript:void(0);">Fun</a></li>-->
 											</ul>
 											<div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
 											<div class="tg-booktitle">
-												<h3><a href="javascript:void(0);">Our State Fair Is A Great State Fair</a></h3>
+												<h3 class="bookName"><a href="javascript:void(0);">Our State Fair Is A Great State Fair</a></h3>
 											</div>
-											<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
+											<span class="tg-bookwriter">By: <a href="javascript:void(0);"><span class="author">Angela Gunning</span></a></span>
 											<span class="tg-stars"><span></span></span>
 											<span class="tg-bookprice">
-												<ins>$25.18</ins>
+												<ins class="price">$25.18</ins>
 												<del>$27.20</del>
 											</span>
 											<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
@@ -1031,7 +1104,7 @@
 									<div class="tg-postbook">
 										<figure class="tg-featureimg">
 											<div class="tg-bookimg">
-												<div class="tg-frontcover"><img src="images/books/img-05.jpg" alt="image description"></div>
+												<div class="tg-frontcover"><img class="imgPath" src="images/books/img-05.jpg" alt="image description"></div>
 												<div class="tg-backcover"><img src="images/books/img-05.jpg" alt="image description"></div>
 											</div>
 											<a class="tg-btnaddtowishlist" href="javascript:void(0);">
@@ -1041,17 +1114,17 @@
 										</figure>
 										<div class="tg-postbookcontent">
 											<ul class="tg-bookscategories">
-												<li><a href="javascript:void(0);">Adventure</a></li>
-												<li><a href="javascript:void(0);">Fun</a></li>
+												<li class="bookTypes"><a href="javascript:void(0);">Adventure</a></li>
+<!--												<li><a href="javascript:void(0);">Fun</a></li>-->
 											</ul>
 											<div class="tg-themetagbox"></div>
 											<div class="tg-booktitle">
-												<h3><a href="javascript:void(0);">Put The Petal To The Metal</a></h3>
+												<h3 class="bookName"><a href="javascript:void(0);">Put The Petal To The Metal</a></h3>
 											</div>
-											<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
+											<span class="tg-bookwriter">By: <a href="javascript:void(0);"><span class="author">Angela Gunning</span></a></span>
 											<span class="tg-stars"><span></span></span>
 											<span class="tg-bookprice">
-												<ins>$25.18</ins>
+												<ins class="price">$25.18</ins>
 												<del>$27.20</del>
 											</span>
 											<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
@@ -1065,7 +1138,7 @@
 									<div class="tg-postbook">
 										<figure class="tg-featureimg">
 											<div class="tg-bookimg">
-												<div class="tg-frontcover"><img src="images/books/img-06.jpg" alt="image description"></div>
+												<div class="tg-frontcover"><img class="imgPath" src="images/books/img-06.jpg" alt="image description"></div>
 												<div class="tg-backcover"><img src="images/books/img-06.jpg" alt="image description"></div>
 											</div>
 											<a class="tg-btnaddtowishlist" href="javascript:void(0);">
@@ -1075,17 +1148,17 @@
 										</figure>
 										<div class="tg-postbookcontent">
 											<ul class="tg-bookscategories">
-												<li><a href="javascript:void(0);">Adventure</a></li>
-												<li><a href="javascript:void(0);">Fun</a></li>
+												<li class="bookTypes"><a href="javascript:void(0);">Adventure</a></li>
+<!--												<li><a href="javascript:void(0);">Fun</a></li>-->
 											</ul>
 											<div class="tg-themetagbox"><span class="tg-themetag">sale</span></div>
 											<div class="tg-booktitle">
-												<h3><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
+												<h3 class="bookName"><a href="javascript:void(0);">Help Me Find My Stomach</a></h3>
 											</div>
-											<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
+											<span class="tg-bookwriter">By: <a href="javascript:void(0);"><span class="author">Angela Gunning</span></a></span>
 											<span class="tg-stars"><span></span></span>
 											<span class="tg-bookprice">
-												<ins>$25.18</ins>
+												<ins class="price">$25.18</ins>
 												<del>$27.20</del>
 											</span>
 											<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
@@ -1099,7 +1172,7 @@
 									<div class="tg-postbook">
 										<figure class="tg-featureimg">
 											<div class="tg-bookimg">
-												<div class="tg-frontcover"><img src="images/books/img-03.jpg" alt="image description"></div>
+												<div class="tg-frontcover"><img class="imgPath" src="images/books/img-03.jpg" alt="image description"></div>
 												<div class="tg-backcover"><img src="images/books/img-03.jpg" alt="image description"></div>
 											</div>
 											<a class="tg-btnaddtowishlist" href="javascript:void(0);">
@@ -1109,17 +1182,17 @@
 										</figure>
 										<div class="tg-postbookcontent">
 											<ul class="tg-bookscategories">
-												<li><a href="javascript:void(0);">Adventure</a></li>
-												<li><a href="javascript:void(0);">Fun</a></li>
+												<li class="bookTypes"><a href="javascript:void(0);">Adventure</a></li>
+<!--												<li><a href="javascript:void(0);">Fun</a></li>-->
 											</ul>
 											<div class="tg-themetagbox"></div>
 											<div class="tg-booktitle">
-												<h3><a href="javascript:void(0);">Let The Good Times Roll Up</a></h3>
+												<h3 class="bookName"><a href="javascript:void(0);">Let The Good Times Roll Up</a></h3>
 											</div>
-											<span class="tg-bookwriter">By: <a href="javascript:void(0);">Angela Gunning</a></span>
+											<span class="tg-bookwriter">By: <a href="javascript:void(0);"><span class="author">Angela Gunning</span></a></span>
 											<span class="tg-stars"><span></span></span>
 											<span class="tg-bookprice">
-												<ins>$25.18</ins>
+												<ins class="price">$25.18</ins>
 												<del>$27.20</del>
 											</span>
 											<a class="tg-btn tg-btnstyletwo" href="javascript:void(0);">
