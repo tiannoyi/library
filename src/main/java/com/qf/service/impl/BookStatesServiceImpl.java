@@ -6,6 +6,7 @@ import com.qf.entity.vo.BookStatesVo;
 import com.qf.entity.vo.BooksVo;
 import com.qf.mapper.BookStatesMapper;
 import com.qf.mapper.BooksMapper;
+import com.qf.mapper.SystemMapper;
 import com.qf.service.IBookStatesService;
 import com.qf.util.Page;
 import org.springframework.beans.BeanUtils;
@@ -20,6 +21,8 @@ public class BookStatesServiceImpl implements IBookStatesService {
     private BookStatesMapper bookStatesMapper;
     @Autowired
     private BooksMapper booksMapper;
+    @Autowired
+    private SystemMapper systemMapper;
 
     //选择性内容添加,已测试
     @Override
@@ -46,6 +49,12 @@ public class BookStatesServiceImpl implements IBookStatesService {
     //分页查询所有
     @Override
     public Page<BookStates> selectAllBookStates(Integer currentPage, Integer pageSize) {
+        if(pageSize == null){
+            pageSize = systemMapper.getPageLine();
+        }
+        if (currentPage == null){
+            currentPage = 1;
+        }
         PageHelper.startPage(currentPage,pageSize);
         BookStatesExample bookStatesExample = new BookStatesExample();
         BookStatesExample.Criteria criteria = bookStatesExample.createCriteria();
@@ -74,6 +83,12 @@ public class BookStatesServiceImpl implements IBookStatesService {
     //查看在馆的书籍的信息
     @Override
     public Page<Books> selectBooksByState(Integer state, Integer currentPage, Integer pageSize) {
+        if(pageSize == null){
+            pageSize = systemMapper.getPageLine();
+        }
+        if (currentPage == null){
+            currentPage = 1;
+        }
         PageHelper.startPage(currentPage,pageSize);
         BookStatesVo bookStatesVo = null;
         BooksVo booksVo = null;

@@ -4,13 +4,17 @@ import com.alibaba.druid.util.StringUtils;
 import com.github.pagehelper.PageHelper;
 import com.qf.entity.Readers;
 import com.qf.entity.ReadersExample;
+import com.qf.exception.SystemErrorException;
+import com.qf.exception.UserNameExistException;
 import com.qf.mapper.ReadersMapper;
 import com.qf.service.IReadersService;
+import com.qf.util.EncryptUtil;
 import com.qf.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ReadersServiceImpl implements IReadersService {
@@ -20,8 +24,22 @@ public class ReadersServiceImpl implements IReadersService {
 
     //选择性内容添加,已测试可行
     @Override
-    public int insertReader(Readers readers) {
-        return readersMapper.insertSelective(readers);
+    //public int insertReader(Readers readers){
+    public Readers insertReader(Readers readers) throws UserNameExistException, SystemErrorException {
+        readers.setReaderId(null);
+        ReadersExample readersExample = new ReadersExample();
+        readersExample.createCriteria().andReaderNameNotEqualTo(readers.getReaderName());
+        if (readersMapper.countByExample(readersExample) != 0){
+            throw new UserNameExistException("用户名已经存在");
+        }else {
+            Map<String, String> map = EncryptUtil.encryption(readers.getPassword());
+            readers.setPassword(map.get("password"));
+            if (readersMapper.insertSelective(readers) > 0){
+                return readers;
+            }else {
+                throw new SystemErrorException("插入失败");
+            }
+        }
     }
 
     //删除,已测试可行
