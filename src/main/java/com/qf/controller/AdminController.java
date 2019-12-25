@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class AdminController extends Base {
 
     @GetMapping("/admins")
     public Object selectAll(Integer currentPage,  Integer pageSize) {
-        //System.out.println(SecurityUtils.getSubject().getSession().getId());
+        System.out.println(SecurityUtils.getSubject().getSession().getId());
         Page data = as.selectAllVo(currentPage, pageSize);
         return packaging(StateCode.SUCCESS,"查询成功", data);
     }
@@ -91,6 +92,22 @@ public class AdminController extends Base {
             as.deleteAdmin(Integer.parseInt(split[i]));
         }
         return packaging(StateCode.SUCCESS,"删除成功",adminIds);
+    }
+
+    @GetMapping("/admins/checkUsername")
+    public Map checkUsername(@RequestParam String username){
+        Map<String, Boolean> map = new HashMap<>();
+        if (StringUtils.isEmpty(username)){
+            map.put("valid",true);
+            return map;
+        }
+        Integer integer = as.checkUsername(username);
+        if (integer == 0){
+            map.put("valid",true);
+            return map;
+        }
+        map.put("valid",false);
+        return map;
     }
 
 }

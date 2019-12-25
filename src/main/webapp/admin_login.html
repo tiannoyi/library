@@ -1,0 +1,204 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <link href="asserts/plugins/Bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+    <script src="asserts/plugins/Bootstrap/js/bootstrap.js"></script>
+
+    <script src="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.js"></script>
+    <link href="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/css/bootstrapValidator.css" rel="stylesheet">
+
+    <script src="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/js/language/zh_CN.js"></script>
+    <title>adminLogin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="Credit Login / Register Form Responsive Widget,Login form widgets, Sign up Web forms , Login signup Responsive web form,Flat Pricing table,Flat Drop downs,Registration Forms,News letter Forms,Elements" />
+
+    <!-- Custom Theme files -->
+    <link href="asserts/css/font-awesome.min.css" rel="stylesheet" type="text/css" media="all">
+    <link href="asserts/css/popuo-box.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="asserts/css/style.css" rel="stylesheet" type="text/css" media="all" />
+    <!-- //Custom Theme files -->
+
+</head>
+<body>
+<h1>登陆</h1>
+<div class="main-agileits">
+    <!--form-stars-here-->
+    <div class="form-w3-agile">
+        <h2>登陆</h2>
+        <form action="#" method="post">
+            <div class="form-sub-w3">
+                <input id="adminName" type="text" value="" name="Username" placeholder="用户名" required="" />
+                <div class="icon-w3">
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                </div>
+            </div>
+            <div class="form-sub-w3">
+                <input id="password" type="password" value="" name="Password" placeholder="密码" required="" />
+                <div class="icon-w3">
+                    <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+                </div>
+            </div>
+           <!-- <p class="p-bottom-w3ls">Are you new to eBanking?<a class="w3_play_icon1" href="#small-dialog1">  Register here</a></p>-->
+            <div class="form-sub-w3">
+                <input style="width: 200px" id="code" type="text" name="code" placeholder="验证码" required="" autocomplete="off" />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <img id="tupian" src="/library/verification" onclick="changeCode()">
+            </div>
+            <p style="text-align: center">
+                <label style="color: #66ccff">记住我:</label>
+                <input id="remember"  type="checkbox" name="remember">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="register.html" style="color: #66ccff">注册</a>
+            </p>
+            <br><br>
+            <div  style="width: 100px;margin: 0 auto">
+                <input  class="btn btn-primary btn-lg" type="button" onclick="login()" value="登陆">
+            </div >
+        </form>
+    </div>
+    <!--//form-ends-here-->
+</div>
+<div id="small-dialog1" class="mfp-hide">
+    <div class="contact-form1">
+        <div class="contact-w3-agileits">
+            <h3>Register Form</h3>
+            <form action="#" method="post">
+                <div class="form-sub-w3ls">
+                    <input placeholder="User Name" type="text" required="">
+                    <div class="icon-agile">
+                        <i class="fa fa-user" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="form-sub-w3ls">
+                    <input placeholder="Email" class="mail" type="email" required="">
+                    <div class="icon-agile">
+                        <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="form-sub-w3ls">
+                    <input placeholder="Password" type="password" required="">
+                    <div class="icon-agile">
+                        <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="form-sub-w3ls">
+                    <input placeholder="Confirm Password" type="password" required="">
+                    <div class="icon-agile">
+                        <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="login-check">
+            <label class="checkbox"><input type="checkbox" name="checkbox" checked=""><p>I Accept Terms & Conditions</p></label>
+        </div>
+        <div class="submit-w3l">
+            <input type="submit" value="Register">
+        </div>
+        </form>
+    </div>
+</div>
+<!-- copyright -->
+<div class="copyright w3-agile">
+    <p>天之依有限公司 版权所有©2019 技术支持电话：000-00000000</p>
+</div>
+<!-- //copyright -->
+<script type="text/javascript" src="asserts/js/jquery-2.1.4.min.js"></script>
+<!-- pop-up-box -->
+<script src="asserts/js/jquery.magnific-popup.js" type="text/javascript"></script>
+<!--//pop-up-box -->
+<script>
+    $(document).ready(function () {
+        $('.w3_play_icon,.w3_play_icon1,.w3_play_icon2').magnificPopup({
+            type: 'inline',
+            fixedContentPos: false,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in'
+        });
+
+    });
+
+    function login() {
+        var username = document.getElementById("adminName");
+        var password = document.getElementById("password");
+        var code = document.getElementById("code");
+        if(username.value == "" ){
+            username.style.color = "#ff0000";
+            username.value = "用户名不能为空";
+            username.onmouseup = function (ev) {
+                username.style.color = "#000000";
+                username.value = "";
+            }
+            return false;
+        }
+        if(password.value == ""){
+            password.style.color = "#ff0000";
+            password.type = "text";
+            password.value = "密码不能为空";
+            password.onmouseup = function (ev) {
+                password.style.color = "#000000";
+                password.type = "password";
+                password.value = "";
+            }
+            return false;
+        }
+        if(code.value == ""){
+            code.style.color = "#ff0000";
+            code.type = "text";
+            code.value = "验证码不能为空";
+            code.onmouseup = function (ev) {
+                code.style.color = "#000000";
+                code.type = "password";
+                code.value = "";
+            }
+            return false;
+        }
+        var ck = document.getElementById("remember");
+        var remember;
+        if(ck.checked){
+            remember = "true";
+        }else {
+            remember = "false";
+        }
+        var adminName = username.value;
+        var adminPassword = password.value;
+        var adminCode = code.value;
+        $.ajax({
+            type:"POST",
+            url:"/library/login",
+            data:{
+                adminName:adminName,
+                password:adminPassword,
+                code:adminCode,
+                remember:remember
+            } ,
+            success:function (data) {
+                if (data.state == "SUCCESS") {
+                    location.href = "html/admin/index.html";
+                }else {
+                    alert(data.message);
+                }
+            }
+        });
+    }
+
+    function changeCode() {
+         $("#tupian").attr('src','/library/verification?time='+new Date().getTime());
+    }
+</script>
+</body>
+</html>

@@ -117,4 +117,15 @@ public class AdminServiceImpl implements IAdminService {
         admin.setIsDelete(0);
         return adminMapper.updateByPrimaryKeySelective(admin);
     }
+
+    @Override
+    public Integer checkUsername(String userName) {
+        AdminExample example = new AdminExample();
+        example.createCriteria().andAdminNameEqualTo(userName);
+        List<Admin> admins = adminMapper.selectByExample(example);
+        if (admins.size() < 1){
+            return 0;
+        }
+        return 1;
+    }
 }

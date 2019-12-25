@@ -57,7 +57,7 @@ public class RoleController extends Base {
 
     //修改角色信息
     @PutMapping("/roles/{roleId}")
-    public State<Object> updateRole(@PathVariable("roleId")Integer roleId,Roles roles){
+    public State<Object> updateRole(@PathVariable("roleId")Integer roleId,@RequestBody Roles roles){
         roles.setRoleId(roleId);
         Integer integer = roleService.updateByPrimaryKey(roles);
         if (integer > 0){

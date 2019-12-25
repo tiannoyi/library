@@ -15,10 +15,9 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
 
 
 @RestController
@@ -27,12 +26,15 @@ public class LoginController extends Base {
     IPermissionsService ps;
 
 
-
     //管理员登录
     @PostMapping("/login")
-    public Object login(Admin admin) throws UserNameIsNullException, PassWordIsNullException {
+    public Object login(Admin admin,@RequestParam String code,@RequestParam String remember) throws UserNameIsNullException, PassWordIsNullException {
         Subject subject = SecurityUtils.getSubject();
         System.out.println(SecurityUtils.getSubject().getSession().getId());
+        String codes = (String)subject.getSession().getAttribute("codes");
+        if (!codes.equals(code)){
+            return packaging(StateCode.FAIL,"验证码错误",null);
+        }
         UsernamePasswordToken token = new UsernamePasswordToken(admin.getAdminName(), admin.getPassword());
         try {
             subject.login(token);
@@ -49,6 +51,10 @@ public class LoginController extends Base {
         } catch (AuthenticationException ae) {
             return packaging(StateCode.FAIL,"登陆失败", token.getUsername());
         }
+        //记住我
+        if (remember.equals("true")){
+            token.setRememberMe(true);
+        }
         return packaging(StateCode.SUCCESS,"登陆成功", token.getUsername());
     }
 
@@ -60,5 +66,15 @@ public class LoginController extends Base {
         } catch (NotLoginException e) {
             return packaging(StateCode.LOGINAGAIN,"请重新登陆", null);
         }
+    }
+
+
+
+    @RequestMapping("/logout")
+    public Object logout(HttpSession session) throws Exception{
+        //清除session
+        session.invalidate();
+        //重定向到商品列表页面
+        return packaging(StateCode.SUCCESS,"",null);
     }
 }
