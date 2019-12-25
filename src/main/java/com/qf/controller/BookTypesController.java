@@ -19,8 +19,6 @@ import java.util.List;
 public class BookTypesController extends Base {
     @Autowired
     private IBookTypesService bookTypesService;
-    @Autowired
-    private SystemMapper systemMapper;
 
     @PostMapping("/insertBookTypes")
     public State<Object> insertBookTypes(BookTypes bookTypes){
@@ -34,9 +32,6 @@ public class BookTypesController extends Base {
 
     @GetMapping("/selectAllBookTypes")
     public State<Object> selectAllBookTypes(Integer currentPage,Integer pageSize){
-        if (StringUtils.isEmpty(pageSize)) {
-            pageSize = systemMapper.getPageLine();
-        }
         Page<BookTypes> page = bookTypesService.selectAllBookTypes(currentPage, pageSize);
         if (page.getList().isEmpty()){
             return packaging(StateCode.FAIL,"查询失败",null);
