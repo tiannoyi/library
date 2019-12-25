@@ -69,12 +69,14 @@ public interface IBorrowsService {
     Borrows selectBorrowsByBorrowId(Integer borrowId);
 
     /**
-     * 通过书本 bookStateId 查出该书本的借阅情况
+     * 查询 bookStateId 记录
      *
-     * @param bookStateId 在馆Id
-     * @return 对应借阅记录
+     * @param bookStateId
+     * @param currentPage
+     * @param pageSize
+     * @return
      */
-    Borrows selectBorrowsByBookStateId(Integer bookStateId);
+    Page<Borrows>  selectBorrowsByBookStateId(Integer bookStateId, Integer currentPage, Integer pageSize);
 
     /**
      * 查询全部借阅记录
