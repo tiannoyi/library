@@ -101,9 +101,19 @@ public class BorrowHistoryController extends Base {
      * @return
      */
     @DeleteMapping("/deleteBatchByHistoryId")
-    public State<Object> deleteBatchByHistoryId(Integer[] deleteIds) {
-        if (deleteIds != null && deleteIds.length > 0) {
-            return borrowHistoryService.deleteBatchByHistoryId(deleteIds) > 0 ?
+    public State<Object> deleteBatchByHistoryId(String deleteIds) {
+        if (StringUtils.isEmpty(deleteIds)){
+            return packaging(StateCode.FAIL,"删除失败",null);
+        }
+        String[] nums = deleteIds.split(",");
+
+        Integer[] ints = new Integer[nums.length];
+
+        for (int i = 0; i < nums.length; i++) {
+            ints[i]= Integer.parseInt(nums[i]);
+        }
+        if (ints.length > 0) {
+            return borrowHistoryService.deleteBatchByHistoryId(ints) > 0 ?
                     packaging(StateCode.SUCCESS, "批量删除借阅历史" + ChangliangUtil.DELETESUCCESS, null)
                     : packaging(StateCode.FAIL, "批量删除借阅历史" + ChangliangUtil.DELETEFAIL, null);
         }
