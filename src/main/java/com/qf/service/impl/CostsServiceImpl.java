@@ -4,6 +4,7 @@ package com.qf.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.qf.entity.Costs;
 import com.qf.entity.CostsExample;
+import com.qf.entity.vo.CostsVo;
 import com.qf.mapper.CostsMapper;
 import com.qf.mapper.SystemMapper;
 import com.qf.service.ICostsService;
@@ -12,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -21,9 +25,17 @@ public class CostsServiceImpl implements ICostsService {
 
     @Autowired
     SystemMapper systemMapper;
-
     @Override
     public Integer insertCost(Costs costs) {
+        Date date = new Date();//获得系统时间.
+        SimpleDateFormat sdf =   new SimpleDateFormat( " yyyy-MM-dd HH:mm:ss " );
+        String nowTime = sdf.format(date);
+        try {
+            Date time = sdf.parse(nowTime);
+            costs.setCreateTime(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         int i = costsMapper.insertSelective(costs);
         return i;
     }
@@ -53,33 +65,35 @@ public class CostsServiceImpl implements ICostsService {
 
     //分页查询所有金额流水表
     @Override
-    public Page<Costs> selectCostsList(Integer currentPage, Integer pageSize) {
+    public Page selectAllVo(Integer currentPage, Integer pageSize) {
         if (StringUtils.isEmpty(pageSize)) {
             pageSize = systemMapper.getPageLine();
         }
         PageHelper.startPage(currentPage, pageSize);
-        CostsExample costsExample = new CostsExample();
-        costsExample.createCriteria().andIsDeleteEqualTo(1);
-        List<Costs> allCosts = costsMapper.selectByExample(costsExample);
-        int costsNum = costsMapper.countByExample(costsExample);
-        Page<Costs> pageData = new Page<>(currentPage, pageSize, costsNum);
-        pageData.setList(allCosts);
+        List<CostsVo> costsVos = costsMapper.selectAllVo();
+        int count = costsVos.size();
+        Page<CostsVo> pageData = new Page<>(currentPage, pageSize, count);
+        pageData.setList(costsVos);
         return pageData;
     }
 
     //根据读者id分页查询金额流水表
     @Override
-    public Page<Costs> selectCostsListByReaderId(Integer currentPage, Integer pageSize,Integer readerId) {
+    public Page selectByPrimaryKeyVo(Integer currentPage, Integer pageSize,Integer readerId) {
         if (StringUtils.isEmpty(pageSize)) {
             pageSize = systemMapper.getPageLine();
         }
+        if (currentPage == null) {
+            currentPage = 1;
+        }
         PageHelper.startPage(currentPage,pageSize);
-        CostsExample costsExample = new CostsExample();
+        List<CostsVo> costsVo = costsMapper.selectByPrimaryKeyVo(readerId);
+        /*CostsExample costsExample = new CostsExample();
         costsExample.createCriteria().andIsDeleteEqualTo(1).andReaderIdEqualTo(readerId);
-        List<Costs> costs = costsMapper.selectByExample(costsExample);
-        int costsNum = costsMapper.countByExample(costsExample);
-        Page<Costs> pageData = new Page<>(currentPage, pageSize, costsNum);
-        pageData.setList(costs);
-        return pageData;
+        List<Costs> costs = costsMapper.selectByExample(costsExample);*/
+        int costsNum = costsVo.size();
+        Page<CostsVo> page = new Page<>(currentPage, pageSize, costsNum);
+        page.setList(costsVo);
+        return page;
     }
 }

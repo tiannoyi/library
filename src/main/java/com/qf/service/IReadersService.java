@@ -1,6 +1,8 @@
 package com.qf.service;
 
 import com.qf.entity.Readers;
+import com.qf.exception.SystemErrorException;
+import com.qf.exception.UserNameExistException;
 import com.qf.mapper.ReadersMapper;
 import com.qf.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,7 @@ import java.util.List;
 
 public interface IReadersService {
     //添加读者(用户)
-    int insertReader(Readers readers);
+    Readers insertReader(Readers readers) throws UserNameExistException, SystemErrorException;
 
     //删除用户
     int deleteReaderById(Integer readerId);

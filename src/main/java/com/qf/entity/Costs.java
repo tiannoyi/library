@@ -25,6 +25,21 @@ public class Costs {
     public Costs() {
     }
 
+    public Costs(Integer costId, Integer readerId, Byte costType, Float numeric, Byte payType, Date createTime, Integer isDelete) {
+        this.costId = costId;
+        this.readerId = readerId;
+        this.costType = costType;
+        this.numeric = numeric;
+        this.payType = payType;
+        this.createTime = createTime;
+        this.isDelete = isDelete;
+    }
+
+    public Costs(Integer costId, Integer isDelete) {
+        this.costId = costId;
+        this.isDelete = isDelete;
+    }
+
     public Costs(Integer readerId, Byte costType, Float numeric, Byte payType) {
         this.readerId = readerId;
         this.costType = costType;
