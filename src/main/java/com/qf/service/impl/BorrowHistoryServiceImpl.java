@@ -149,9 +149,9 @@ public class BorrowHistoryServiceImpl implements IBorrowHistoryService {
     public Integer deleteBatchByHistoryId(Integer[] borrowHistoryIds) {
         int deleteCount = 0;
         if (!StringUtils.isEmpty(borrowHistoryIds) && borrowHistoryIds.length > 0) {
-            for (Integer borrowId : borrowHistoryIds) {
+            for (Integer historyId : borrowHistoryIds) {
                 BorrowHistoryExample borrowHistoryExample = new BorrowHistoryExample();
-                borrowHistoryExample.createCriteria().andIsDeleteEqualTo(1).andBookIdEqualTo(borrowId);
+                borrowHistoryExample.createCriteria().andHistoryIdEqualTo(historyId).andIsDeleteEqualTo(1);
                 BorrowHistory borrowHistory = new BorrowHistory();
                 borrowHistory.setIsDelete(0);
                 if (borrowHistoryMapper.updateByExampleSelective(borrowHistory, borrowHistoryExample) == 1) {

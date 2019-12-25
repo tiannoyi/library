@@ -86,9 +86,19 @@ public class BorrowsController extends Base {
      * @return
      */
     @DeleteMapping("/deleteBatchByBorrowId")
-    public State<Object> deleteBatchByBorrowId(Integer[] borrowIds) {
-        if (borrowIds != null && borrowIds.length > 0) {
-            return borrowsService.deleteBatchByBorrowId(borrowIds) > 0 ?
+    public State<Object> deleteBatchByBorrowId(String borrowIds) {
+        if (StringUtils.isEmpty(borrowIds)){
+            return packaging(StateCode.FAIL,"删除失败",null);
+        }
+        String[] nums = borrowIds.split(",");
+
+        Integer[] ints = new Integer[nums.length];
+
+        for (int i = 0; i < nums.length; i++) {
+            ints[i]= Integer.parseInt(nums[i]);
+        }
+        if (ints.length > 0) {
+            return borrowsService.deleteBatchByBorrowId(ints) > 0 ?
                     packaging(StateCode.SUCCESS, "批量删除借阅情况" + ChangliangUtil.DELETESUCCESS, null)
                     : packaging(StateCode.FAIL, "批量删除借阅情况" + ChangliangUtil.DELETEFAIL, null);
         }

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>APP</title>
+    <link rel="stylesheet" href="./css/component.css">
+    <link rel="stylesheet" href="./css/admin.css">
+    <link rel="stylesheet" href="./css/font-awesome.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <link href="../../asserts/plugins/Bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+    <script src="../../asserts/plugins/Bootstrap/js/bootstrap.js"></script>
+
+    <script src="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.js"></script>
+    <link href="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/css/bootstrapValidator.css" rel="stylesheet">
+
+    <script src="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/js/language/zh_CN.js"></script>
+    <title>library</title>
+    <link rel="stylesheet" href="./css/component.css">
+    <link rel="stylesheet" href="./css/admin.css">
+    <link rel="stylesheet" href="./css/font-awesome.min.css">
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <link href="css/addcss.css" rel="stylesheet" type="text/css">
+
+    <!-- 富文本编辑器 -->
+
+    <style type="text/css">
+        .footer{
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+
+            padding: 0.3rem 0;
+            color:#9e9ea6;
+            height: 80px;
+        }
+    </style>
+
+    <!-- 富文本编辑器 -->
+    <script src="./js/wang.js"></script>
+    <script>
+        // 获取模型
+        var modal = document.getElementById('id01');
+
+        // 鼠标点击模型外区域关闭登录框
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        function windowHeight() {
+            var de = document.documentElement;
+            return self.innerHeight||(de && de.clientHeight)||document.body.clientHeight;
+        }
+        window.onload=window.onresize=function(){
+            var wh=windowHeight();
+            document.getElementById("xt-left").style.height = document.getElementById("xt-right").style.height = (wh-document.getElementById("xt-top").offsetHeight)+"px";
+        }
+    </script>
+    <script type="text/javascript">
+        function timestampToTime(timestamp) {
+            var date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+            Y = date.getFullYear() + '-';
+            M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+            D = date.getDate() + ' ';
+            h = date.getHours() + ':';
+            m = date.getMinutes() + ':';
+            s = date.getSeconds();
+            return Y+M+D+h+m+s;
+        }
+
+        function insertCosts() {
+            var readerId = $("#readerId").val();
+            var costType = $(".costType").val();
+            var numeric = $("#numeric").val();
+            var payType = $(".payType").val();
+            $.ajax({
+                type: "POST",
+                url:"/library/costs/insertCosts",
+                data:{
+                    readerId:readerId,
+                    costType:costType,
+                    numeric:numeric,
+                    payType:payType,
+                },
+                success:function (data) {
+                    if (data.state == "SUCCESS"){
+                        alert(data.message);
+                        location.href = "costs_show.html"
+                    }else {
+                        alert(data.message);
+                    }
+                }
+            });
+        }
+        function jumpPage(index){
+            location.href = "costs_show.html?currentPage="+index
+        }
+
+        function getQueryVariable(variables){
+            var query = window.location.search.substring(1);
+            var vars = query.split("&");
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split("=");
+                if (pair[0] == variables){
+                    return decodeURI(pair[1]);
+                }
+                return (false)
+            }
+        }
+
+        $(function () {
+            var currentPage = getQueryVariable("currentPage");
+            var pageSize = getQueryVariable("pageSize");
+            if (currentPage == false){
+                currentPage = 1;
+            }
+            if (pageSize == false){
+                pageSize = 5;
+            }
+
+            $.ajax({
+                type:"GET",
+                url:"/library/costs/selectCostsAll",
+                data:{
+                    currentPage:currentPage,
+                    pageSize: pageSize,
+                },
+                success:function (data) {
+                    $("#tbody").empty();
+                    $("#paging").empty();
+                    if (data.state == "SUCCESS") {
+                        $.each(data.data.list, function (index, value) {
+                            var $tr = $("<tr></tr>");
+                            $tr.append("<input id='costId"+index+"' name='costId' type='hidden' value= '"+value.costId+"' > ");
+                            $tr.append("<td width='70px'>"+"<input name='ckb' id='checkbox"+index+"' type='checkbox' value='"+value.costId+"' onclick='dcAll()'>"+"</td>")
+                            $tr.append("<td>"+(index+1)+"</td>")
+                            $tr.append("<td id='readerName"+index+"'>"+value.reader.readerName+"</td>");
+                            $tr.append("<td id='costType"+index+"'>"+value.costType+"</td>");
+                            $tr.append("<td id='numeric"+index+"'>"+value.numeric+"</td>");
+                            $tr.append("<td id='payType"+index+"'>"+value.payType+"</td>");
+                            $tr.append("<td id='createTime"+index+"'>"+timestampToTime(value.createTime)+"</td>");
+                            $tr.append("<td width='160px'>"+
+                                "<a href='#' class='btn btn-warning' onclick='updataButten("+index+")'>修改</a> "+
+                                "<a href='#' onclick='removeGoods("+value.costId+")' class='btn btn-danger'>删除</a> "
+                                +"</td>");
+                            $("#tbody").append($tr);
+                        });
+
+                        //分页
+                        var $ul = $("<ul class='pagination pagination-lg'></ul>");
+                        if (data.data.currentPage < 2){
+                            $ul.append("<li class='disabled'><a href='#'>&laquo;</a></li>");
+                        } else {
+                            $ul.append("<li><a href='#' onclick='jumpPage("+(data.data.currentPage-1)+")'>&laquo;</a></li>");
+                        }
+                        for (var i = 0;i < data.data.totalPage;i++){
+                            if (data.data.currentPage == 1 && i < 1){
+                                $ul.append("<li class='disabled active'><a href='#' onclick='jumpPage("+(i+1)+")'>"+(i+1)+"</a></li>");
+                            }else if (i == (data.data.totalPage-1) && data.data.currentPage == data.data.totalPage) {
+                                $ul.append("<li class='disabled active'><a href='#' onclick='jumpPage("+(i+1)+")'>"+(i+1)+"</a></li>");
+                            }else {
+                                if (i == (data.data.currentPage - 1 ) ){
+                                    $ul.append("<li class='active'><a href='#' onclick='jumpPage("+(i+1)+")'>"+(i+1)+"</a></li>");
+                                } else {
+                                    $ul.append("<li><a href='#' onclick='jumpPage("+(i+1)+")'>"+(i+1)+"</a></li>");
+                                }
+                            }
+                        }
+                        if (data.data.currentPage >= data.data.totalPage){
+                            $ul.append("<li class='disabled'><a href='#'>&raquo;</a></li>");
+                        } else {
+                            $ul.append("<li><a href='#' onclick='jumpPage("+(data.data.currentPage + 1)+")' >&raquo;</a></li>");
+                        }
+                        $("#paging").append($ul);
+                    }else {
+                        alert("未知错误");
+                    }
+                }
+            })
+        })
+    </script>
+</head>
+
+<body>
+    <div class="rbody" id="app">
+        <div class="top">
+            当前位置：后台<i class="fa fa-fw fa-angle-right"></i>订单列表
+        </div>
+        <div class="main">
+            <div class="tabList">
+                <input type="button" value="添 加" class="btn btn-info" onclick="document.getElementById('addCosts').style.display='block'" style="width:auto;"/>            </div>
+            <div class="imglists">
+                <table id="table">
+                    <colgroup>
+                        <col width="100">
+                        <col width="150">
+                        <col width="100">
+                        <col width="100">
+                        <col width="100">
+                        <col width="125">
+                        <col width="125">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th></th>
+                        <th>
+                            序号
+                        </th>
+                        <th>
+                            读者名字
+                        </th>
+
+                        <th>
+                            支付类型
+                        </th>
+                        <th>
+                            金额
+                        </th>
+                        <th>
+                            支付方式
+                        </th>
+                        <th>
+                            缴费日期
+                        </th>
+                        <th>
+                            操作
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <div id="paging" class="text-center">
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--    添加页面-->
+    <div id="addCosts" class="hmodal">
+        <div id="a">
+            <form id="addform" class="modal-content animate" action="/library/insertCosts" method="post">
+                <div class="imgcontainer">
+                    <span onclick="document.getElementById('addCosts').style.display='none'" class="close" title="Close Modal">&times;</span>
+                </div>
+                <h1 style="margin-left: 40px;margin-top: 10px;color: #66ccff">添加</h1>
+                <div class="container" style="width: 170px;margin: 0 auto;">
+                    读者编号:
+                    <input id="costId" class="int-text" type="text" placeholder="读者编号"><br/>
+                    支付类型:
+                    <input type="radio" id="cost_type1" name="cost_type" class="costType" value="1">会员充值
+                    <input type="radio" id="cost_type2" name="cost_type" class="costType" value="2">罚款
+                    <input type="radio" id="cost_type3" name="cost_type" class="costType" value="3">退款
+                    <br/>
+                    支付金额:
+                    <input class="int-text" type="text" id="numeric" name="numeric" placeholder="支付金额"><br/>
+                    支付方式:
+                    <input type="radio" id="pay_type1" name="pay_type" class="payType" value="1">现金
+                    <input type="radio" id="pay_type2" name="pay_type" class="payType" value="2">手机支付
+                    <br/>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="./js/common.js"></script>
+</body>
+
+</html>
