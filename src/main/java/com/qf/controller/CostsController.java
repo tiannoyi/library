@@ -7,6 +7,7 @@ import com.qf.service.ICostsService;
 import com.qf.util.Page;
 import com.qf.util.State;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,6 +30,9 @@ public class CostsController extends Base {
     @GetMapping("/selectCostsAll")
     public Object selectCostsAll(Integer currentPage, Integer pageSize){
         Page costs = costsService.selectAllVo(currentPage, pageSize);
+        if (StringUtils.isEmpty(costs)) {
+            return packaging(StateCode.FAIL,"查询失败",null);
+        }
         return packaging(StateCode.SUCCESS,"查询成功",costs);
     }
 
@@ -43,10 +47,15 @@ public class CostsController extends Base {
 
     }
 
-    @PutMapping("/updateByCostsId")
-    public  State<Object> updateByCostsId(Integer costsId, Costs costs){
-        costs.setCostId(costsId);
-        Integer i = costsService.updateByCostsId(costsId, costs);
+    @PostMapping("/updateByCostsId")
+    public  State<Object> updateByCostsId(Integer costId ,Costs costs){
+        if (StringUtils.isEmpty(costs)){
+            return packaging(StateCode.FAIL,"修改失败",null);
+        }
+        if (StringUtils.isEmpty(costId)){
+            return packaging(StateCode.FAIL,"修改失败",null);
+        }
+        Integer i = costsService.updateByCostsId(costId,costs);
         if (i != null) {
             return packaging(StateCode.SUCCESS,"修改成功", i);
         }else {
@@ -55,7 +64,7 @@ public class CostsController extends Base {
 
     }
 
-    @PutMapping("/deleteCostsByCostsId")
+    @DeleteMapping("/deleteCostsByCostsId")
     public State<Object> deleteCostsByCostsId(Integer costsId){
         Integer i = costsService.deleteByCostsId(costsId);
         if (i != null) {
