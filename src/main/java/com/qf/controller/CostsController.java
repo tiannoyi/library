@@ -3,6 +3,7 @@ package com.qf.controller;
 import com.qf.constan.StateCode;
 import com.qf.controller.base.Base;
 import com.qf.entity.Costs;
+import com.qf.entity.vo.CostsVo;
 import com.qf.service.ICostsService;
 import com.qf.util.Page;
 import com.qf.util.State;
@@ -19,7 +20,7 @@ public class CostsController extends Base {
     ICostsService costsService;
 
     @PostMapping("/insertCosts")
-    private State<Object> insertCosts(Costs costs){
+    public State<Object> insertCosts(Costs costs){
         Integer i = costsService.insertCost(costs);
         if (i != null) {
             return packaging(StateCode.SUCCESS,"插入成功", i);
@@ -30,25 +31,14 @@ public class CostsController extends Base {
     }
 
     @GetMapping("/selectCostsAll")
-    private State<Object> selectCostsAll(Integer currentPage, Integer pageSize){
-        if (currentPage == null || pageSize == null) {
-            return packaging(StateCode.FAIL,"请输入页数和总数",null);
-        }
-        Page<Costs> costs = costsService.selectCostsList(currentPage, pageSize);
-        if (costs.getList().size() != 0) {
-            return packaging(StateCode.SUCCESS,"查询成功",costs);
-        }else {
-            return packaging(StateCode.FAIL,"查询失败",costs);
-        }
-
+    public Object selectCostsAll(Integer currentPage, Integer pageSize){
+        Page costs = costsService.selectAllVo(currentPage, pageSize);
+        return packaging(StateCode.SUCCESS,"查询成功",costs);
     }
 
     @GetMapping("/selectCostsByReaderId")
-    private State<Object> selectCostsByReaderId(Integer readerid, Integer currentPage, Integer pageSize){
-        if (currentPage == null || pageSize == null) {
-            return packaging(StateCode.FAIL,"请输入页数总数",null);
-        }
-        Page<Costs> costs = costsService.selectCostsListByReaderId(readerid, currentPage, pageSize);
+    public State<Object> selectCostsByReaderId(Integer readerid, Integer currentPage, Integer pageSize){
+        Page costs = costsService.selectByPrimaryKeyVo(readerid, currentPage, pageSize);
         if (costs.getList().size() != 0) {
             return packaging(StateCode.SUCCESS,"查询成功",costs);
         }else {
@@ -58,7 +48,7 @@ public class CostsController extends Base {
     }
 
     @PutMapping("/updateByCostsId")
-    private  State<Object> updateByCostsId(Integer costsId, Costs costs){
+    public  State<Object> updateByCostsId(Integer costsId, Costs costs){
         costs.setCostId(costsId);
         Integer i = costsService.updateByCostsId(costsId, costs);
         if (i != null) {
@@ -70,14 +60,25 @@ public class CostsController extends Base {
     }
 
     @PutMapping("/deleteCostsByCostsId")
-    private State<Object> deleteCostsByCostsId(Integer costsId){
+    public State<Object> deleteCostsByCostsId(Integer costsId){
         Integer i = costsService.deleteByCostsId(costsId);
         if (i != null) {
-            return packaging(StateCode.SUCCESS,"删除成功",i);
+            return packaging(StateCode.SUCCESS,"删除成功",costsId);
         }else {
-            return packaging(StateCode.FAIL,"删除成功",i);
+            return packaging(StateCode.FAIL,"删除失败",null);
         }
+    }
 
+    @DeleteMapping("/deleteAll")
+    public Object deleteAll(String costsId){
+        if (costsId == null) {
+            return packaging(StateCode.FAIL,"删除成功",null);
+        }
+        String[] split = costsId.split(",");
+        for (int i = 0; i < split.length; i++) {
+            costsService.deleteByCostsId(Integer.parseInt(split[i]));
+        }
+        return packaging(StateCode.SUCCESS,"删除成功",costsId);
     }
 
 }
