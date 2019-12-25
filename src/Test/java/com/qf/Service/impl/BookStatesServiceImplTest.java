@@ -2,7 +2,10 @@ package com.qf.Service.impl;
 
 import com.qf.config.TestConfig;
 import com.qf.entity.BookStates;
+import com.qf.entity.Books;
 import com.qf.service.IBookStatesService;
+import com.qf.util.Page;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import static org.junit.Assert.*;
 @ContextConfiguration(classes = {TestConfig.class})
 @WebAppConfiguration
 @Configuration
+@Slf4j
 public class BookStatesServiceImplTest {
     @Autowired
     IBookStatesService bookStatesService;
@@ -43,5 +47,7 @@ public class BookStatesServiceImplTest {
 
     @Test
     public void selectAll() {
+        Page<Books> booksPage = bookStatesService.selectBooksByState(0, 1, 3);
+        log.debug(""+booksPage);
     }
 }

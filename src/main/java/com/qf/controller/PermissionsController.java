@@ -61,7 +61,7 @@ public class PermissionsController extends Base {
 
     //修改权限
     @PutMapping("/permissions/{permissionsId}")
-    public State updatePermission(@PathVariable Integer permissionsId,Permissions permissions){
+    public State updatePermission(@PathVariable Integer permissionsId,@RequestBody Permissions permissions){
         if (StringUtils.isEmpty(permissions)){
             return packaging(StateCode.FAIL,"修改失败",null);
         }

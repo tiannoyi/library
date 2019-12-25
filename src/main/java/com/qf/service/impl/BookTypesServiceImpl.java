@@ -5,6 +5,7 @@ import com.qf.entity.*;
 import com.qf.entity.vo.BookTypesVo;
 import com.qf.mapper.BookTypesMapper;
 import com.qf.mapper.BooksMapper;
+import com.qf.mapper.SystemMapper;
 import com.qf.service.IBookTypesService;
 import com.qf.util.Page;
 import org.springframework.beans.BeanUtils;
@@ -19,6 +20,9 @@ public class BookTypesServiceImpl implements IBookTypesService {
     private BookTypesMapper bookTypesMapper;
     @Autowired
     private BooksMapper booksMapper;
+    @Autowired
+    private SystemMapper systemMapper;
+
 
     //添加已测试
     @Override
@@ -47,6 +51,12 @@ public class BookTypesServiceImpl implements IBookTypesService {
     //查询书本的所有类目,已测试
     @Override
     public Page<BookTypes> selectAllBookTypes(Integer currentPage, Integer pageSize) {
+        if(pageSize == null){
+            pageSize = systemMapper.getPageLine();
+        }
+        if (currentPage == null){
+            currentPage = 1;
+        }
         PageHelper.startPage(currentPage,pageSize);
         BookTypesExample bookTypesExample = new BookTypesExample();
         BookTypesExample.Criteria criteria = bookTypesExample.createCriteria();
@@ -61,6 +71,12 @@ public class BookTypesServiceImpl implements IBookTypesService {
     //一对多,通过类目ID 查询对应的书本信息
     @Override
     public Page<Books> selectBooksByBookTypesId(Integer currentPage, Integer pageSize, Integer bookTypeId) {
+        if(pageSize == null){
+            pageSize = systemMapper.getPageLine();
+        }
+        if (currentPage == null){
+            currentPage = 1;
+        }
         PageHelper.startPage(currentPage,pageSize);
         BookTypesVo bookTypesVo = new BookTypesVo();
         BookTypes bookTypes = bookTypesMapper.selectByPrimaryKey(bookTypeId);

@@ -4,6 +4,8 @@ import com.qf.entity.Books;
 import com.qf.entity.BooksExample;
 import com.qf.entity.BooksWithBLOBs;
 import java.util.List;
+
+import com.qf.entity.vo.BooksVo;
 import org.apache.ibatis.annotations.Param;
 
 public interface BooksMapper {
@@ -35,4 +37,6 @@ public interface BooksMapper {
 
     int updateByPrimaryKey(Books record);
 
+    //关联类别、在馆表查询书本信息
+    List<BooksVo> selectAllVo();
 }

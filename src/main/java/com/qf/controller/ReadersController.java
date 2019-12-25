@@ -4,6 +4,8 @@ package com.qf.controller;
 import com.qf.constan.StateCode;
 import com.qf.controller.base.Base;
 import com.qf.entity.Readers;
+import com.qf.exception.SystemErrorException;
+import com.qf.exception.UserNameExistException;
 import com.qf.mapper.SystemMapper;
 import com.qf.service.IReadersService;
 import com.qf.util.Page;
@@ -22,11 +24,19 @@ public class ReadersController extends Base {
 
     @PostMapping("/insertReader")
     public State<Object> insertReader(Readers readers){
-        int i = readerService.insertReader(readers);
+        /*int i = readerService.insertReader(readers);
         if (i != 0){
             return packaging(StateCode.SUCCESS,"添加成功",i);
         }else {
             return packaging(StateCode.FAIL,"添加失败",null);
+        }*/
+        try{
+            readers = readerService.insertReader(readers);
+            return packaging(StateCode.SUCCESS,"添加成功",readers);
+        } catch (UserNameExistException e) {
+            return packaging(StateCode.USERNAMEEXIST,"用户名已经存在",readers);
+        } catch (SystemErrorException e) {
+            return packaging(StateCode.FAIL,"添加失败", readers);
         }
     }
 

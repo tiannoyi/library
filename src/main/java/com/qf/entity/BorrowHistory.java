@@ -1,5 +1,7 @@
 package com.qf.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class BorrowHistory {
@@ -7,8 +9,10 @@ public class BorrowHistory {
 
     private Integer readerId;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date borrowTime;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date repayTime;
 
     private Byte renew;
