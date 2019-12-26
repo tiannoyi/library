@@ -32,4 +32,7 @@ public interface RolesMapper {
 
     //查询对应id增强角色
     RolesVo selectByPrimaryKeyVo(Integer RoleId);
+
+    //查询所有角色
+    List<RolesVo> selectAllVo();
 }

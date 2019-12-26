@@ -35,4 +35,7 @@ public interface IAdminService {
     //删除管理员
     Integer deleteAdmin(Integer adminId);
 
+    //查询用户名是否存在
+    Integer checkUsername(String userName);
+
 }

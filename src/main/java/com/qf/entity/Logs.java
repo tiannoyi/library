@@ -1,10 +1,13 @@
 package com.qf.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class Logs {
     private Integer id;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date time;
 
     private Integer adminId;

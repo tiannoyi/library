@@ -3,6 +3,8 @@ package com.qf.mapper;
 import com.qf.entity.Logs;
 import com.qf.entity.LogsExample;
 import java.util.List;
+
+import com.qf.entity.vo.LogsVo;
 import org.apache.ibatis.annotations.Param;
 
 public interface LogsMapper {
@@ -27,4 +29,6 @@ public interface LogsMapper {
     int updateByPrimaryKeySelective(Logs record);
 
     int updateByPrimaryKey(Logs record);
+
+    List<LogsVo> selectAll();
 }

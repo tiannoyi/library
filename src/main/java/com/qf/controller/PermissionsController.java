@@ -1,5 +1,6 @@
 package com.qf.controller;
 
+import com.qf.aspect.OperationLogger;
 import com.qf.constan.StateCode;
 import com.qf.controller.base.Base;
 import com.qf.entity.Permissions;
@@ -47,6 +48,7 @@ public class PermissionsController extends Base {
     }
 
     //添加权限
+    @OperationLogger(modelName = "添加",opEntity = "权限",option = "/permissions")
     @PostMapping("/permissions")
     public State insertPermission(Permissions permissions){
         if (StringUtils.isEmpty(permissions)){
@@ -60,6 +62,7 @@ public class PermissionsController extends Base {
     }
 
     //修改权限
+    @OperationLogger(modelName = "修改",opEntity = "权限",option = "/permissions/updateId")
     @PutMapping("/permissions/{permissionsId}")
     public State updatePermission(@PathVariable Integer permissionsId,@RequestBody Permissions permissions){
         if (StringUtils.isEmpty(permissions)){
@@ -77,6 +80,7 @@ public class PermissionsController extends Base {
     }
 
     //删除权限
+    @OperationLogger(modelName = "删除",opEntity = "单个权限",option = "/permissions/deleteId")
     @DeleteMapping("/permissions/{permissionsId}")
     public State deletePermission(@PathVariable Integer permissionsId){
         if (StringUtils.isEmpty(permissionsId)){
@@ -89,6 +93,7 @@ public class PermissionsController extends Base {
         return packaging(StateCode.FAIL,"删除失败",null);
     }
 
+    @OperationLogger(modelName = "删除",opEntity = "多个权限",option = "/permissions/deleteIds")
     @DeleteMapping("/permissions/ids/{permissionsIds}")
     public Object deletePermissions(@PathVariable String permissionsIds){
         if (StringUtils.isEmpty(permissionsIds)){
