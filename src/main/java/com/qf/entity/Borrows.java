@@ -82,6 +82,24 @@ public class Borrows {
     }
 
     /**
+     * 更新用构造
+     * @param borrowId
+     * @param renew
+     * @param overdue
+     * @param readerId
+     * @param bookStateId
+     * @param fine
+     */
+    public Borrows(Integer borrowId, Byte renew, Byte overdue, Integer readerId, Integer bookStateId, Float fine) {
+        this.borrowId = borrowId;
+        this.renew = renew;
+        this.overdue = overdue;
+        this.readerId = readerId;
+        this.bookStateId = bookStateId;
+        this.fine = fine;
+    }
+
+    /**
      * 全参构造
      *
      * @param borrowId

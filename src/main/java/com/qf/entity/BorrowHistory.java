@@ -9,10 +9,10 @@ public class BorrowHistory {
 
     private Integer readerId;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date borrowTime;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date repayTime;
 
     private Byte renew;
@@ -25,44 +25,10 @@ public class BorrowHistory {
 
     private Integer isDelete;
 
-    /**
-     * 无 historyId,isDelete,time 类型构造
-     * @param readerId
-     * @param renew
-     * @param overdue
-     * @param fine
-     * @param bookId
-     */
-    public BorrowHistory(Integer readerId, Byte renew, Byte overdue, Float fine, Integer bookId) {
-        this.readerId = readerId;
-        this.renew = renew;
-        this.overdue = overdue;
-        this.fine = fine;
-        this.bookId = bookId;
-    }
-
-    /**
-     * 无 borrowId,isDelete 构造
-     * @param readerId
-     * @param borrowTime
-     * @param repayTime
-     * @param renew
-     * @param overdue
-     * @param fine
-     * @param bookId
-     */
-    public BorrowHistory(Integer readerId, Date borrowTime, Date repayTime, Byte renew, Byte overdue, Float fine, Integer bookId) {
-        this.readerId = readerId;
-        this.borrowTime = borrowTime;
-        this.repayTime = repayTime;
-        this.renew = renew;
-        this.overdue = overdue;
-        this.fine = fine;
-        this.bookId = bookId;
-    }
 
     /**
      * 无 isDelete,Time 类型构造
+     *
      * @param historyId
      * @param readerId
      * @param renew
@@ -79,11 +45,35 @@ public class BorrowHistory {
         this.bookId = bookId;
     }
 
+    /**
+     * 无 isDelete 构造
+     *
+     * @param historyId
+     * @param readerId
+     * @param borrowTime
+     * @param repayTime
+     * @param renew
+     * @param overdue
+     * @param fine
+     * @param bookId
+     */
+    public BorrowHistory(Integer historyId, Integer readerId, Date borrowTime, Date repayTime, Byte renew, Byte overdue, Float fine, Integer bookId) {
+        this.historyId = historyId;
+        this.readerId = readerId;
+        this.borrowTime = borrowTime;
+        this.repayTime = repayTime;
+        this.renew = renew;
+        this.overdue = overdue;
+        this.fine = fine;
+        this.bookId = bookId;
+    }
+
     public BorrowHistory() {
     }
 
     /**
      * 全参构造
+     *
      * @param historyId
      * @param readerId
      * @param borrowTime
