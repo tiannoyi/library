@@ -1,13 +1,11 @@
 package com.qf.service;
 
+import com.qf.entity.Books;
 import com.qf.entity.Readers;
+import com.qf.entity.vo.ReadersVo;
 import com.qf.exception.SystemErrorException;
 import com.qf.exception.UserNameExistException;
-import com.qf.mapper.ReadersMapper;
 import com.qf.util.Page;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 public interface IReadersService {
     //添加读者(用户)
@@ -28,4 +26,9 @@ public interface IReadersService {
     //批量删除
     int deleteBatch(int [] readerIds);
 
+    //查询所有的书本数据
+    Page<ReadersVo> selectReadersVo(Integer currentPage, Integer pageSize);
+
+    //通过id 查询对应的读者信息
+    Readers selectById(Integer readerId);
 }

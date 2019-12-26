@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>图书信息展示</title>
+    <title>用户信息展示</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link href="../../asserts/plugins/Bootstrap/css/bootstrap.css" rel="stylesheet">
 
@@ -36,16 +36,79 @@
         }
     </style>
 
+    <script>
+        // 获取模型
+        var modal = document.getElementById('id01');
+
+        // 鼠标点击模型外区域关闭登录框
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        function windowHeight() {
+            var de = document.documentElement;
+            return self.innerHeight||(de && de.clientHeight)||document.body.clientHeight;
+        }
+        window.onload=window.onresize=function(){
+            var wh=windowHeight();
+            document.getElementById("xt-left").style.height = document.getElementById("xt-right").style.height = (wh-document.getElementById("xt-top").offsetHeight)+"px";
+        }
+    </script>
 
     <!-- 富文本编辑器 -->
     <script src="./js/wang.js"></script>
     <script type="text/javascript">
-        function insertBook() {
-            location.href = "article_create.html";
+        function insetReaders() {
+            debugger;
+            var readerName = $("#readerName").val();
+            var password = $("#password").val();
+            var phone = $("#phone").val();
+            var idCard = $("#idCard").val();
+            var sex = $("#sex").val();
+            var address = $("#address").val();
+
+            if (readerName == "" || readerName.length < 4){
+                alert("用户名不可以少于4位");
+                return;
+            }
+            if (password == "" || !(/^(\w){6,20}$/.test(password))){
+                alert("密码必须是6-20数字或字母");
+                return;
+            }
+            if (phone.length != 11 && !(/^1[3456789]\d{9}$/.test(phone))){
+                alert("请输入11位电话号码");
+                return;
+            }
+            if (!(/\d{15}|\d{18}/.test(idCard))) {
+                alert("请输入正确的身份证号码,15或18位数字");
+                return;
+            }
+            $.ajax({
+                type:"POST",
+                url:"/library/readers/insertReader",
+                data:{
+                    readerName :readerName,
+                    password :password,
+                    phone :phone,
+                    idCard :idCard,
+                    sex :sex,
+                    address :address
+                },
+                success:function (data) {
+                    if (data.state == "SUCCESS") {
+                        alert(data.message);
+                        location.href = "readers_show.html";
+                    }else {
+                        alert(data.message);
+                    }
+                }
+            });
         }
         //精确查找（二表联查）:书名、isbn、作者
         function search() {
-            /*//下拉框值(属性名)
+            /*!//下拉框值(属性名)
             $("#find option:selected").val();
             //文本框值
             $("#searchText").val();*/
@@ -70,7 +133,6 @@
                         $("#paging").empty();
                             str += "<tr>\n" + "<td><input type='checkbox' name='ckb' id='checkbox' onclick='dcAll()' value='"+data.data.bookId+"'></td>\n" +
                                 "<td id='bookId'>" + data.data.bookId + "</td>\n" +
-                                "<td id='imgPath'><img src='../../images/"+data.data.imgPath+"' width='100' height='100'></td>\n"+
                                 "<td id='bookName'>"  + data.data.bookName + "</td>\n" +
                                 "<td id='bookTypeName'>" + data.data.bookTypes.bookTypeName + "</td>\n" +
                                 "<td id='Isbn'>" + data.data.isbn + "\n" +
@@ -101,7 +163,6 @@
                         $("#paging").empty();
                         str += "<tr>\n" + "<td><input type='checkbox' name='ckb' id='checkbox' onclick='dcAll()' value='"+data.data.bookId+"'></td>\n" +
                             "<td id='bookId'>" + data.data.bookId + "</td>\n" +
-                            "<td id='imgPath'><img src='../../images/"+data.data.imgPath+"' width='100' height='100'></td>\n"+
                             "<td id='bookName'>"  + data.data.bookName + "</td>\n" +
                             "<td id='bookTypeName'>" + data.data.bookTypes.bookTypeName + "</td>\n" +
                             "<td id='Isbn'>" + data.data.isbn + "\n" +
@@ -132,7 +193,6 @@
                         $("#paging").empty();
                         str += "<tr>\n" + "<td><input type='checkbox' name='ckb' id='checkbox' onclick='dcAll()' value='"+data.data.bookId+"'></td>\n" +
                             "<td id='bookId'>" + data.data.bookId + "</td>\n" +
-                            "<td id='imgPath'><img src='../../images/"+data.data.imgPath+"' width='100' height='100'></td>\n"+
                             "<td id='bookName'>"  + data.data.bookName + "</td>\n" +
                             "<td id='bookTypeName'>" + data.data.bookTypes.bookTypeName + "</td>\n" +
                             "<td id='Isbn'>" + data.data.isbn + "\n" +
@@ -153,21 +213,21 @@
         }
 
         function update(index) {
-            location.href = "article_update.html";
-            localStorage.setItem("bookId",index);
+            //传入的是 readerId
+            location.href = "readers_update.html";
+            localStorage.setItem("readerId",index);
         }
         function removeBooks(id) {
+            var readerId = id;
             debugger;
             $.ajax({
-                type:"POST",
-                url:"/library/books/deleteBook",
-                data:{
-                    bookId:id
-                },
+                type:"DELETE",
+                url:"/library/readers/deleteReader/"+ readerId,
+                data:{},
                 success:function (data) {
                     if (data.state == "SUCCESS") {
                         alert(data.message);
-                        location.href = "article_show.html";
+                        location.href = "readers_show.html";
                     }else {
                         alert(data.message);
                     }
@@ -175,26 +235,26 @@
             });
         }
 
-        function deleteBooks() {
+        function deleteReaders() {
             var ckb = document.getElementsByName("ckb");
-            var bookIds = new Array(ckb.length);
+            var readerIds = new Array(ckb.length);
             var j = 0;
             for (var i = 0; i < ckb.length; i++) {
                 if (ckb[i].checked) {
-                    bookIds[j] = ckb[i].value;
+                    readerIds[j] = ckb[i].value;
                     j++;
                 }
-                console.log(bookIds);//已测试数组有值
+                console.log(readerIds);//已测试数组有值
             }
             $.ajax({
                 type: "DELETE",
-                url: "/library/books/deleteBatch/"+bookIds,
+                url: "/library/readers/deleteBatch/"+readerIds,
                 data:{},
                 contentType:"application/json",
                 success: function (data) {
                     if (data.state == "SUCCESS") {
                         alert(data.message);
-                        location.href = "article_show.html";
+                        location.href = "readers_show.html";
                     } else {
                         alert(data.message);
                     }
@@ -253,11 +313,11 @@
                 currentPage = 1;
             }
             if (pageSize == false){
-                pageSize = 4;
+                pageSize = 5;
             }
             $.ajax({
                 type:"GET",
-                url:"/library/books/selectAllVo",
+                url:"/library/readers/selectAllVo",
                 data:{
                     currentPage:currentPage,
                     pageSize:pageSize
@@ -266,22 +326,19 @@
                     var str = "";
                     $("#tb").empty();
                     $("#paging").empty();
-                    debugger;
+                    console.log(data.data.list);
                     $.each(data.data.list,function (index, value) {
-                        str += "<tr>\n" + "<td><input type='checkbox' name='ckb' id='checkbox"+index+"' onclick='dcAll()' value='"+value.bookId+"'></td>\n" +
-                            "<td id='bookId"+index+"'>" + value.bookId + "</td>\n" +
-                            "<td id='imgPath"+index+"'><img src='../../images/"+value.imgPath+"' width='100' height='100'></td>\n"+
-                            "<td id='bookName"+index+"'>"  + value.bookName + "</td>\n" +
-                            "<td id='bookTypeName"+index+"'>" + value.bookTypes.bookTypeName + "</td>\n" +
-                            "<td id='Isbn"+index+"'>" + value.isbn + "\n" +
-                            "<td id='author"+index+"'>" + value.author + "</td>\n" +
-                            "<td id='press"+index+"'>" + value.press + "</td>\n" +
-                            "<td id='price"+index+"'>" + value.price + "</td>\n" +
-                            "<td id='number"+index+"'>" + value.number + "</td>\n" +
-                            "<td>" + "<a href='#' class='btn btn-warning' onclick='update(" + value.bookId + ")'>修改</a> " +
-                            "<a href='#' onclick='removeBooks(" + value.bookId + ")' class='btn btn-danger'>删除</a> " +
+                        str += "<tr>\n" + "<td><input type='checkbox' name='ckb' id='checkbox"+index+"' onclick='dcAll()' value='"+value.readerId+"'></td>\n" +
+                            "<td id='readerId"+index+"'>" + value.readerId + "</td>\n" +
+                            "<td id='readerName"+index+"'>"  + value.readerName + "</td>\n" +
+                            "<td id='readerTypeName"+index+"'>" + value.readerTypes.readerTypeName + "</td>\n" +
+                            "<td id='roleName"+index+"'>" + value.roles.roleName + "\n" +
+                            "<td id='phone"+index+"'>" + value.phone + "</td>\n" +
+                            "<td id='address"+index+"'>" + value.address + "</td>\n" +
+                            "<td id='sex"+index+"'>" + value.sex + "</td>\n" +
+                            "<td>" + "<a href='#' class='btn btn-warning' onclick='update(" + value.readerId + ")'>修改</a> " +
+                            "<a href='#' onclick='removeBooks(" + value.readerId + ")' class='btn btn-danger'>删除</a> " +
                             "</tr>\n";
-                        console.log(data.data.list.imgPath);
                     });
                     $("#tb").append(str);
                     //分页
@@ -319,17 +376,17 @@
 <body>
     <div class="rbody" id="app">
         <div class="top">
-            当前位置：后台<i class="fa fa-fw fa-angle-right"></i>书本信息列表
+            当前位置：后台<i class="fa fa-fw fa-angle-right"></i>读者基本信息
         </div>
         <div class="main">
             <div class="tabList">
-                <span class="active">书本信息列表</span>
+                <span class="active">读者信息列表</span>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="button" value="添 加" class="btn btn-info" onclick="insertBook()"/>
+                    <input type="button" value="添 加" class="btn btn-info" onclick="document.getElementById('addReaders').style.display='block'"/>
                     &nbsp;&nbsp;
-                    <input type="button" value="删除选中" class="btn btn-danger" onclick="deleteBooks()" />
+                    <input type="button" value="删除选中" class="btn btn-danger" onclick="deleteReaders()" />
 
-                <div class="search_form">
+                <!--<div class="search_form">
                    <div class="search_box">
                        <select name="find" id="find">
                            <option name="bookName" value="bookName">书名</option>
@@ -339,7 +396,7 @@
                         <input type="text" id="searchText" style="width: 100px" placeholder="请输入">
                     <button type="button" onclick="search()">搜索</button>
                    </div>
-                </div>
+                </div>-->
             </div>
 
             <div class="tableLists">
@@ -347,29 +404,26 @@
                     <thead >
                         <colgroup>
                             <col width="30">
-                            <col width="30">
-                            <col width="50">
-                            <col width="100">
-                            <col width="50">
+                            <col width="70">
                             <col width="100">
                             <col width="60">
-                            <col width="60">
+                            <col width="100">
+                            <col width="100">
                             <col width="50">
                             <col width="50">
-                            <col width="60">
+                            <col width="125">
                         </colgroup>
 
                         <tr>
                             <th>选择&nbsp;<input type="checkbox" id="all" onclick="cAll()"></th>
-                            <th>书本编号</th>
-                            <th>书本图片</th>
-                            <th>书本名称</th>
-                            <th>类别名称</th>
-                            <th>ISBN</th>
-                            <th>作者</th>
-                            <th>出版社</th>
-                            <th>价格</th>
-                            <th>入馆册数</th>
+                            <th>读者编号</th>
+                            <th>读者姓名</th>
+                            <th>读者类型</th>
+                            <th>角色类型</th>
+                            <th>联系电话</th>
+                            <th>地址</th>
+                            <th>性别</th>
+
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -386,6 +440,45 @@
             </div>
         </div>
     </div>
+
+    <!--弹框页面-->
+    <div id="addReaders" class="hmodal">
+        <div id="a">
+            <form id="addform" class="modal-content animate" action="/library/readers/insertReader" method="post">
+                <div class="imgcontainer">
+                    <!-- 点击×号，隐藏模态框-->
+                    <span onclick="document.getElementById('addReaders').style.display='none'" class="close" title="Close Modal">&times;</span>
+                </div>
+                <h1 style="margin-left: 40px;margin-top: 10px;color: #66ccff">添加</h1>
+                <div class="container" style="width: 170px;margin: 0 auto;">
+                    <p style="color: red">* 为必填选项</p><br/>
+                    * 用户姓名:
+                    <input id="readerName" class="int-text" type="text" placeholder="用户姓名" name="readerName" required autocomplete="off">
+                    <br><br>
+                    * 密码:
+                    <input id="password" class="int-text" type="text" placeholder="密码" name="password" required autocomplete="off">
+                    <br><br>
+                    * 联系方式:
+                    <input id="phone" class="int-text" type="text" name="phone"  placeholder="联系方式" required autocomplete="off">
+                    <br><br>
+                    * 身份证号:
+                    <input id="idCard" class="int-text" type="text" name="idCard"  placeholder="身份证号" required autocomplete="off">
+                    <br><br>
+                    性别:
+                    <input id="sex" class="int-text" type="text" name="sex"  placeholder="性别" required autocomplete="off">
+                    <br><br>
+                    地址:
+                    <input id="address" class="int-text" type="text" name="address"  placeholder="地址" required autocomplete="off">
+                    <br><br><br>
+                    <button id="addButton" type="button" onclick="insetReaders()"  style="border-radius:8px;" class="btn btn-info" >添加</button>&nbsp&nbsp&nbsp&nbsp
+                    <button type="button" style="border-radius:8px;" onclick="document.getElementById('addReaders').style.display='none'" class="btn btn-danger">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
     <script src="./js/common.js"></script>
 
 </body>

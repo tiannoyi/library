@@ -3,6 +3,8 @@ package com.qf.mapper;
 import com.qf.entity.Readers;
 import com.qf.entity.ReadersExample;
 import java.util.List;
+
+import com.qf.entity.vo.ReadersVo;
 import org.apache.ibatis.annotations.Param;
 
 public interface ReadersMapper {
@@ -27,4 +29,7 @@ public interface ReadersMapper {
     int updateByPrimaryKeySelective(Readers record);
 
     int updateByPrimaryKey(Readers record);
+
+    //读者信息查询+类别名
+    List<ReadersVo> selectReadersVo();
 }

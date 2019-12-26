@@ -476,9 +476,9 @@
     </collection>-->
   </resultMap>
 
-<!--  书本在馆信息查询-->
+<!--  书本信息+类别名查询-->
   <select id="selectAllVo" resultMap="BooksVo">
-    select  book_id ,book_name,isbn,author,number,press,price,
+    select  book_id ,book_name,isbn,author,number,press,price,img_path,
             bt.book_type_name
     from  tbl_book_types bt
         INNER JOIN tbl_books b on b.book_type_id = bt.book_type_id
@@ -493,4 +493,22 @@
     inner join tbl_book_types bt on b.book_type_id = bt.book_type_id
     where b.is_delete = 1
   </select>-->
+
+  <select id="selectBookVo" resultMap="BooksVo">
+    select  book_id ,book_name,isbn,author,number,press,price,img_path,
+            bt.book_type_name
+    from  tbl_book_types bt
+        INNER JOIN tbl_books b on b.book_type_id = bt.book_type_id
+    where b.is_delete = 1
+    <if test="bookName != null" >
+      and book_name = #{bookName,jdbcType=VARCHAR}
+    </if>
+    <if test="isbn != null" >
+      and isbn = #{isbn,jdbcType=VARCHAR}
+    </if>
+    <if test="author != null" >
+      and author = #{author,jdbcType=VARCHAR}
+    </if>
+  </select>
+
 </mapper>
