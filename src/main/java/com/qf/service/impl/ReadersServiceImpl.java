@@ -133,6 +133,9 @@ public class ReadersServiceImpl implements IReadersService {
         return count;
     }
 
+    public Integer count(){
+        return readersMapper.selectReadersVo().size();
+    }
     @Override
     public Page<ReadersVo> selectReadersVo(Integer currentPage, Integer pageSize) {
         if(pageSize == null){
@@ -144,7 +147,7 @@ public class ReadersServiceImpl implements IReadersService {
         PageHelper.startPage(currentPage,pageSize);
         //sql语句查询到6条,进来的只有5条
         List<ReadersVo> readersVos = readersMapper.selectReadersVo();
-        Integer count = readersVos.size();
+        Integer count = count();
         Page<ReadersVo> page = new Page<>(currentPage, pageSize, count);
         page.setList(readersVos);
         return page;
