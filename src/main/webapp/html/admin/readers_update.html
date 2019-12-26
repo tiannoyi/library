@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>书本信息修改</title>
+    <title>读者信息修改</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link href="../../asserts/plugins/Bootstrap/css/bootstrap.css" rel="stylesheet">
 
@@ -46,81 +46,80 @@
             //信息回显
             $.ajax({
                 type:"GET",
-                url: "/library/books/selectBooksById",
+                url: "/library/readers/selectById",
                 data:{
-                    bookId:localStorage.getItem("bookId")
+                    readerId:localStorage.getItem("readerId")
                 },
                 success:function (data) {
-                    $("#bookName").val(data.data.bookName);
-                    $("#isbn").val(data.data.isbn);
-                    $("#bookTypeId").val(data.data.bookTypeId);
-                    $("#publicationTime").val(data.data.publicationTime);
-                    $("#press").val(data.data.press);
-                    $("#author").val(data.data.author);
-                    $("#number").val(data.data.number);
-                    $("#pageNumber").val(data.data.pageNumber);
-                    $("#createTime").val(data.data.createTime);
-                    $("#price").val(data.data.price);
-                    $("#imgPath").val(data.data.imgPath);
-                    $("#img").attr("src","../../images/"+data.data.imgPath);
+                    $("#readerName").val(data.data.readerName);
+                    $("#password").val(data.data.password);
+                    $("#phone").val(data.data.phone);
+                    $("#idCard").val(data.data.idCard);
+                    $("#sex").val(data.data.sex);
+                    $("#address").val(data.data.address);
+                    $("#readerTypeId").val(data.data.readerTypeId);
+                    $("#roleId").val(data.data.roleId);
                 }
             });
 
             //表单点击提交
             $("#submit").click(function () {
-                debugger;
-                if ($("#bookName").val() == "" || $("#isbn").val() == "" || $("#press").val() == "" || $("#author").val() == "" ||$("#imgPath").val() == ""){
-                    console.log($("#imgPath").val());
-                    alert("请输入必选项再点击提交");
+                var readerName = $("#readerName").val();
+                var password = $("#password").val();
+                var phone = $("#phone").val();
+                var idCard = $("#idCard").val();
+                var readerTypeId = $("#readerTypeId").val();
+                var roleId = $("#roleId").val();
+
+                if (readerName == "" || readerName.length < 4){
+                    alert("用户名不可以少于4位");
                     return;
                 }
-                var formData = new FormData($("#form")[0]);
+                if (password == "" || !(/^(\w){6,20}$/.test(password))){
+                    alert("密码必须是6-20数字或字母");
+                    return;
+                }
+                if (phone.length != 11 && !(/^1[3456789]\d{9}$/.test(phone))){
+                    alert("请输入11位电话号码");
+                    return;
+                }
+                if (!(/\d{15}|\d{18}/.test(idCard))) {
+                    alert("请输入正确的身份证号码,15或18位数字");
+                    return;
+                }
+                if (readerTypeId == "" || roleId == ""){
+                    alert("编号不能为空");
+                    return;
+                }
+                msg_data={
+                    readerId:localStorage.getItem("readerId"),
+                    readerName : $("#readerName").val(),
+                    password : $("#password").val(),
+                    phone :$("#phone").val(),
+                    idCard : $("#idCard").val(),
+                    sex : $("#sex").val(),
+                    address : $("#address").val(),
+                    roleId : $("#roleId").val(),
+                };
+                localStorage.clear();
                 $.ajax({
-                    url: "/library/books/upload",
-                    contentType: "html/text;charset=UTF-8",
-                    cache:false,
-                    data: formData,
+                    url: "/library/readers/updateReader",
+                    //data: books,
+                    data:JSON.stringify(msg_data),
                     type: "POST",
-                    contentType: false,
-                    processData: false,
-                    success: function (filename) {
-                            $(function () {
-                                debugger;
-                                msg_data={
-                                    bookId:localStorage.getItem("bookId"),
-                                    bookName : $("#bookName").val(),
-                                    isbn : $("#isbn").val(),
-                                    bookTypeId :$("#bookTypeId").val(),
-                                    createTime : $("#createTime").val(),
-                                    press : $("#press").val(),
-                                    author : $("#author").val(),
-                                    number : $("#number").val(),
-                                    pageNumber : $("#pageNumber").val(),
-                                    publicationTime : $("#publicationTime").val(),
-                                    price : $("#price").val(),
-                                    imgPath:filename
-                                };
-                                localStorage.clear();
-                                //books.imgPath = filename;
-                                $.ajax({
-                                    url: "/library/books/updateBooksById",
-                                    //data: books,
-                                    data:JSON.stringify(msg_data),
-                                    type: "POST",
-                                    contentType: "application/json;charset=UTF-8",
-                                    success: function (index) {
-                                        if (index.data != null || index.data != 0) {
-                                            alert(index.message);
-                                            location.href = "article_show.html";
-                                        } else {
-                                            alert(index.message);
-                                        }
-                                    },
-                                })
-                            })
-                    }
-                });
+                    contentType: "application/json;charset=UTF-8",
+                    success: function (index) {
+                        debugger;
+                        if (index.data != null || index.data != 0) {
+                            alert(index.message);
+                            location.href = "readers_show.html";
+                        } else {
+                            alert(index.message);
+                        }
+                    },
+                })
             })
+
         })
     </script>
 </head>
@@ -132,9 +131,9 @@
         </div>
         <div class="main">
             <div class="tabList">
-                <span class="active">书本信息修改</span>
+                <span class="active">读者信息修改</span>
                 <!--<span>SEO设置</span>-->
-                <span class="active" style="color: red;background-color: white">*  为必填选项</span>
+                <!--<span class="active" style="color: red;background-color: white">*  为必填选项</span>-->
             </div>
             <form id="form">
                 <div class="tbodyList">
@@ -145,10 +144,10 @@
                                 <div class="ios-form-group">
                                     <div class="ios-title">
                                         <em class="ios-tip-must">*</em>
-                                        <span class="ios-tip-name">书本名称：</span>
+                                        <span class="ios-tip-name">读者姓名：</span>
                                     </div>
                                     <div class="ios-input-box">
-                                        <input type="text" class="ios-input" name="book_name" id="bookName">
+                                        <input type="text" class="ios-input" name="readerName" id="readerName">
                                     </div>
                                 </div>
                             </div>
@@ -157,10 +156,10 @@
                                 <div class="ios-form-group">
                                     <div class="ios-title">
                                         <em class="ios-tip-must">*</em>
-                                        <span class="ios-tip-name">ISBN：</span>
+                                        <span class="ios-tip-name">密码：</span>
                                     </div>
                                     <div class="ios-input-box">
-                                        <input type="text" class="ios-input" name="ISBN" id="isbn">
+                                        <input type="password" class="ios-input" name="password" id="password">
                                     </div>
                                 </div>
 
@@ -173,14 +172,14 @@
                             <div class="leftbox">
                                 <div class="ios-form-group">
                                     <div class="ios-title">
-                                        <em class="ios-tip-must"></em>
-                                        <span class="ios-tip-name">所属类别：</span>
+                                        <em class="ios-tip-must">*</em>
+                                        <span class="ios-tip-name">联系方式：</span>
                                     </div>
                                     <div class="ios-input-box">
                                         <!--<select class="ios-select" name="book_type_id">
                                             <option value="">请选择</option>
                                         </select>-->
-                                        <input type="text" class="ios-input" name="book_type_id" id="bookTypeId">
+                                        <input type="text" class="ios-input" name="phone" id="phone">
                                     </div>
                                 </div>
                             </div>
@@ -188,11 +187,11 @@
                             <div class="rightbox">
                                 <div class="ios-form-group">
                                     <div class="ios-title">
-                                        <em class="ios-tip-must"></em>
-                                        <span class="ios-tip-name">出版日期：</span>
+                                        <em class="ios-tip-must">*</em>
+                                        <span class="ios-tip-name">身份证号：</span>
                                     </div>
                                     <div class="ios-input-box">
-                                        <input type="text" class="ios-input" name="publicationTime" id="publicationTime">
+                                        <input type="text" class="ios-input" name="idCard" id="idCard">
                                     </div>
                                 </div>
                             </div>
@@ -202,11 +201,11 @@
                             <div class="leftbox">
                                 <div class="ios-form-group">
                                     <div class="ios-title">
-                                        <em class="ios-tip-must">*</em>
-                                        <span class="ios-tip-name">出版社：</span>
+                                        <em class="ios-tip-must"></em>
+                                        <span class="ios-tip-name">性别：</span>
                                     </div>
                                     <div class="ios-input-box">
-                                        <input type="text" class="ios-input" name="press" id="press">
+                                        <input type="text" class="ios-input" name="sex" id="sex">
                                     </div>
                                 </div>
                             </div>
@@ -214,11 +213,11 @@
                             <div class="rightbox">
                                 <div class="ios-form-group">
                                     <div class="ios-title">
-                                        <em class="ios-tip-must">*</em>
-                                        <span class="ios-tip-name">书本作者：</span>
+                                        <em class="ios-tip-must"></em>
+                                        <span class="ios-tip-name">地址：</span>
                                     </div>
                                     <div class="ios-input-box">
-                                        <input type="text" class="ios-input" name="author" id="author">
+                                        <input type="text" class="ios-input" name="address" id="address">
                                     </div>
                                 </div>
                             </div>
@@ -229,11 +228,11 @@
                             <div class="leftbox">
                                 <div class="ios-form-group">
                                     <div class="ios-title">
-                                        <em class="ios-tip-must"></em>
-                                        <span class="ios-tip-name">入馆册数：</span>
+                                        <em class="ios-tip-must">*</em>
+                                        <span class="ios-tip-name">读者类别编号：</span>
                                     </div>
                                     <div class="ios-input-box">
-                                        <input type="text" class="ios-input" name="number" id="number">
+                                        <input type="text" class="ios-input" name="readerTypeId" id="readerTypeId">
                                     </div>
                                 </div>
                             </div>
@@ -241,18 +240,18 @@
                             <div class="rightbox">
                                 <div class="ios-form-group">
                                     <div class="ios-title">
-                                        <em class="ios-tip-must"></em>
-                                        <span class="ios-tip-name">图书页数：</span>
+                                        <em class="ios-tip-must">*</em>
+                                        <span class="ios-tip-name">角色编号：</span>
                                     </div>
                                     <div class="ios-input-box">
-                                        <input type="text" class="ios-input" name="page_number" id="pageNumber">
+                                        <input type="text" class="ios-input" name="roleId" id="roleId">
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- 结束符 -->
-                        <div class="twoBox">
+                        <!--<div class="twoBox">
                             <div class="leftbox">
                                 <div class="ios-form-group">
                                     <div class="ios-title">
@@ -277,8 +276,8 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="ios-form-group">
+-->
+                        <!--<div class="ios-form-group">
                             <div class="ios-title">
                                 <em class="ios-tip-must">*</em>
                                 <span class="ios-tip-name">封面图片：</span>
@@ -292,7 +291,7 @@
                                     </label>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                     <div class="tabBody">
                         <div class="textareaBox mrb10" id="createColumnBody">

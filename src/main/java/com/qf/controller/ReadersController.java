@@ -71,9 +71,9 @@ public class ReadersController extends Base {
         }
     }
 
-    @PutMapping("/updateReader")
-    public State<Object> updateReader(Integer readerId,Readers readers){
-        int i = readerService.updateReaderById(readerId, readers);
+    @PostMapping("/updateReader")
+    public State<Object> updateReader(@RequestBody Readers readers){
+        int i = readerService.updateReaderById(readers.getReaderId(), readers);
         if (i != 0){
             return packaging(StateCode.SUCCESS,"修改成功",i);
         }else {
@@ -114,6 +114,12 @@ public class ReadersController extends Base {
         readersVo.getReaderTypes();
         Page<ReadersVo> readersVoPage = readerService.selectReadersVo(currentPage, pageSize);
         return packaging(StateCode.SUCCESS,"查询成功",readersVoPage);
+    }
+
+    @GetMapping("/selectById")
+    public State<Object> selectById(Integer readerId){
+        Readers readers = readerService.selectById(readerId);
+        return packaging(StateCode.SUCCESS,"查询成功",readers);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.qf.service;
 
+import com.qf.entity.Books;
 import com.qf.entity.Readers;
 import com.qf.entity.vo.ReadersVo;
 import com.qf.exception.SystemErrorException;
@@ -27,4 +28,7 @@ public interface IReadersService {
 
     //查询所有的书本数据
     Page<ReadersVo> selectReadersVo(Integer currentPage, Integer pageSize);
+
+    //通过id 查询对应的读者信息
+    Readers selectById(Integer readerId);
 }

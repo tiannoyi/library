@@ -213,8 +213,9 @@
         }
 
         function update(index) {
-            location.href = "article_update.html";
-            localStorage.setItem("bookId",index);
+            //传入的是 readerId
+            location.href = "readers_update.html";
+            localStorage.setItem("readerId",index);
         }
         function removeBooks(id) {
             var readerId = id;

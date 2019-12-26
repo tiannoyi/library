@@ -149,4 +149,9 @@ public class ReadersServiceImpl implements IReadersService {
         page.setList(readersVos);
         return page;
     }
+
+    @Override
+    public Readers selectById(Integer readerId) {
+        return readersMapper.selectByPrimaryKey(readerId);
+    }
 }
