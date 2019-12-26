@@ -415,4 +415,33 @@
       is_delete = #{isDelete,jdbcType=INTEGER}
     where reader_id = #{readerId,jdbcType=INTEGER}
   </update>
+
+  <resultMap id="ReadersVo" type="com.qf.entity.vo.ReadersVo" extends="BaseResultMap">
+    <association property="readerTypes" javaType="com.qf.entity.ReaderTypes">
+      <id column="reader_type_id" property="readerTypeId" jdbcType="INTEGER" />
+      <result column="reader_type_name" property="readerTypeName" jdbcType="VARCHAR" />
+      <result column="borrow_day" property="borrowDay" jdbcType="TINYINT" />
+      <result column="borrow_number" property="borrowNumber" jdbcType="TINYINT" />
+      <result column="continue_number" property="continueNumber" jdbcType="TINYINT" />
+      <result column="deposit" property="deposit" jdbcType="REAL" />
+      <result column="is_delete" property="isDelete" jdbcType="INTEGER" />
+    </association>
+    <association property="roles" javaType="com.qf.entity.Roles">
+      <id column="role_id" property="roleId" jdbcType="INTEGER" />
+      <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+      <result column="state" property="state" jdbcType="VARCHAR" />
+      <result column="permissions_str" property="permissionsStr" jdbcType="VARCHAR" />
+      <result column="is_delete" property="isDelete" jdbcType="INTEGER" />
+    </association>
+  </resultMap>
+
+  <select id="selectReadersVo" resultMap="ReadersVo">
+    select rd.reader_id,rd.reader_name,rd.phone,rd.address,rd.sex,
+            rt.reader_type_name,
+            rs.role_name
+    from tbl_readers rd
+        join tbl_reader_types rt on rd.reader_type_id = rt.reader_type_id
+        join tbl_roles rs on rs.role_id = rd.role_id
+    where rd.is_delete = 1
+  </select>
 </mapper>
