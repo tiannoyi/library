@@ -91,6 +91,7 @@ public class BorrowHistoryServiceImpl implements IBorrowHistoryService {
 
             BorrowHistoryExample borrowHistoryExample = new BorrowHistoryExample();
             borrowHistoryExample.createCriteria().andReaderIdEqualTo(readerId).andIsDeleteEqualTo(1);
+
             return getPage(currentPage, pageSize, borrowHistoryExample);
         }
         return null;

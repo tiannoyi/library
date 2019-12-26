@@ -111,7 +111,7 @@ public class BorrowsController extends Base {
      * @param borrows
      * @return
      */
-    @PutMapping("/updateBorrowsByBorrowId")
+    @PostMapping("/updateBorrowsByBorrowId")
     public State<Object> updateBorrowsByBorrowId(Borrows borrows) {
         if (borrows != null && borrows.getBorrowId() != null && borrows.getBorrowId() > 0) {
             return borrowsService.updateBorrowsByBorrowId(borrows) > 0 ?
@@ -161,11 +161,18 @@ public class BorrowsController extends Base {
      * @return
      */
     @GetMapping("/selectBorrowsByBookStateId")
-    public State<Object> selectBorrowsByBookStateId(Integer bookStateId) {
+    public State<Object> selectBorrowsByBookStateId(Integer bookStateId, Integer currentPage, Integer pageSize) {
+
+        if (currentPage == null) {
+            return packaging(StateCode.FAIL, "请输入当前页", null);
+        }
+        if (StringUtils.isEmpty(pageSize)) {
+            pageSize = systemMapper.getPageLine();
+        }
         if (bookStateId != null && bookStateId > 0) {
-            Borrows borrows = borrowsService.selectBorrowsByBookStateId(bookStateId);
-            return borrows != null ?
-                    packaging(StateCode.SUCCESS, ChangliangUtil.QUERYSUCCESS, borrows)
+            Page<Borrows> pageList = borrowsService.selectBorrowsByBookStateId(bookStateId, currentPage, pageSize);
+            return pageList.getList().size() != 0 ?
+                    packaging(StateCode.SUCCESS, ChangliangUtil.QUERYSUCCESS, pageList)
                     : packaging(StateCode.FAIL, ChangliangUtil.QUERYFAIL, null);
         }
         return packaging(StateCode.FAIL, "传入信息不完整", null);

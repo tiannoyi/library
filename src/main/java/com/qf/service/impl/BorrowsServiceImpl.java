@@ -120,13 +120,19 @@ public class BorrowsServiceImpl implements IBorrowsService {
     }
 
     @Override
-    public Borrows selectBorrowsByBookStateId(Integer bookStateId) {
+    public Page<Borrows> selectBorrowsByBookStateId(Integer bookStateId , Integer currentPage, Integer pageSize) {
         if (bookStateId != null && bookStateId > 0) {
+            PageHelper.startPage(currentPage, pageSize);
+
             BorrowsExample borrowsExample = new BorrowsExample();
             borrowsExample.createCriteria().andBookStateIdEqualTo(bookStateId).andIsDeleteEqualTo(1);
+
             List<Borrows> borrowsList = borrowsMapper.selectByExample(borrowsExample);
+            int totalCount = borrowsMapper.countByExample(borrowsExample);
             if (!borrowsList.isEmpty()) {
-                return borrowsList.get(0);
+                Page<Borrows> page = new Page<>(currentPage, pageSize, totalCount);
+                page.setList(borrowsList);
+                return page;
             }
         }
         return null;
