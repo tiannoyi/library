@@ -1,5 +1,6 @@
 package com.qf.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -17,7 +18,7 @@ public class Costs {
 
     private Byte payType;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd hh:mm:ss", locale="zh", timezone="GMT+8")
     private Date createTime;
 
     private Integer isDelete;
