@@ -4,6 +4,7 @@ package com.qf.controller;
 import com.qf.constan.StateCode;
 import com.qf.controller.base.Base;
 import com.qf.entity.Readers;
+import com.qf.entity.vo.ReadersVo;
 import com.qf.exception.SystemErrorException;
 import com.qf.exception.UserNameExistException;
 import com.qf.mapper.SystemMapper;
@@ -31,6 +32,8 @@ public class ReadersController extends Base {
             return packaging(StateCode.FAIL,"添加失败",null);
         }*/
         try{
+            //读者类别ID默认为1
+            readers.setReaderTypeId(1);
             readers = readerService.insertReader(readers);
             return packaging(StateCode.SUCCESS,"添加成功",readers);
         } catch (UserNameExistException e) {
@@ -40,8 +43,8 @@ public class ReadersController extends Base {
         }
     }
 
-    @PutMapping("/deleteReader")
-    public State<Object> deleteReader(Integer readerId){
+    @DeleteMapping("/deleteReader/{readerId}")
+    public State<Object> deleteReader(@PathVariable Integer readerId){
         int i = readerService.deleteReaderById(readerId);
         if (i != 0){
             return packaging(StateCode.SUCCESS,"删除成功",i);
@@ -50,10 +53,18 @@ public class ReadersController extends Base {
         }
     }
 
-    @PutMapping("/deleteBatch")
-    public State<Object> deleteBatch(int [] readerIds){
-        int i = readerService.deleteBatch(readerIds);
-        if (i == readerIds.length){
+    @DeleteMapping("/deleteBatch/{readerIds}")
+    public State<Object> deleteBatch(@PathVariable String readerIds){
+        if(StringUtils.isEmpty(readerIds)){
+            return packaging(StateCode.FAIL,"删除失败",null);
+        }
+        String[] split = readerIds.split(",");
+        int[] readerids = new int[split.length];
+        for (int i =0;i < split.length;i++){
+            readerids[i] = Integer.parseInt(split[i]);
+        }
+        int i = readerService.deleteBatch(readerids);
+        if (i == readerids.length){
             return packaging(StateCode.SUCCESS,"删除成功",i);
         }else {
             return packaging(StateCode.FAIL,"删除失败",null);
@@ -95,4 +106,14 @@ public class ReadersController extends Base {
             return packaging(StateCode.SUCCESS,"查询成功",page);
         }
     }
+
+    //查询到所有的读者类型
+    @GetMapping("/selectAllVo")
+    public State<Object> selectAllVo(Integer currentPage,Integer pageSize){
+        ReadersVo readersVo = new ReadersVo();
+        readersVo.getReaderTypes();
+        Page<ReadersVo> readersVoPage = readerService.selectReadersVo(currentPage, pageSize);
+        return packaging(StateCode.SUCCESS,"查询成功",readersVoPage);
+    }
+
 }

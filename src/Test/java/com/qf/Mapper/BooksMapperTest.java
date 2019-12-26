@@ -3,6 +3,7 @@ package com.qf.Mapper;
 
 import com.qf.config.TestConfig;
 import com.qf.mapper.BooksMapper;
+import com.qf.mapper.ReadersMapper;
 import com.qf.service.IBooksService;
 
 import org.junit.Test;
@@ -20,9 +21,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 public class BooksMapperTest {
     @Autowired
     BooksMapper booksMapper;
-
+@Autowired
+    ReadersMapper readersMapper;
     @Test
     public void select1(){
-
+        readersMapper.selectReadersVo();
     }
 }

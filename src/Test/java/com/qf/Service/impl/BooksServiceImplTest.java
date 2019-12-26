@@ -7,6 +7,7 @@ import com.qf.entity.BooksWithBLOBs;
 import com.qf.entity.vo.BooksVo;
 import com.qf.mapper.AdminMapper;
 import com.qf.mapper.BooksMapper;
+import com.qf.mapper.ReadersMapper;
 import com.qf.service.IBooksService;
 import com.qf.service.impl.AdminServiceImpl;
 import com.qf.util.Page;
@@ -99,5 +100,13 @@ public class BooksServiceImplTest {
     @Test
     public void select123(){
         adminService.selectAllVo(1,2);
+    }
+
+    @Autowired
+    ReadersMapper readersMapper;
+
+    @Test
+    public void selectr(){
+        readersMapper.selectReadersVo();
     }
 }

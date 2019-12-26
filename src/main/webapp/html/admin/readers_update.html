@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>书本信息添加</title>
+    <title>书本信息修改</title>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link href="../../asserts/plugins/Bootstrap/css/bootstrap.css" rel="stylesheet">
 
@@ -34,31 +34,39 @@
             color:#9e9ea6;
             height: 80px;
         }
-        #daxiao{
-            width:100px;
-            height:100px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-        }
-        #img{
-            width: 100%;
-            height: 100%;
-        }
     </style>
 
     <script type="text/javascript">
-        function showImg(){
-            // var img_file =  $("#img_file").val();
-            var file =  document.getElementById('imgPath').files[0];
-            var re = new FileReader();
-            re.readAsDataURL(file);
-            re.onload = function(re){
-                $('#img').attr("src", re.target.result);
-            }
-        };
+        /*function ssm(){
+            //测试 点击可以获取到传输过来的 ID
+            console.log(localStorage.getItem("bookId"));
+        }*/
         $(function () {
+            debugger;
+            //信息回显
+            $.ajax({
+                type:"GET",
+                url: "/library/books/selectBooksById",
+                data:{
+                    bookId:localStorage.getItem("bookId")
+                },
+                success:function (data) {
+                    $("#bookName").val(data.data.bookName);
+                    $("#isbn").val(data.data.isbn);
+                    $("#bookTypeId").val(data.data.bookTypeId);
+                    $("#publicationTime").val(data.data.publicationTime);
+                    $("#press").val(data.data.press);
+                    $("#author").val(data.data.author);
+                    $("#number").val(data.data.number);
+                    $("#pageNumber").val(data.data.pageNumber);
+                    $("#createTime").val(data.data.createTime);
+                    $("#price").val(data.data.price);
+                    $("#imgPath").val(data.data.imgPath);
+                    $("#img").attr("src","../../images/"+data.data.imgPath);
+                }
+            });
 
+            //表单点击提交
             $("#submit").click(function () {
                 debugger;
                 if ($("#bookName").val() == "" || $("#isbn").val() == "" || $("#press").val() == "" || $("#author").val() == "" ||$("#imgPath").val() == ""){
@@ -79,6 +87,7 @@
                             $(function () {
                                 debugger;
                                 msg_data={
+                                    bookId:localStorage.getItem("bookId"),
                                     bookName : $("#bookName").val(),
                                     isbn : $("#isbn").val(),
                                     bookTypeId :$("#bookTypeId").val(),
@@ -91,15 +100,15 @@
                                     price : $("#price").val(),
                                     imgPath:filename
                                 };
+                                localStorage.clear();
                                 //books.imgPath = filename;
                                 $.ajax({
-                                    url: "/library/books/insertBooks",
+                                    url: "/library/books/updateBooksById",
                                     //data: books,
                                     data:JSON.stringify(msg_data),
                                     type: "POST",
                                     contentType: "application/json;charset=UTF-8",
                                     success: function (index) {
-                                        console.log(index);
                                         if (index.data != null || index.data != 0) {
                                             alert(index.message);
                                             location.href = "article_show.html";
@@ -119,11 +128,11 @@
 <body>
     <div class="rbody" id="app">
         <div class="top">
-            当前位置：后台<i class="fa fa-fw fa-angle-right"></i>书本入馆
+            当前位置：后台<i class="fa fa-fw fa-angle-right"></i>信息修改
         </div>
         <div class="main">
             <div class="tabList">
-                <span class="active">添加内容</span>
+                <span class="active">书本信息修改</span>
                 <!--<span>SEO设置</span>-->
                 <span class="active" style="color: red;background-color: white">*  为必填选项</span>
             </div>
@@ -139,7 +148,7 @@
                                         <span class="ios-tip-name">书本名称：</span>
                                     </div>
                                     <div class="ios-input-box">
-                                        <input type="text" class="ios-input" name="book_name" id="bookName" placeholder="请输入">
+                                        <input type="text" class="ios-input" name="book_name" id="bookName">
                                     </div>
                                 </div>
                             </div>
@@ -151,7 +160,7 @@
                                         <span class="ios-tip-name">ISBN：</span>
                                     </div>
                                     <div class="ios-input-box">
-                                        <input type="text" class="ios-input" name="ISBN" id="isbn" placeholder="请输入">
+                                        <input type="text" class="ios-input" name="ISBN" id="isbn">
                                     </div>
                                 </div>
 
@@ -171,7 +180,7 @@
                                         <!--<select class="ios-select" name="book_type_id">
                                             <option value="">请选择</option>
                                         </select>-->
-                                        <input type="text" class="ios-input" name="book_type_id" id="bookTypeId" placeholder="请输入">
+                                        <input type="text" class="ios-input" name="book_type_id" id="bookTypeId">
                                     </div>
                                 </div>
                             </div>
@@ -183,7 +192,7 @@
                                         <span class="ios-tip-name">出版日期：</span>
                                     </div>
                                     <div class="ios-input-box">
-                                        <input type="text" class="ios-input" name="publicationTime" id="publicationTime" placeholder="请输入">
+                                        <input type="text" class="ios-input" name="publicationTime" id="publicationTime">
                                     </div>
                                 </div>
                             </div>
@@ -197,7 +206,7 @@
                                         <span class="ios-tip-name">出版社：</span>
                                     </div>
                                     <div class="ios-input-box">
-                                        <input type="text" class="ios-input" name="press" id="press" placeholder="请输入">
+                                        <input type="text" class="ios-input" name="press" id="press">
                                     </div>
                                 </div>
                             </div>
@@ -209,7 +218,7 @@
                                         <span class="ios-tip-name">书本作者：</span>
                                     </div>
                                     <div class="ios-input-box">
-                                        <input type="text" class="ios-input" name="author" id="author" placeholder="请输入">
+                                        <input type="text" class="ios-input" name="author" id="author">
                                     </div>
                                 </div>
                             </div>
@@ -224,7 +233,7 @@
                                         <span class="ios-tip-name">入馆册数：</span>
                                     </div>
                                     <div class="ios-input-box">
-                                        <input type="text" class="ios-input" name="number" id="number" placeholder="请输入">
+                                        <input type="text" class="ios-input" name="number" id="number">
                                     </div>
                                 </div>
                             </div>
@@ -236,7 +245,7 @@
                                         <span class="ios-tip-name">图书页数：</span>
                                     </div>
                                     <div class="ios-input-box">
-                                        <input type="text" class="ios-input" name="page_number" id="pageNumber" placeholder="请输入">
+                                        <input type="text" class="ios-input" name="page_number" id="pageNumber">
                                     </div>
                                 </div>
                             </div>
@@ -251,7 +260,7 @@
                                         <span class="ios-tip-name">入库日期：</span>
                                     </div>
                                     <div class="ios-input-box">
-                                        <input type="text" class="ios-input" name="createTime" id="createTime" placeholder="请输入">
+                                        <input type="text" class="ios-input" name="createTime" id="createTime">
                                     </div>
                                 </div>
                             </div>
@@ -263,7 +272,7 @@
                                         <span class="ios-tip-name">价格:</span>
                                     </div>
                                     <div class="ios-input-box">
-                                        <input type="text" class="ios-input" name="introduction" id="price" placeholder="请输入">
+                                        <input type="text" class="ios-input" name="introduction" id="price">
                                     </div>
                                 </div>
                             </div>
@@ -276,9 +285,8 @@
                             </div>
                             <div class="ios-upload-box">
                                 <div class="ios-upload-btn">
-                                    <label class="ios-upload-label" id="daxiao">
-                                        <input type="hidden" id="img_url">
-                                        <input type="file" name="imgPath" id="imgPath" onchange="showImg()">
+                                    <label class="ios-upload-label">
+                                        <input type="file" name="imgPath" id="imgPath">
                                         <img src="#" alt="" id="img"/>
                                         <span> <i class="fa fa-fw fa-upload"></i> 上传图片</span>
                                     </label>
@@ -293,7 +301,7 @@
                 </div>
                 <div>
                     <!--<span class="ios-button ios-button-blue ios-button-2x">保存发布</span>-->
-                    <input type="button" class="ios-button ios-button-blue ios-button-2x" id="submit" value="确认添加">
+                    <input type="button" class="ios-button ios-button-blue ios-button-2x" id="submit" value="确认修改">
                 </div>
             </form>
         </div>

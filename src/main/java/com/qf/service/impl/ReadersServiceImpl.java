@@ -4,9 +4,11 @@ import com.alibaba.druid.util.StringUtils;
 import com.github.pagehelper.PageHelper;
 import com.qf.entity.Readers;
 import com.qf.entity.ReadersExample;
+import com.qf.entity.vo.ReadersVo;
 import com.qf.exception.SystemErrorException;
 import com.qf.exception.UserNameExistException;
 import com.qf.mapper.ReadersMapper;
+import com.qf.mapper.SystemMapper;
 import com.qf.service.IReadersService;
 import com.qf.util.EncryptUtil;
 import com.qf.util.Page;
@@ -20,7 +22,8 @@ import java.util.Map;
 public class ReadersServiceImpl implements IReadersService {
     @Autowired
     private ReadersMapper readersMapper;
-
+    @Autowired
+    private SystemMapper systemMapper;
 
     //选择性内容添加,已测试可行
     @Override
@@ -28,7 +31,7 @@ public class ReadersServiceImpl implements IReadersService {
     public Readers insertReader(Readers readers) throws UserNameExistException, SystemErrorException {
         readers.setReaderId(null);
         ReadersExample readersExample = new ReadersExample();
-        readersExample.createCriteria().andReaderNameNotEqualTo(readers.getReaderName());
+        readersExample.createCriteria().andReaderNameEqualTo(readers.getReaderName());
         if (readersMapper.countByExample(readersExample) != 0){
             throw new UserNameExistException("用户名已经存在");
         }else {
@@ -128,5 +131,22 @@ public class ReadersServiceImpl implements IReadersService {
             return 0;
         }
         return count;
+    }
+
+    @Override
+    public Page<ReadersVo> selectReadersVo(Integer currentPage, Integer pageSize) {
+        if(pageSize == null){
+            pageSize = systemMapper.getPageLine();
+        }
+        if (currentPage == null){
+            currentPage = 1;
+        }
+        PageHelper.startPage(currentPage,pageSize);
+        //sql语句查询到6条,进来的只有5条
+        List<ReadersVo> readersVos = readersMapper.selectReadersVo();
+        Integer count = readersVos.size();
+        Page<ReadersVo> page = new Page<>(currentPage, pageSize, count);
+        page.setList(readersVos);
+        return page;
     }
 }

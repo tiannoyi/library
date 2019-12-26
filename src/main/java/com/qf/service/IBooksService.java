@@ -25,7 +25,7 @@ public interface IBooksService {
     //查询所有书本
     Page<Books> selectAllBooks(Integer currentPage, Integer pageSize);
 
-    //三表连查,查询对应的关联信息
+    //er表连查,查询对应的关联信息
     Page<BooksVo> selectAllVo(Integer currentPage, Integer pageSize);
 
     //添加 Books
