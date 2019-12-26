@@ -39,6 +39,18 @@ public class BooksServiceImpl implements IBooksService {
         }
         return books.get(0);
     }
+
+    @Override
+    public Books selectBookById(Integer bookId) {
+        BooksWithBLOBs booksWithBLOBs = booksMapper.selectByPrimaryKey(bookId);
+        return booksWithBLOBs;
+    }
+
+    @Override
+    public BooksVo selectBookVo(Books books) {
+        return booksMapper.selectBookVo(books);
+    }
+
     @Override
     public Page<Books> selectBookByIsbn(String Isbn,Integer currentPage, Integer pageSize) {
         if(pageSize == null){
@@ -173,6 +185,10 @@ public class BooksServiceImpl implements IBooksService {
         return page;
     }
 
+    //纠正不正常获取总条数的方法
+    public Integer count (){
+        return booksMapper.selectAllVo().size();
+    }
     @Override
     public Page<BooksVo> selectAllVo(Integer currentPage, Integer pageSize) {
         if(pageSize == null)
@@ -180,8 +196,9 @@ public class BooksServiceImpl implements IBooksService {
         if (currentPage == null)
             currentPage = 1;
         PageHelper.startPage(currentPage,pageSize);
+        //sql语句查询到6条,进来的只有5条
         List<BooksVo> booksVos = booksMapper.selectAllVo();
-        Integer count = booksVos.size();
+        Integer count = count();
         Page<BooksVo> page = new Page<>(currentPage, pageSize, count);
         page.setList(booksVos);
         return page;

@@ -39,4 +39,6 @@ public interface BooksMapper {
 
     //关联类别、在馆表查询书本信息
     List<BooksVo> selectAllVo();
+    //通过某一条件查询对应的书本信息
+    BooksVo selectBookVo(Books books);
 }

@@ -49,17 +49,42 @@ public class BooksController extends Base {
         }
     }
 
-    //多条件查询,已测试有漏洞
+    @GetMapping("/selectBooksById")//已测试可行
+    public State<Object> selectBooksById(Integer bookId){
+        Books books = booksService.selectBookById(bookId);
+        return packaging(StateCode.SUCCESS,"查询成功",books);
+    }
+
+    //多条件查询,已测试
     @GetMapping("/selectBooksByCondition")
-    public State<Object> selectBooksByCondition(Books books,Integer currentPage, Integer pageSize){
-        Page<Books> page = booksService.selectBooksByCondition(books, currentPage, pageSize);
+    //public State<Object> selectBooksByCondition(String bookName,String isbn,String author,Integer currentPage, Integer pageSize){
+    public State<Object> selectBooksByCondition(String bookName,String isbn,String author){
+        Books books = new Books();
+        if (bookName != null){
+            books.setBookName(bookName);
+        }
+        if (isbn != null){
+            books.setIsbn(isbn);
+        }
+        if (author != null){
+            books.setAuthor(author);
+        }
+        BooksVo booksVo = booksService.selectBookVo(books);
+        if (booksVo == null){
+            return packaging(StateCode.FAIL,"查询失败",null);
+        }else {
+            return packaging(StateCode.SUCCESS,"查询成功",booksVo);
+        }
+        /*Page<Books> page = booksService.selectBooksByCondition(books, currentPage, pageSize);
         if (page.getList() == null){
             return packaging(StateCode.FAIL,"查询失败",null);
         }else {
             return packaging(StateCode.SUCCESS,"查询成功",page);
-        }
+        }*/
     }
 
+
+    //查询到所有的书本信息+书本类型
     @GetMapping("/selectAllVo")
     public State<Object> selectAllVo(Integer currentPage,Integer pageSize){
         Page<BooksVo> booksVoPage = booksService.selectAllVo(currentPage, pageSize);
@@ -70,13 +95,15 @@ public class BooksController extends Base {
     @PostMapping("/insertBooks")
     public State<Object> insertBooks(@RequestBody BooksWithBLOBs booksWithBLOBs){
         if (StringUtils.isEmpty(booksWithBLOBs.getIsbn())) {
-            return packaging(StateCode.SUCCESS,"插入失败",booksWithBLOBs);
+            return packaging(StateCode.FAIL,"插入失败",null);
         }
-        //设置创建时间
-        SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
-        Date date = new Date();
-        String dateString = format.format(date);
-        booksWithBLOBs.setCreateTime(dateString);
+        if (StringUtils.isEmpty(booksWithBLOBs.getCreateTime())){
+            //设置创建时间
+            SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+            Date date = new Date();
+            String dateString = format.format(date);
+            booksWithBLOBs.setCreateTime(dateString);
+        }
         int i = booksService.insertBooks(booksWithBLOBs);
         //根据条形码,创建在馆信息
         Random random = new Random();
@@ -91,7 +118,7 @@ public class BooksController extends Base {
         if (i != 0){
             return packaging(StateCode.SUCCESS,"插入成功",i);
         }else {
-            return packaging(StateCode.SUCCESS,"插入失败",null);
+            return packaging(StateCode.FAIL,"插入失败",null);
         }
     }
 
@@ -131,8 +158,9 @@ public class BooksController extends Base {
     }
 
     //通过 id 修改对应的书本信息
-    @GetMapping("/updateBooksById")
-    public State<Object> updateBooksById(BooksWithBLOBs booksWithBLOBs,Integer bookId){
+    @PostMapping("/updateBooksById")
+    public State<Object> updateBooksById(@RequestBody BooksWithBLOBs booksWithBLOBs){
+        Integer bookId = booksWithBLOBs.getBookId();
         int i = booksService.updateBookById(booksWithBLOBs,bookId);
         if (i != 0){
             return packaging(StateCode.SUCCESS,"修改成功",i);
@@ -167,9 +195,10 @@ public class BooksController extends Base {
     }
 
 
-    @PostMapping("/deleteBatch")
-    public State<Object> deleteBatch(int []bookIds){
-    /*public State<Object> deleteBatch(String bookIds){
+    /*@PostMapping("/deleteBatch")
+    public State<Object> deleteBatch(int []bookIds){*/
+    @DeleteMapping("/deleteBatch/{bookIds}")
+    public State<Object> deleteBatch(@PathVariable String bookIds){
         if(StringUtils.isEmpty(bookIds)){
             return packaging(StateCode.FAIL,"删除失败",null);
         }
@@ -177,9 +206,9 @@ public class BooksController extends Base {
         int[] bookids = new int[split.length];
         for (int i =0;i < split.length;i++){
             bookids[i] = Integer.parseInt(split[i]);
-        }*/
-        int i = booksService.deleteBatch(bookIds);
-        if (i == bookIds.length){
+        }
+        int i = booksService.deleteBatch(bookids);
+        if (i == bookids.length){
             return  packaging(StateCode.SUCCESS,"删除成功",i);
         }else {
             return  packaging(StateCode.FAIL,"删除失败",null);

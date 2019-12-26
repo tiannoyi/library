@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,45 +14,92 @@
     <script src="./js/common.js"></script>
     <!-- 有需要静态页面代写 或者 设计网站页面的 加 QQ：951252660 -->
     <!--  换肤背景色 https://webgradients.com/ -->
+
+    <script>
+        function logout() {
+            $.ajax({
+                type:"GET",
+                url:"/library/logout",
+                data:{},
+                success:function () {
+                    location.reload();
+                }
+            })
+        }
+        $(function () {
+            $.ajax({
+                type:"GET",
+                url:"/library/menu",
+                data:{},
+                success:function (data) {
+                    if (data.state == "SUCCESS"){
+                        $.each(data.data,function (index,value) {
+                            if (value.permissions.permissionId == 47) {
+                                $("#47").attr("style","display:block;");
+                            }else if (value.permissions.permissionId == 48) {
+                                $("#48").attr("style","display:block;");
+                            }else if (value.permissions.permissionId == 49) {
+                                $("#49").attr("style","display:block;");
+                            }else if (value.permissions.permissionId == 50) {
+                                $("#50").attr("style","display:block;");
+                            }else if (value.permissions.permissionId == 51) {
+                                $("#51").attr("style","display:block;");
+                            }else if (value.permissions.permissionId == 52) {
+                                $("#52").attr("style","display:block;");
+                            }else if (value.permissions.permissionId == 53) {
+                                $("#53").attr("style","display:block;");
+                            }else if (value.permissions.permissionId == 54) {
+                                $("#54").attr("style","display:block;");
+                            }
+                        });
+                    }
+                }
+            })
+        })
+    </script>
+
 </head>
 
 <body>
-    <div class="admin">
-        <div class="top">
-            <div class="left">
-                library后台管理
-            </div>
-            <div class="right">
-                <a href="">
-                    <i class="fa fa-home"></i>
-                    <span>前台主页</span>
-                </a>
-
-                <a href="">
-                    <i class="fa fa-highlighter"></i>
-                    <span>清除缓存</span>
-                </a>
-                <a href="web_baseset.html" target="rightiframe">
-                    <i class="fa fa-cog"></i>
-                    <span>网站设置</span>
-                </a>
-                <a href="">
-                    <i class="fa fa-fw fa-power-off"></i>
-                    <span>退出后台</span>
-                </a>
-            </div>
+<div class="admin">
+    <div class="top">
+        <div class="left">
+            library后台管理
         </div>
-        <div class="body">
-            <div class="left">
-                <div class="menu">
-                    <div class="title">
-                            <i class="fa fa-fw fa-home"></i> 站点仪表
-                    </div>
+        <div class="right">
+            <a href="">
+                <i class="fa fa-home"></i>
+                <span>前台主页</span>
+            </a>
+
+
+            <a href="#" >
+                <i class="fa fa-highlighter"></i>
+                <span>清除缓存</span>
+            </a>
+            <a href="../../update_password.html" target="rightiframe">
+                <i class="fa fa-highlighter"></i>
+                <span>修改密码</span>
+            </a>
+            <a href="#" onclick="logout()">
+                <i class="fa fa-fw fa-power-off"></i>
+                <span>退出后台</span>
+            </a>
+        </div>
+    </div>
+    <div class="body" >
+        <div class="left">
+            <div class="menu">
+                <div class="title">
+                    <i class="fa fa-fw fa-home"></i> 站点仪表
                 </div>
+            </div>
+            <div id="mmeennuu">
                 <!-- 分割线 -->
-                <div class="menu">
+                <div id="47" class="menu" style="display:none;">
+
                     <div class="title">
-                            <i class="fa fa-fw fa-navicon"></i> 借阅情况管理 <i class="fa fa-fw fa-angle-right"></i>
+                        <i class="fa fa-fw fa-navicon"></i> 借阅情况管理 <i class="fa fa-fw fa-angle-right"></i>
                     </div>
 
                     <ul class="downmenu">
@@ -60,9 +108,9 @@
                     </ul>
                 </div>
                 <!-- 分割线 -->
-                <div class="menu">
+                <div id="48" class="menu" style="display:none;">
                     <div class="title">
-                            <i class="fa fa-fw fa-file-powerpoint-o"></i> 书本管理 <i class="fa fa-fw fa-angle-right"></i>
+                        <i class="fa fa-fw fa-file-powerpoint-o"></i> 书本管理 <i class="fa fa-fw fa-angle-right"></i>
                     </div>
 
                     <ul class="downmenu">
@@ -70,10 +118,10 @@
                         <li><a href="article_create.html" target="rightiframe">书本入馆</a></li>
                     </ul>
                 </div>
-                <!-- 分割线 -->                
-                <div class="menu">
+                <!-- 分割线 -->
+                <div id="49" class="menu" style="display:none;">
                     <div class="title">
-                            <i class="fa fa-fw fa-image"></i> 借阅历史管理 <i class="fa fa-fw fa-angle-right"></i>
+                        <i class="fa fa-fw fa-image"></i> 借阅历史管理 <i class="fa fa-fw fa-angle-right"></i>
                     </div>
 
                     <ul class="downmenu">
@@ -81,42 +129,42 @@
                         <li><a href="borrowHistory_edit.html" target="rightiframe">借阅历史编辑</a></li>
                     </ul>
                 </div>
-                <!-- 分割线 -->                
-                <div class="menu">
+                <!-- 分割线 -->
+                <div id="50" class="menu" style="display:none;">
                     <div class="title">
-                            <i class="fa fa-fw fa-image"></i> 订单管理 <i class="fa fa-fw fa-angle-right"></i>
+                        <i class="fa fa-fw fa-image"></i> 订单管理 <i class="fa fa-fw fa-angle-right"></i>
                     </div>
 
                     <ul class="downmenu">
                         <li><a href="costs_show.html" target="rightiframe">订单列表</a></li>
-<!--                        <li><a href="page_create.html" target="rightiframe">创建订单</a></li>-->
+                        <!--                        <li><a href="page_create.html" target="rightiframe">创建订单</a></li>-->
                     </ul>
                 </div>
                 <!-- 分割线 -->
-                <div class="menu">
+                <div id="51" class="menu" style="display:none;">
+
                     <div class="title">
                         <i class="fa fa-fw fa-cog"></i> 网站设置 <i class="fa fa-fw fa-angle-right"></i>
                     </div>
                     <ul class="downmenu">
                         <li><a href="web_baseset.html" target="rightiframe">基础设置</a></li>
-                        <!--<li><a href="web_baseseo.html" target="rightiframe">SEO设置</a></li>
-                        <li><a href="web_basemap.html" target="rightiframe">地图定位</a></li>
-                        <li><a href="web_basefield.html" target="rightiframe">公司信息</a></li>
-                        <li><a href="web_email.html" target="rightiframe">邮箱设置</a></li>-->
                     </ul>
                 </div>
                 <!-- 分割线 -->
-                <div class="menu">
+                <div id="52" class="menu" style="display:none;">
+
                     <div class="title">
                         <i class="fa fa-fw fa-user"></i> 用户管理 <i class="fa fa-fw fa-angle-right"></i>
                     </div>
                     <ul class="downmenu">
                         <li><a href="user_show.html" target="rightiframe">管理员列表</a></li>
-                        <li><a href="#" target="rightiframe">读者列表</a></li>
+
+                        <li><a href="readers_show.html" target="rightiframe">读者列表</a></li>
                     </ul>
                 </div>
                 <!-- 分割线 -->
-                <div class="menu">
+                <div id="53" class="menu" style="display:none;">
+
                     <div class="title">
                         <i class="fa fa-fw fa-link"></i> 权限管理 <i class="fa fa-fw fa-angle-right"></i>
                     </div>
@@ -126,7 +174,9 @@
                     </ul>
                 </div>
                 <!-- 分割线 -->
-                <div class="menu">
+
+                <div id="54" class="menu" style="display:none">
+
                     <div class="title">
                         <i class="fa fa-fw fa-newspaper-o"></i> 网站日志 <i class="fa fa-fw fa-angle-right"></i>
                     </div>
@@ -135,14 +185,15 @@
                     </ul>
                 </div>
             </div>
-            <!-- 分割线 -->
-            <div class="right">
-              
-                <iframe src="wellcome.html" frameborder="0" id="rightiframe" name="rightiframe"></iframe>
 
-            </div>
+        </div>
+        <!-- 分割线 -->
+        <div class="right">
+            <iframe src="wellcome.html" frameborder="0" id="rightiframe" name="rightiframe"></iframe>
+
         </div>
     </div>
+</div>
 </body>
 
 </html>
