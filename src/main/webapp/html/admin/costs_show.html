@@ -6,12 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>APP</title>
-    <link rel="stylesheet" href="./css/component.css">
-    <link rel="stylesheet" href="./css/admin.css">
-    <link rel="stylesheet" href="./css/font-awesome.min.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link href="../../asserts/plugins/Bootstrap/css/bootstrap.css" rel="stylesheet">
 
@@ -26,7 +20,7 @@
     <link rel="stylesheet" href="./css/component.css">
     <link rel="stylesheet" href="./css/admin.css">
     <link rel="stylesheet" href="./css/font-awesome.min.css">
-    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+    <script src="./js/JQuery2.1.4.js"></script>
 
     <link href="css/style.css" rel="stylesheet" type="text/css">
     <link href="css/addcss.css" rel="stylesheet" type="text/css">
@@ -58,7 +52,7 @@
             if (event.target == modal) {
                 modal.style.display = "none";
             }
-        }
+        };
 
         function windowHeight() {
             var de = document.documentElement;
@@ -70,7 +64,7 @@
         }
     </script>
     <script type="text/javascript">
-        function timestampToTime(timestamp) {
+        /*function timestampToTime(timestamp) {
             var date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
             Y = date.getFullYear() + '-';
             M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
@@ -79,13 +73,38 @@
             m = date.getMinutes() + ':';
             s = date.getSeconds();
             return Y+M+D+h+m+s;
-        }
+        }*/
 
-        function insertCosts() {
+        /*function insetCosts() {
             var readerId = $("#readerId").val();
             var costType = $(".costType").val();
             var numeric = $("#numeric").val();
             var payType = $(".payType").val();
+            $.ajax({
+                type:"POST",
+                url:"/library/Costs/insertCosts",
+                data:{
+                    readerId:readerId,
+                    costType:costType,
+                    numeric:numeric,
+                    payType:payType,
+                },
+                success:function (data) {
+                    if (data.state == "SUCCESS") {
+                        alert(data.message);
+                        location.href = "user_show.html";
+                    }else {
+                        alert(data.message);
+                    }
+                }
+            });
+        }*/
+
+        function insertCosts() {
+            var readerId = $("#ireaderId").val();
+            var costType = $(".icostType:checked").val();
+            var numeric = $("#inumeric").val();
+            var payType = $(".ipayType:checked").val();
             $.ajax({
                 type: "POST",
                 url:"/library/costs/insertCosts",
@@ -105,20 +124,171 @@
                 }
             });
         }
-        function jumpPage(index){
-            location.href = "costs_show.html?currentPage="+index
+
+        /* function deleteCosts() {
+            debugger
+            var ckb = $(":input[name='ckb']");
+            var costId = new Array(ckb.length);
+            var j = 0;
+            for (var i = 0; i < ckb.length; i++) {
+                if (ckb[i].checked){
+                    costId[j] = ckb[i].value;
+                    j++;
+                }
+            }
+            $.ajax({
+                type:"DELETE",
+                url:"/library/costs/deleteCostsByCostsId/"+costId,
+                data:{},
+                contentType:"application/json",
+                success: function (data) {
+                    if (data.state == "SUCCESS"){
+                        alert(data.message);
+                        location.href = "costs_show.html";
+                    }else {
+                        alert(data.message);
+                    }
+                }
+            })
+        }*/
+
+        function removeCosts(costsId) {
+            var url = "/library/costs/deleteCostsByCostsId?costsId="+costsId;
+            $.ajax({
+                type:"DELETE",
+                url:url,
+                success:function (data) {
+                    if (data.state == "SUCCESS") {
+                        alert(data.message);
+                        location.href = "cost_show.html";
+                    }else {
+                        alert(data.message);
+                    }
+                }
+            })
         }
 
-        function getQueryVariable(variables){
+        function deleteCosts() {
+            var ckb = $(":input[name=ckb]");
+            var CostIds = new Array(ckb.length);
+            var j = 0;
+            for (var i = 0; i < ckb.length; i++) {
+                if (ckb[i].checked) {
+                    CostIds[j] = ckb[i].value;
+                    j++;
+                }
+            }
+            $.ajax({
+                type: "DELETE",
+                url: "/library/costs/deleteCostsByCostsId/ids/"+CostIds,
+                data:{
+
+                },
+                contentType:"application/json",
+                success: function (data) {
+                    if (data.state == "SUCCESS") {
+                        alert(data.message);
+                        location.href = "cost_show.html";
+                    } else {
+                        alert(data.message);
+                    }
+                }
+            });
+        }
+
+        function cAll() {
+            var all = document.getElementById("all");
+            var ckb = document.getElementsByName("ckb");
+            for (var i = 0;i< ckb.length;i++){
+                if (all.checked){
+                    ckb[i].checked = true;
+                }else {
+                    ckb[i].checked =false;
+                }
+            }
+        }
+
+        function dcAll() {
+            var all = document.getElementById("all");
+            var ckb = document.getElementsByName("ckb");
+            if (all.checked){
+                all.checked = false;
+            }
+            var flag = true;
+            for (var i =0;i<ckb.length;i++){
+                if (ckb[i].checked != true){
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag){
+                all.checked = true;
+            }
+        }
+
+        function updateButten(index) {
+            debugger
+            var f = document.getElementById("updateCosts");
+            var costID = $("#costId"+index).val();
+            var readerId = $("#readerId"+index).val();
+            var costType = $(".costType"+index).text();
+            var numeric = $("#numeric"+index).text();
+            var payType = $(".payType"+index).text();
+            var createTime = $("#createTime"+index).text();
+            $("#ucostId").val(costID);
+            $("#ureaderId").val(readerId);
+            $(".ucostType").val(costType);
+            $("#unumeric").val(numeric);
+            $(".upayType").val(payType);
+            $("#ucreateTime").val(createTime);
+            f.style.display='block';
+        }
+
+        function updateCosts() {
+            debugger
+            var costId = $("#ucostId").val();
+            var readerId = $("#ureaderId").val();
+            var costType = $(".ucostType").val();
+            var numeric = $("#unumeric").val();
+            var payType = $(".upayType").val();
+            var createTime = $("#ucreateTime").val();
+            var data = {
+                costId : costId,
+                readerId: readerId,
+                costType: costType,
+                numeric: numeric,
+                payType: payType,
+                createTime: createTime,
+            }
+            $.ajax({
+                type: "POST",
+                url: "/library/costs/updateByCostsId/",
+                data:data,
+                success: function (data) {
+                    if (data.state == "SUCCESS") {
+                        alert(data.message);
+                        location.href = "costs_show.html"
+                    } else {
+                        alert(data.message)
+                    }
+                }
+            });
+        }
+
+        function jumpPage(index) {
+            location.href = "costs_show.html?currentPage="+index;
+        }
+
+        function getQueryVariable(variable) {
             var query = window.location.search.substring(1);
             var vars = query.split("&");
-            for (var i = 0; i < vars.length; i++) {
+            for (var i=0;i<vars.length;i++) {
                 var pair = vars[i].split("=");
-                if (pair[0] == variables){
+                if(pair[0] == variable){
                     return decodeURI(pair[1]);
                 }
-                return (false)
             }
+            return(false);
         }
 
         $(function () {
@@ -147,14 +317,15 @@
                             $tr.append("<input id='costId"+index+"' name='costId' type='hidden' value= '"+value.costId+"' > ");
                             $tr.append("<td width='70px'>"+"<input name='ckb' id='checkbox"+index+"' type='checkbox' value='"+value.costId+"' onclick='dcAll()'>"+"</td>")
                             $tr.append("<td>"+(index+1)+"</td>")
+                            $tr.append("<input id='readerId"+index+"' name='readerId' type='hidden' value='"+value.readerId+"'>");
                             $tr.append("<td id='readerName"+index+"'>"+value.reader.readerName+"</td>");
-                            $tr.append("<td id='costType"+index+"'>"+value.costType+"</td>");
+                            $tr.append("<td class='costType"+index+"'>"+value.costType+"</td>");
                             $tr.append("<td id='numeric"+index+"'>"+value.numeric+"</td>");
-                            $tr.append("<td id='payType"+index+"'>"+value.payType+"</td>");
-                            $tr.append("<td id='createTime"+index+"'>"+timestampToTime(value.createTime)+"</td>");
+                            $tr.append("<td class='payType"+index+"'>"+value.payType+"</td>");
+                            $tr.append("<td id='createTime"+index+"'>"+value.createTime+"</td>");
                             $tr.append("<td width='160px'>"+
-                                "<a href='#' class='btn btn-warning' onclick='updataButten("+index+")'>修改</a> "+
-                                "<a href='#' onclick='removeGoods("+value.costId+")' class='btn btn-danger'>删除</a> "
+                                "<a href='#' class='btn btn-warning' onclick='updateButten("+index+")'>修改</a> "+
+                                "<a href='#' onclick='removeCosts("+value.costId+")' class='btn btn-danger'>删除</a> "
                                 +"</td>");
                             $("#tbody").append($tr);
                         });
@@ -195,27 +366,22 @@
 </head>
 
 <body>
-    <div class="rbody" id="app">
+    <div class="rbody container" id="app">
         <div class="top">
             当前位置：后台<i class="fa fa-fw fa-angle-right"></i>订单列表
         </div>
         <div class="main">
             <div class="tabList">
-                <input type="button" value="添 加" class="btn btn-info" onclick="document.getElementById('addCosts').style.display='block'" style="width:auto;"/>            </div>
+                <input type="button" value="添 加" class="btn btn-info" onclick="document.getElementById('addCosts').style.display='block'" style="width:auto;"/>
+<!--                <input type="button" value="删除选中" class="btn btn-danger" onclick="deleteCosts()"/>-->
+                <input type="button" value="删除选中" class="btn btn-danger" onclick="deleteCosts()" />
+                <input type="button" value="搜 索" class="btn btn-danger" onclick="" />
+            </div>
             <div class="imglists">
                 <table id="table">
-                    <colgroup>
-                        <col width="100">
-                        <col width="150">
-                        <col width="100">
-                        <col width="100">
-                        <col width="100">
-                        <col width="125">
-                        <col width="125">
-                    </colgroup>
                     <thead>
                         <tr>
-                            <th></th>
+                            <th><input id="all" type="checkbox" onclick="cAll()">&nbsp;&nbsp;选择</th>
                         <th>
                             序号
                         </th>
@@ -244,14 +410,14 @@
                     </tbody>
                 </table>
             </div>
-            <div>
+            <div class="footer">
                 <div id="paging" class="text-center">
                 </div>
             </div>
         </div>
     </div>
 
-<!--    添加页面-->
+    <!--添加页面
     <div id="addCosts" class="hmodal">
         <div id="a">
             <form id="addform" class="modal-content animate" action="/library/insertCosts" method="post">
@@ -276,7 +442,96 @@
                 </div>
             </form>
         </div>
+    </div> -->
+
+    <!--添加页面弹窗-->
+    <div id="addCosts" class="hmodal">
+        <div id="a">
+            <form id="addform" class="modal-content animate" action="/library/costs/insertCosts" method="post">
+                <div class="imgcontainer">
+                    <!-- 点击×号，隐藏模态框-->
+                    <span onclick="document.getElementById('addCosts').style.display='none'" class="close" title="Close Modal">&times;</span>
+                </div>
+                <h1 style="margin-left: 40px;margin-top: 10px;color: #66ccff">添加</h1>
+                <div class="container" style="width: 170px;margin: 0 auto;">
+                    <div class="form-group">
+                        <label>读者编号:</label>
+                        <input id="ireaderId" class="form-control" type="text" placeholder="读者编号"><br/>
+                    </div>
+                    <div class="form-group">
+                        <label>支付类型:</label><br/>
+                        <label>
+                            <input type="radio" id="icost_type1" name="cost_type" class="icostType" value="1">会员充值
+                        </label><br/>
+                        <label>
+                            <input type="radio" id="icost_type2" name="cost_type" class="icostType" value="2">罚款
+                        </label><br/>
+                        <label>
+                            <input type="radio" id="icost_type3" name="cost_type" class="icostType" value="3">退款
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>支付金额:</label>
+                        <input class="form-control" type="text" id="inumeric" name="numeric" placeholder="支付金额"><br/>
+                    </div>
+                    <div class="form-group">
+                        <label>支付方式:</label><br/>
+                        <input type="radio" id="ipay_type1" name="ipay_type" class="ipayType" value="1" >现金
+                        <input type="radio" id="ipay_type2" name="ipay_type" class="ipayType" value="2">手机支付
+                    </div>
+                    <button id="addButton" type="button" onclick="insertCosts()"  style="border-radius:8px;" class="btn btn-info" >添加</button>&nbsp&nbsp&nbsp&nbsp
+                    <button type="button" style="border-radius:8px;" onclick="document.getElementById('addCosts').style.display='none'" class="btn btn-danger">取消</button>
+                </div>
+            </form>
+        </div>
     </div>
+
+    <!-- 修改页面弹窗 -->
+    <div id="updateCosts" class="hmodal">
+        <div style="width: 40%;margin: 0px auto;border: 1px;position: absolute;left: 30%;">
+            <form id="updateForm" class="modal-content animate" action="/library/costs/updateByCostsId" method="post">
+                <div class="imgcontainer">
+                    <span onclick="document.getElementById('updateCosts').style.display='none'" class="close" title="Close Modal">&times;</span>
+                </div>
+                <h1 style="margin-left: 40px;margin-top: 10px;color: #66ccff">修改</h1>
+                <div class="container" style="width: 170px;margin: 0 auto;">
+                    <input id="ucostId" value="" type="hidden" name="costId" readonly="readonly">
+                    <div class="form-group">
+                        <label>读者编号</label>
+                        <input id="ureaderId" class="int-text" name="readerId" placeholder="读者编号">
+                    </div>
+                    <div class="form-group">
+                        <label>支付类型:</label><br/>
+                        <label>
+                            <input type="radio" id="cost_type1" name="ucost_type" class="ucostType" value="1" checked="checked">会员充值
+                        </label><br/>
+                        <label>
+                            <input type="radio" id="cost_type2" name="ucost_type" class="ucostType" value="2">罚款
+                        </label><br/>
+                        <label>
+                            <input type="radio" id="cost_type3" name="ucost_type" class="ucostType" value="3">退款
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>支付金额:</label>
+                        <input class="form-control" type="text" id="unumeric" name="unumeric" placeholder="支付金额"><br/>
+                    </div>
+                    <div class="form-group">
+                        <label>支付方式:</label><br/>
+                        <input type="radio" id="pay_type1" name="pay_type" class="upayType" value="1" checked="checked">现金
+                        <input type="radio" id="pay_type2" name="pay_type" class="upayType" value="2">手机支付
+                    </div>
+                    <div class="form-group">
+                        <label>创建时间</label><br/>
+                        <input type="datetime-local" id="ucreateTime" name="create_time" class="form-control" placeholder="创建时间">
+                    </div>
+                    <button id="updateButton" type="button" onclick="updateCosts()"  style="border-radius:8px;" class="btn btn-info" >修改</button>&nbsp&nbsp&nbsp&nbsp
+                    <button type="button" style="border-radius:8px;" onclick="document.getElementById('updateCosts').style.display='none'" class="btn btn-danger" >取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="./js/common.js"></script>
 </body>
 

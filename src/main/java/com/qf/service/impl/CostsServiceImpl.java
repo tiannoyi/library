@@ -63,15 +63,21 @@ public class CostsServiceImpl implements ICostsService {
         return i;
     }
 
+    public Integer count (){
+        return costsMapper.selectAllVo().size();
+    }
     //分页查询所有金额流水表
     @Override
     public Page selectAllVo(Integer currentPage, Integer pageSize) {
-        if (StringUtils.isEmpty(pageSize)) {
+        if (pageSize == null) {
             pageSize = systemMapper.getPageLine();
+        }
+        if (currentPage == null) {
+            currentPage = 1;
         }
         PageHelper.startPage(currentPage, pageSize);
         List<CostsVo> costsVos = costsMapper.selectAllVo();
-        int count = costsVos.size();
+        int count = count();
         Page<CostsVo> pageData = new Page<>(currentPage, pageSize, count);
         pageData.setList(costsVos);
         return pageData;
@@ -91,7 +97,7 @@ public class CostsServiceImpl implements ICostsService {
         /*CostsExample costsExample = new CostsExample();
         costsExample.createCriteria().andIsDeleteEqualTo(1).andReaderIdEqualTo(readerId);
         List<Costs> costs = costsMapper.selectByExample(costsExample);*/
-        int costsNum = costsVo.size();
+        int costsNum = count();
         Page<CostsVo> page = new Page<>(currentPage, pageSize, costsNum);
         page.setList(costsVo);
         return page;
