@@ -5,9 +5,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>借阅情况</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 
+    <title>借阅情况</title>
+    <link rel="stylesheet" href="./css/component.css">
+    <link rel="stylesheet" href="./css/admin.css">
+    <link rel="stylesheet" href="./css/font-awesome.min.css">
+    <link rel="stylesheet" href="../../asserts/plugins/Bootstrap/css/bootstrap.css">
+    <link href="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/css/bootstrapValidator.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
     <link href="css/addcss.css" rel="stylesheet" type="text/css">
+
+    <script src="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.js"></script>
+    <script src="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/js/language/zh_CN.js"></script>
+    <script src="./js/JQuery2.1.4.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+    <script src="../../asserts/plugins/Bootstrap/css/bootstrap.css"></script>
+    <script src="../../asserts/plugins/Bootstrap/js/bootstrap.js"></script>
+
     <style type="text/css">
         .footer {
             text-align: center;
@@ -21,17 +36,30 @@
             height: 80px;
         }
     </style>
-
-    <link rel="stylesheet" href="./css/component.css">
-    <link rel="stylesheet" href="./css/admin.css">
-    <link rel="stylesheet" href="./css/font-awesome.min.css">
-    <link rel="stylesheet" href="./plugins/page/jquery.page.css">
-    <link rel="stylesheet" href="/asserts/plugins/Bootstrap/css/bootstrap.css">
-    <script src="./js/JQuery2.1.4.js"></script>
-    <script src="/asserts/plugins/Bootstrap/css/bootstrap.css"></script>
-    <script src="./plugins/page/jquery.page.js"></script>
     <!-- 富文本编辑器 -->
     <script src="./js/wang.js"></script>
+
+    <script>
+        // 获取模型
+        var modal = document.getElementById('id01');
+
+        // 鼠标点击模型外区域关闭登录框
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        function windowHeight() {
+            var de = document.documentElement;
+            return self.innerHeight || (de && de.clientHeight) || document.body.clientHeight;
+        }
+
+        window.onload = window.onresize = function () {
+            var wh = windowHeight();
+            document.getElementById("xt-left").style.height = document.getElementById("xt-right").style.height = (wh - document.getElementById("xt-top").offsetHeight) + "px";
+        }
+    </script>
 
     <script type="text/javascript">
         //复选框功能
@@ -74,6 +102,33 @@
             return date == null ? "未还" : date;
         }
 
+        function insertBorrows() {
+            var renew = $("#renew").val();
+            var overdue = $("#overdue").val();
+            var readerId = $("#readerId").val();
+            var bookStateId = $("#bookStateId").val();
+            var fine = $("#fine").val();
+            $.ajax({
+                type: "POST",
+                url: "/library/borrows/insertBorrows",
+                data: {
+                    renew: renew,
+                    overdue: overdue,
+                    readerId: readerId,
+                    bookStateId: bookStateId,
+                    fine: fine,
+                },
+                success: function (data) {
+                    if (data.state == "SUCCESS") {
+                        alert(data.message);
+                        location.href = "borrows_show.html";
+                    } else {
+                        alert(data.message);
+                    }
+                }
+            })
+        }
+
         function deleteBatchByBorrowIds() {
             var singles = document.getElementsByClassName("single");
             var borrowIds = new Array(singles.length);
@@ -86,7 +141,7 @@
             }
             $.ajax({
                 type: "DELETE",
-                url: "/borrows/deleteBatchByBorrowId?borrowIds=" + borrowIds,
+                url: "/library/borrows/deleteBatchByBorrowId?borrowIds=" + borrowIds,
                 data: {},
                 traditional: true,
                 contentType: "application/json",
@@ -99,12 +154,11 @@
                     }
                 }
             })
-
         }
 
 
         function deleteBorrow(borrowId) {
-            var url = "/borrows/deleteBorrowsByBorrowId?borrowId=" + borrowId;
+            var url = "/library/borrows/deleteBorrowsByBorrowId?borrowId=" + borrowId;
             $.ajax({
                 type: "DELETE",
                 url: url,
@@ -120,6 +174,99 @@
                     }
                 }
             })
+        }
+
+        function queryByCondition() {
+
+            debugger;
+            var conditionContent = $("#conditionContent").val();
+
+            if (conditionContent == "") {
+                alert("请输入条件");
+                return;
+            }
+
+            var url = "/library/borrows/selectBorrowsByBookStateId?bookStateId=" + conditionContent.toString();
+
+            var currentPage = getQueryVariable("currentPage");
+            var pageSize = getQueryVariable("pageSize");
+            if (currentPage == false) {
+                currentPage = 1;
+            }
+            if (pageSize == false) {
+                pageSize = 5;
+            }
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                data: {
+                    currentPage: currentPage,
+                    pageSize: pageSize,
+                },
+                success: function (data) {
+                    $("#tb").empty();
+                    $("#paging").empty();
+                    if (data.state == "SUCCESS") {
+
+                        $.each(data.data.list, function (index, value) {
+                            var $tr = $("<tr></tr>");
+                            $tr.append("<input id='borrowId" + index + "' name='borrowId' type='hidden' value= '" + value.borrowId + "' > ");
+
+                            $tr.append("<td>" + "<input class='single' id='checkbox' type='checkbox' value='" + value.borrowId + "' onclick='qAll()'>" + "</td>");
+                            $tr.append("<td>" + value.borrowId + "</td>");
+                            $tr.append("<td>" + value.borrowTime + "</td>");
+                            $tr.append("<td>" + payNull(value.repayTime) + "</td>");
+
+                            $tr.append("<td>" + turnYesNo(value.renew) + "</td>");
+                            $tr.append("<td>" + turnYesNo(value.overdue) + "</td>");
+                            $tr.append("<td>" + value.readerId + "</td>");
+                            $tr.append("<td>" + value.bookStateId + "</td>");
+
+                            $tr.append("<td>" + value.fine + "</td>");
+                            $tr.append("<td>"
+                                + "<a  href='#' class='btn btn-warning' onclick='location.href=\"borrows_edit.html?borrowId=" + value.borrowId + "\"'>修改</a> "
+                                + "<a  href='#' onclick='if(confirm(\"确认删除？\")){deleteBorrow(" + value.borrowId + ")}' class='btn btn-danger'>删除</a> "
+                                + "</td>"
+
+                                //     <button type="button" onclick="document.getElementById('addBorrows').style.display='block'" class="btn btn-info" style="width:auto;">
+                            );
+                            // $tr.append("<tr>"+value.isDelete+"</tr>")
+                            $("#tb").append($tr);
+                        });
+
+                        //分页
+                        var $ul = $("<ul class='pagination pagination-lg'></ul>");
+                        if (data.data.currentPage < 2) {
+                            $ul.append("<li class='disabled'><a href='#'>&laquo;</a></li>");
+                        } else {
+                            $ul.append("<li><a href='#' onclick='jumpPage(" + (data.data.currentPage - 1) + ")'>&laquo;</a></li>");
+                        }
+                        for (var i = 0; i < data.data.totalPage; i++) {
+                            if (data.data.currentPage == 1 && i < 1) {
+                                $ul.append("<li class='disabled active'><a href='#' onclick='jumpPage(" + (i + 1) + ")'>" + (i + 1) + "</a></li>");
+                            } else if (i == (data.data.totalPage - 1) && data.data.currentPage == data.data.totalPage) {
+                                $ul.append("<li class='disabled active'><a href='#' onclick='jumpPage(" + (i + 1) + ")'>" + (i + 1) + "</a></li>");
+                            } else {
+                                if (i == (data.data.currentPage - 1)) {
+                                    $ul.append("<li class='active'><a href='#' onclick='jumpPage(" + (i + 1) + ")'>" + (i + 1) + "</a></li>");
+                                } else {
+                                    $ul.append("<li><a href='#' onclick='jumpPage(" + (i + 1) + ")'>" + (i + 1) + "</a></li>");
+                                }
+                            }
+                        }
+                        if (data.data.currentPage >= data.data.totalPage) {
+                            $ul.append("<li class='disabled'><a href='#'>&raquo;</a></li>");
+                        } else {
+                            $ul.append("<li><a href='#' onclick='jumpPage(" + (data.data.currentPage + 1) + ")' >&raquo;</a></li>");
+                        }
+                        $("#paging").append($ul);
+
+                    } else {
+                        alert("出现错误！");
+                    }
+                }
+            });
         }
 
         function jumpPage(index) {
@@ -150,7 +297,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "/borrows/selectAllUnDeleteBorrows",
+                url: "/library/borrows/selectAllUnDeleteBorrows",
                 data: {
                     currentPage: currentPage,
                     pageSize: pageSize,
@@ -175,8 +322,12 @@
                             $tr.append("<td>" + value.bookStateId + "</td>");
 
                             $tr.append("<td>" + value.fine + "</td>");
-                            $tr.append("<td>" + "<a  href='#' class='btn btn-warning' >修改</a> " +
-                                "<a  href='#' onclick='if(confirm(\"确认删除？\")){deleteBorrow(" + value.borrowId + ")}' class='btn btn-danger'>删除</a> " + "</td>"
+                            $tr.append("<td>"
+                                + "<a  href='#' class='btn btn-warning' onclick='location.href=\"borrows_edit.html?borrowId=" + value.borrowId + "\"'>修改</a> "
+                                + "<a  href='#' onclick='if(confirm(\"确认删除？\")){deleteBorrow(" + value.borrowId + ")}' class='btn btn-danger'>删除</a> "
+                                + "</td>"
+
+                                //     <button type="button" onclick="document.getElementById('addBorrows').style.display='block'" class="btn btn-info" style="width:auto;">
                             );
                             // $tr.append("<tr>"+value.isDelete+"</tr>")
                             $("#tb").append($tr);
@@ -229,6 +380,13 @@
     <div class="main">
         <div class="tabList">
             <button onclick="deleteBatchByBorrowIds()" class="btn btn-danger">删除选中</button>
+            <button type="button" onclick="document.getElementById('addBorrows').style.display='block'"
+                    class="btn btn-info" style="width:auto;">添加记录
+            </button>
+
+            <span class="ios-tip-name">图书在馆ID：</span>
+            <input class="int-text" id="conditionContent" type="text" name="conditionContent" placeholder="请输入查询条件">
+            <button id="queryButton" onclick="queryByCondition()">查询</button>
         </div>
 
         <div class="tableLists">
@@ -272,6 +430,56 @@
         </div>
     </div>
 </div>
+
+
+<!--弹框页面-->
+<div id="addBorrows" class="hmodal">
+    <div id="a">
+        <form id="addform" class="modal-content animate" action="/library/admins" method="post">
+            <div class="imgcontainer">
+                <!-- 点击×号，隐藏模态框-->
+                <span onclick="document.getElementById('addBorrows').style.display='none'" class="close"
+                      title="Close Modal">&times;</span>
+            </div>
+            <h1 style="margin-left: 40px;margin-top: 10px;color: #66ccff">添加新借阅情况</h1>
+            <div class="container" style="width: 170px;margin: 0 auto;">
+                续借：
+                <select id="renew" name="renew">
+                    <option selected value="0">否</option>
+                    <option value="1">是</option>
+                </select>
+                <br>
+                逾期：
+                <select id="overdue" name="overdue">
+                    <option selected value="0">否</option>
+                    <option value="1">是</option>
+                </select>
+                <br>
+                读者id：
+                <input id="readerId" class="int-text" type="text" placeholder="请输入读者ID" name="readerId" required
+                       autocomplete="off">
+                <br>
+                图书在馆id：
+                <input id="bookStateId" class="int-text" type="text" placeholder="请输入图书在馆ID" name="bookStateId" required
+                       autocomplete="off">
+                <br>
+                罚款:
+                <input id="fine" class="int-text" type="text" placeholder="罚款金额" name="fine" required
+                       autocomplete="off">
+                <br>
+                <br>
+                <br>
+                <button id="addButton" type="button" onclick="insertBorrows()" style="border-radius:8px;"
+                        class="btn btn-info">添加
+                </button>
+                <button type="button" style="border-radius:8px;"
+                        onclick="document.getElementById('addBorrows').style.display='none'" class="btn btn-danger">取消
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 <script src="./js/common.js"></script>
 
