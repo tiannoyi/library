@@ -1,5 +1,6 @@
 package com.qf.controller;
 
+import com.qf.aspect.OperationLogger;
 import com.qf.constan.StateCode;
 import com.qf.controller.base.Base;
 import com.qf.entity.Roles;
@@ -46,6 +47,7 @@ public class RoleController extends Base {
 
 
     //添加角色
+    @OperationLogger(modelName = "添加",opEntity = "角色",option = "/roles")
     @PostMapping("/roles")
     public State<Object> insertRole(Roles role){
         Integer integer = roleService.insertRole(role);
@@ -57,7 +59,8 @@ public class RoleController extends Base {
 
     //修改角色信息
     @PutMapping("/roles/{roleId}")
-    public State<Object> updateRole(@PathVariable("roleId")Integer roleId,Roles roles){
+    @OperationLogger(modelName = "修改",opEntity = "角色",option = "/roles/updateId")
+    public State<Object> updateRole(@PathVariable("roleId")Integer roleId,@RequestBody Roles roles){
         roles.setRoleId(roleId);
         Integer integer = roleService.updateByPrimaryKey(roles);
         if (integer > 0){
@@ -66,6 +69,8 @@ public class RoleController extends Base {
         return packaging(StateCode.FAIL,"修改失败",roleId);
     }
 
+
+    @OperationLogger(modelName = "删除",opEntity = "单个角色",option = "/roles/{roleId}")
     @DeleteMapping("/roles/{roleId}")
     public State<Object> deleteRole(@PathVariable Integer roleId){
         Integer integer = roleService.deleteRole(roleId);
@@ -75,6 +80,7 @@ public class RoleController extends Base {
         return packaging(StateCode.FAIL,"删除失败",roleId);
     }
 
+    @OperationLogger(modelName = "添加",opEntity = "多个角色",option = "/roles/{roleIds}")
     @DeleteMapping("/roles/ids/{roleIds}")
     public Object deleteRoles(@PathVariable String roleIds){
         if(StringUtils.isEmpty(roleIds)){
