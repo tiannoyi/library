@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <link href="../../asserts/plugins/Bootstrap/css/bootstrap.css" rel="stylesheet">
+
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+    <script src="../../asserts/plugins/Bootstrap/js/bootstrap.js"></script>
+
+    <script src="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/js/bootstrapValidator.js"></script>
+    <link href="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/css/bootstrapValidator.css" rel="stylesheet">
+
+    <script src="https://cdn.bootcss.com/jquery.bootstrapvalidator/0.5.3/js/language/zh_CN.js"></script>
+    <title>library</title>
+    <link rel="stylesheet" href="./css/component.css">
+    <link rel="stylesheet" href="./css/admin.css">
+    <link rel="stylesheet" href="./css/font-awesome.min.css">
+    <script src="./js/JQuery2.1.4.js"></script>
+
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <link href="css/addcss.css" rel="stylesheet" type="text/css">
+    <!-- 富文本编辑器 -->
+    <script src="./js/wang.js"></script>
+
+    <script>
+        function getQueryVariable(variable)
+        {
+            var query = window.location.search.substring(1);
+            var vars = query.split("&");
+            for (var i=0;i<vars.length;i++) {
+                var pair = vars[i].split("=");
+                if(pair[0] == variable){return decodeURI(pair[1]);}
+            }
+            return(false);
+        }
+
+        $(function () {
+            $.ajax({
+                type:"GET",
+                url:"/library/system/selectSystemList",
+                success:function (data) {
+                    $("#table").empty();
+                    if (data.state == "SUCCESS") {
+                        $.each(data.data.list, function (index, value) {
+                            var $tr = $("<tr></tr>");
+                            $tr.append("<input id='sysId" + index + "' name='sysId' type='hidden' value= '" + value.sysId + "' > ");
+                            $tr.append("<td width='70px'>" + "<input name='ckb' id='checkbox" + index + "' type='checkbox' value='" + value.sysId + "' onclick='dcAll()'>" + "</td>")
+                            $tr.append("<td>" + (index + 1) + "</td>")
+                            $tr.append("<td id='sysName" + index + "'>" + value.sysName + "</td>");
+                            $tr.append("<td id='sysImg" + index + "'>" + value.sysImg + "</td>");
+                            $tr.append("<td id='pageLine" + index + "'>" + value.pageLine + "</td>");
+                            $tr.append("<td id='appid" + index + "'>" + value.appid + "</td>");
+                            $tr.append("<td id='appsecret" + index + "'>" + value.appsecret + "</td>");
+                            $tr.append("<td id='barName" + index + "'>" + value.barName + "</td>");
+                            $tr.append("<td id='fine" + index + "'>" + value.fine + "</td>");
+                            $tr.append("<td width='160px'>" +
+                                "<a href='#' class='btn btn-warning' onclick='updataButten(" + index + ")'>修改</a> " +
+                                "<a href='#' onclick='removeGoods(" + value.permissionId + ")' class='btn btn-danger'>删除</a> "
+                                + "</td>");
+                            $("#table").append($tr);
+                        });
+                    }else {
+                        alert("未知错误");
+                    }
+                }
+            })
+        })
+    </script>
+</head>
+
+<body>
+    <div class="rbody container" id="app">
+        <div class="top">
+            当前位置：后台<i class="fa fa-fw fa-angle-right"></i>订单列表
+        </div>
+        <div class="main">
+            <div class="tabList">
+                <input type="button" value="添 加" class="btn btn-info" onclick="document.getElementById('addCosts').style.display='block'" style="width:auto;"/>
+            </div>
+            <div class="imglists">
+                <table id="table">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>
+                            序号
+                        </th>
+                        <th>
+                            系统名字
+                        </th>
+
+                        <th>
+                            系统图片
+                        </th>
+                        <th>
+                            金额
+                        </th>
+                        <th>
+                            每页显示行数
+                        </th>
+                        <th>
+                            AppID
+                        </th>
+                        <th>
+                            系统设置id
+                        </th>
+                        <th>
+                            条形码前缀
+                        </th>
+                        <th>
+                            罚款金额
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <div id="paging" class="text-center">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div id="addSystem" class="hmodal">
+        <div class="top">
+            当前位置：后台<i class="fa fa-fw fa-angle-right"></i>基础设置
+        </div>
+        <div class="main">
+            <div class="tabList">
+                <span class="active">基础设置</span>
+            </div>
+            <div class="tbodyList">
+                <div class="tabBody tactive">
+                    <p class="tip mrb10">常规设置</p>
+    <div class="twoBox">
+        <div class="leftbox">
+            <div class="ios-form-group">
+                <div class="ios-title">
+                    <em class="ios-tip-must">*</em>
+                    <span class="ios-tip-name">网站名称：</span>
+                </div>
+                <div class="ios-input-box">
+                    <input type="text" class="ios-input" placeholder="请输入">
+                </div>
+            </div>
+        </div>
+        <div class="rightbox">
+            <div class="ios-form-group">
+                <div class="ios-title">
+                    <em class="ios-tip-must">*</em>
+                    <span class="ios-tip-name">网站网址：</span>
+                </div>
+                <div class="ios-input-box">
+                    <input type="text" class="ios-input" placeholder="请输入">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="twoBox">
+        <div class="leftbox">
+            <div class="ios-form-group">
+                <div class="ios-title">
+                    <em class="ios-tip-must"></em>
+                    <span class="ios-tip-name">备案号码：</span>
+                </div>
+                <div class="ios-input-box">
+                    <input type="text" class="ios-input" placeholder="请输入">
+                </div>
+            </div>
+        </div>
+        <div class="rightbox">
+            <div class="ios-form-group">
+                <div class="ios-title">
+                    <em class="ios-tip-must"></em>
+                    <span class="ios-tip-name">版权声明：</span>
+                </div>
+                <div class="ios-input-box">
+                    <input type="text" class="ios-input" placeholder="请输入">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    结束符
+    <div class="twoBox">
+        <div class="leftbox">
+            <div class="ios-form-group">
+                <div class="ios-title">
+                    <em class="ios-tip-must">*</em>
+                    <span class="ios-tip-name">网站状态：</span>
+                </div>
+                <div class="ios-radio-box">
+                    <label class="ios-radio-box-label">
+                        <input type="radio" name="radio" class="ios-radio">
+                        <span class="ios-radio-span">开启</span>
+                    </label>
+                    <label class="ios-radio-box-label">
+                        <input type="radio" name="radio" class="ios-radio">
+                        <span class="ios-radio-span">关闭</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="rightbox">
+            <div class="ios-form-group">
+                <div class="ios-title">
+                    <em class="ios-tip-must">*</em>
+                    <span class="ios-tip-name">会员状态：</span>
+                </div>
+                <div class="ios-radio-box">
+                    <label class="ios-radio-box-label">
+                        <input type="radio" name="radio" class="ios-radio">
+                        <span class="ios-radio-span">开启注册</span>
+                    </label>
+                    <label class="ios-radio-box-label">
+                        <input type="radio" name="radio" class="ios-radio">
+                        <span class="ios-radio-span">关闭注册</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ios-form-group mrb10">
+        <div class="ios-title">
+            <em class="ios-tip-must">*</em>
+            <span class="ios-tip-name">网站LOGO：</span>
+        </div>
+        <div class="ios-upload-box">
+            <div class="ios-upload-btn">
+                <label class="ios-upload-label">
+                    <input type="file">
+                    <span> <i class="fa fa-fw fa-upload"></i> 上传图片</span>
+                </label>
+            </div>
+            <div class="ios-upload-show">
+                <div class="ios-upload-show-image">
+                    <p>暂未上传图片</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ios-form-group mrb10">
+        <div class="ios-title">
+            <em class="ios-tip-must">*</em>
+            <span class="ios-tip-name">网站二维码：</span>
+        </div>
+        <div class="ios-upload-box">
+            <div class="ios-upload-btn">
+                <label class="ios-upload-label">
+                    <input type="file">
+                    <span> <i class="fa fa-fw fa-upload"></i> 上传图片</span>
+                </label>
+            </div>
+            <div class="ios-upload-show">
+                <div class="ios-upload-show-image">
+                    <p>暂未上传图片</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ios-form-group">
+        <div class="ios-title">
+            <em class="ios-tip-must">*</em>
+            <span class="ios-tip-name">统计代码：</span>
+        </div>
+        <div class="ios-textarea-box">
+            <textarea class="ios-textarea"></textarea>
+        </div>
+    </div>
+    </div>
+    </div>
+    <div>
+        <span class="ios-button ios-button-blue ios-button-2x">保存发布</span>
+    </div>
+    </div>
+    </div> -->
+
+
+    <script src="./js/common.js"></script>
+</body>
+
+</html>
