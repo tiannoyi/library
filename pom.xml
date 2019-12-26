@@ -45,12 +45,6 @@
   <dependencies>
 <!--
 
-    <dependency>
-      <groupId>org.apache.shiro</groupId>
-      <artifactId>shiro-ehcache</artifactId>
-      <version>${shiro.version}</version>
-    </dependency>
-
 
 
     <dependency>
@@ -65,19 +59,22 @@
           <version>${shiro.version}</version>
       </dependency>
 
-
-    <dependency>
-      <groupId>org.apache.shiro</groupId>
-      <artifactId>shiro-spring</artifactId>
-      <version>${shiro.version}</version>
-    </dependency>
-
     <dependency>
       <groupId>org.apache.shiro</groupId>
       <artifactId>shiro-web</artifactId>
       <version>${shiro.version}</version>
     </dependency>
 -->
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-ehcache</artifactId>
+      <version>${shiro.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.shiro</groupId>
+      <artifactId>shiro-spring</artifactId>
+      <version>${shiro.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.shiro</groupId>

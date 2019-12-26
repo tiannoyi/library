@@ -240,4 +240,19 @@
       is_delete = #{isDelete,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <resultMap id="LogsVo" type="com.qf.entity.vo.LogsVo" extends="BaseResultMap">
+      <association property="admin" javaType="com.qf.entity.Admin">
+        <id column="admin_id" property="adminId"/>
+        <result column="admin_name" property="adminName"/>
+      </association>
+  </resultMap>
+  <select id="selectAll" resultMap="LogsVo">
+      select id, `time`, l.admin_id,
+      ope_action, ope_entity, ope_detail,admin_name
+      from tbl_logs l left join tbl_admins a
+      on l.admin_id = a.admin_id
+      where l.is_delete = 1
+      order by l.id desc
+  </select>
 </mapper>
